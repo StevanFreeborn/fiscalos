@@ -1,5 +1,6 @@
 global using System.ComponentModel.DataAnnotations;
 
+global using FiscalOS.API.Data;
 global using FiscalOS.API.Identity;
 global using FiscalOS.API.Login;
 

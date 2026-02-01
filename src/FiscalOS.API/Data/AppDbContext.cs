@@ -27,12 +27,20 @@ internal sealed class AppDbContext(IOptions<AppDbContextOptions> ctxOptions) : D
   {
     base.OnModelCreating(modelBuilder);
 
-    modelBuilder.Entity<User>()
-      .Property(static u => u.Id)
-      .ValueGeneratedOnAdd();
+    modelBuilder.Entity<User>(static eb =>
+    {
+      eb.HasMany(static u => u.RefreshTokens)
+        .WithOne(static t => t.User)
+        .HasForeignKey(static t => t.UserId)
+        .OnDelete(DeleteBehavior.Cascade);
 
-    modelBuilder.Entity<RefreshToken>()
-      .Property(static t => t.Id)
-      .ValueGeneratedOnAdd();
+      eb.Property(static u => u.Id).ValueGeneratedOnAdd();
+      eb.Property(static u => u.Username);
+    });
+
+    modelBuilder.Entity<RefreshToken>(static eb =>
+    {
+      eb.Property(static t => t.Id);
+    });
   }
 }
