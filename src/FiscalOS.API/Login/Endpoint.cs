@@ -14,9 +14,6 @@ internal static class Endpoint
     [FromServices] AppDbContext appDbContext
   )
   {
-    const string ADMIN_USERNAME = "Stevan";
-    const string ADMIN_PASSWORD = "@Password1";
-
     // TODO: Implement actual auth flow
     // 1. We want to make sure that
     //    the user exists
@@ -36,11 +33,6 @@ internal static class Endpoint
     var user = await appDbContext.Users.SingleOrDefaultAsync(u => u.Username == loginRequest.Username);
 
     if (user is null)
-    {
-      return Results.Unauthorized();
-    }
-
-    if (loginRequest.Username is not ADMIN_USERNAME || loginRequest.Password is not ADMIN_PASSWORD)
     {
       return Results.Unauthorized();
     }
