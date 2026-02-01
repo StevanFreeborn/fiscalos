@@ -9,7 +9,10 @@ internal static class Endpoint
     return app.MapPost(Route, HandleAsync);
   }
 
-  private static async Task<IResult> HandleAsync([FromBody] LoginRequest loginRequest)
+  private static async Task<IResult> HandleAsync(
+    [FromBody] LoginRequest loginRequest,
+    [FromServices] AppDbContext appDbContext
+  )
   {
     const string ADMIN_USERNAME = "Stevan";
     const string ADMIN_PASSWORD = "@Password1";
@@ -29,6 +32,13 @@ internal static class Endpoint
     // TODO: Things we need
     // 1. We need a user model
     // 2. We need a refresh token model
+
+    var user = await appDbContext.Users.SingleOrDefaultAsync(u => u.Username == loginRequest.Username);
+
+    if (user is null)
+    {
+      return Results.Unauthorized();
+    }
 
     if (loginRequest.Username is not ADMIN_USERNAME || loginRequest.Password is not ADMIN_PASSWORD)
     {

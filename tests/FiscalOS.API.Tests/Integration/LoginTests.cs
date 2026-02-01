@@ -1,14 +1,12 @@
 namespace FiscalOS.API.Tests.Integration;
 
-public class LoginTests(TestApi testApi) : IClassFixture<TestApi>
+public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
 {
-  private readonly TestApi _testApi = testApi;
-
   [Theory]
   [ClassData<LoginValidationTestCases>]
   public async Task Login_WhenUserSubmitsInvalidRequest_ItShouldReturn400WithProblemDetails(LoginValidationTestCase tc)
   {
-    var client = _testApi.CreateClient();
+    var client = TestApi.CreateClient();
 
     var req = new
     {
@@ -28,7 +26,7 @@ public class LoginTests(TestApi testApi) : IClassFixture<TestApi>
   [Fact]
   public async Task Login_WhenUserCredentialsAreIncorrect_ItShouldReturn401WithProblemDetails()
   {
-    var client = _testApi.CreateClient();
+    var client = TestApi.CreateClient();
 
     var req = new
     {

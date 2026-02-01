@@ -5,43 +5,43 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FiscalOS.API.Migrations
 {
-  /// <inheritdoc />
-  public partial class AddUsersAndRefreshTokens : Migration
-  {
     /// <inheritdoc />
-    protected override void Up(MigrationBuilder migrationBuilder)
+    public partial class AddUsersAndRefreshTokens : Migration
     {
-      migrationBuilder.CreateTable(
-          name: "RefreshTokens",
-          columns: table => new
-          {
-            Id = table.Column<Guid>(type: "TEXT", nullable: false)
-          },
-          constraints: table =>
-          {
-            table.PrimaryKey("PK_RefreshTokens", x => x.Id);
-          });
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "RefreshTokens",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshTokens", x => x.Id);
+                });
 
-      migrationBuilder.CreateTable(
-          name: "Users",
-          columns: table => new
-          {
-            Id = table.Column<Guid>(type: "TEXT", nullable: false)
-          },
-          constraints: table =>
-          {
-            table.PrimaryKey("PK_Users", x => x.Id);
-          });
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "RefreshTokens");
+
+            migrationBuilder.DropTable(
+                name: "Users");
+        }
     }
-
-    /// <inheritdoc />
-    protected override void Down(MigrationBuilder migrationBuilder)
-    {
-      migrationBuilder.DropTable(
-          name: "RefreshTokens");
-
-      migrationBuilder.DropTable(
-          name: "Users");
-    }
-  }
 }
