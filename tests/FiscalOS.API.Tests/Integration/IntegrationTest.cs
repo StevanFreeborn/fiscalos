@@ -1,39 +1,39 @@
-
-using FiscalOS.API.Data;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-
 namespace FiscalOS.API.Tests.Integration;
 
 public abstract class IntegrationTest(TestApi testApi) : IClassFixture<TestApi>, IAsyncLifetime
 {
-  protected TestApi TestApi { get; } = testApi;
+  public HttpClient Client => testApi.CreateClient();
 
-  // TODO: This seems not correct
-  // would need to dispose of scope
-  // we need to clean up the test
-  // database files when the test ends
-
-  protected DbContext TestDbContext
+  public async ValueTask InitializeAsync()
   {
-    get
+    await ExecuteDbContextAsync(static async context =>
     {
-      var scopeFactory = TestApi.Services.GetRequiredService<IServiceScopeFactory>();
-      var scope = scopeFactory.CreateScope();
-      return scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    }
+      await context.Database.EnsureCreatedAsync();
+    });
   }
 
-  public ValueTask InitializeAsync()
+  protected async Task ExecuteDbContextAsync(Func<DbContext, Task> action)
   {
-    return new(TestDbContext.Database.EnsureCreatedAsync());
+    await using var scope = testApi.Services.CreateAsyncScope();
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await action(context);
   }
 
-  public ValueTask DisposeAsync()
+  protected async Task<T> ExecuteDbContextAsync<T>(Func<DbContext, Task<T>> action)
   {
+    await using var scope = testApi.Services.CreateAsyncScope();
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    return await action(context);
+  }
+
+  public async ValueTask DisposeAsync()
+  {
+    await ExecuteDbContextAsync(static async context =>
+    {
+      await context.Database.EnsureDeletedAsync();
+    });
+
     GC.SuppressFinalize(this);
-    return new(TestDbContext.Database.EnsureDeletedAsync());
   }
 
 }

@@ -1,3 +1,5 @@
+using FiscalOS.API.Identity;
+
 namespace FiscalOS.API.Tests.Integration;
 
 public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
@@ -6,15 +8,13 @@ public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
   [ClassData<LoginValidationTestCases>]
   public async Task Login_WhenUserSubmitsInvalidRequest_ItShouldReturn400WithProblemDetails(LoginValidationTestCase tc)
   {
-    var client = TestApi.CreateClient();
-
     var req = new
     {
       username = tc.Username,
       password = tc.Password,
     };
 
-    var res = await client.PostAsJsonAsync("/login", req, TestContext.Current.CancellationToken);
+    var res = await Client.PostAsJsonAsync("/login", req, TestContext.Current.CancellationToken);
 
     res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
@@ -24,17 +24,39 @@ public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
   }
 
   [Fact]
-  public async Task Login_WhenUserCredentialsAreIncorrect_ItShouldReturn401WithProblemDetails()
+  public async Task Login_WhenUserDoesNotExist_ItShouldReturn401WithProblemDetails()
   {
-    var client = TestApi.CreateClient();
-
     var req = new
     {
       username = "Test",
       password = "@Password2",
     };
 
-    var res = await client.PostAsJsonAsync("/login", req, TestContext.Current.CancellationToken);
+    var res = await Client.PostAsJsonAsync("/login", req, TestContext.Current.CancellationToken);
+
+    res.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+  }
+
+  [Fact]
+  public async Task Login_WhenUserExistsButPasswordIsIncorrect_ItShouldReturn401WithProblemDetails()
+  {
+    await ExecuteDbContextAsync(static async context =>
+    {
+      context.Add(new User
+      {
+        Username = "Stevan",
+      });
+
+      await context.SaveChangesAsync(TestContext.Current.CancellationToken);
+    });
+
+    var req = new
+    {
+      username = "Stevan",
+      password = "@Password2",
+    };
+
+    var res = await Client.PostAsJsonAsync("/login", req, TestContext.Current.CancellationToken);
 
     res.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
   }
