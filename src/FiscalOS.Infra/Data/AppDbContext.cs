@@ -1,5 +1,3 @@
-using FiscalOS.Core.Data;
-
 namespace FiscalOS.Infra.Data;
 
 public sealed class AppDbContext(IOptions<AppDbContextOptions> ctxOptions) : DbContext

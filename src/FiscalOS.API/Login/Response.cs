@@ -4,6 +4,12 @@ internal sealed record Response
 {
   public string AccessToken { get; init; }
 
+  [JsonConstructor]
+  private Response()
+  {
+    AccessToken = string.Empty;
+  }
+
   private Response(string accessToken)
   {
     AccessToken = accessToken;

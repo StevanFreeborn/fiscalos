@@ -2,6 +2,8 @@ global using System.Net;
 global using System.Net.Http.Json;
 
 global using FiscalOS.API.Tests.Infra;
+global using FiscalOS.Core.Authentication;
+global using FiscalOS.Core.Identity;
 global using FiscalOS.Infra.Data;
 
 global using Microsoft.AspNetCore.Hosting;

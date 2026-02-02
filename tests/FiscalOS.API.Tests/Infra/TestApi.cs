@@ -1,3 +1,7 @@
+using System.Security.Cryptography;
+
+using FiscalOS.Infra.Authentication;
+
 namespace FiscalOS.API.Tests.Infra;
 
 public class TestApi : WebApplicationFactory<Program>
@@ -10,12 +14,22 @@ public class TestApi : WebApplicationFactory<Program>
 
     builder.ConfigureTestServices(static c =>
     {
-      var opts = Options.Create(new AppDbContextOptions()
+      var dbOpts = Options.Create(new AppDbContextOptions()
       {
         DatabaseFilePath = $"{Guid.NewGuid()}.db",
       });
 
-      c.AddSingleton(opts);
+      c.AddSingleton(dbOpts);
+
+      var jwtOpts = Options.Create(new JwtOptions()
+      {
+        Issuer = "TestIssuer",
+        Audience = "TestAudience",
+        Secret = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32)),
+        ExpiryInMinutes = 5,
+      });
+
+      c.AddSingleton(jwtOpts);
     });
   }
 }

@@ -1,4 +1,7 @@
+global using System.Globalization;
 global using System.IdentityModel.Tokens.Jwt;
+global using System.Security.Cryptography;
+
 global using AwesomeAssertions.Primitives;
 
 global using FiscalOS.Core.Identity;

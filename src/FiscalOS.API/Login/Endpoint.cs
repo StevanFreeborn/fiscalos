@@ -1,5 +1,3 @@
-using FiscalOS.Core.Authentication;
-
 namespace FiscalOS.API.Login;
 
 internal static class Endpoint
