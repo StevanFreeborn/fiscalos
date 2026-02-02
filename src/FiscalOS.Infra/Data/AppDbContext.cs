@@ -23,7 +23,7 @@ public sealed class AppDbContext(IOptions<AppDbContextOptions> ctxOptions) : DbC
     var connectionString = $"{DataSourceKey}{dbPath}";
 
     optionsBuilder.UseSqlite(connectionString)
-      .AddInterceptors(new TimestampInterceptor());
+      .AddInterceptors(TimestampInterceptor.New());
   }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
