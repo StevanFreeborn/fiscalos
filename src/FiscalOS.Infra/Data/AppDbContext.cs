@@ -36,13 +36,13 @@ public sealed class AppDbContext(IOptions<AppDbContextOptions> ctxOptions) : DbC
     foreach (var entityType in entityTypes)
     {
       modelBuilder.Entity(entityType.ClrType)
-          .HasKey(nameof(Entity.Id));
+        .HasKey(nameof(Entity.Id));
 
       modelBuilder.Entity(entityType.ClrType)
-          .Property(nameof(Entity.CreatedAt));
+        .Property(nameof(Entity.CreatedAt));
 
       modelBuilder.Entity(entityType.ClrType)
-          .Property(nameof(Entity.UpdatedAt));
+        .Property(nameof(Entity.UpdatedAt));
     }
 
     modelBuilder.Entity<User>(static eb =>
@@ -59,6 +59,8 @@ public sealed class AppDbContext(IOptions<AppDbContextOptions> ctxOptions) : DbC
     modelBuilder.Entity<RefreshToken>(static eb =>
     {
       eb.Property(static t => t.Id);
+      eb.Property(static t => t.ExpiresAt);
+      eb.Property(static t => t.Token);
     });
   }
 }
