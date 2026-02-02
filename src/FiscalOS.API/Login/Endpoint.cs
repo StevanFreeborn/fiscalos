@@ -14,26 +14,12 @@ internal static class Endpoint
 
   private static async Task<IResult> HandleAsync(
     [FromBody] LoginRequest loginRequest,
+    [FromServices] HttpContext httpContext,
     [FromServices] AppDbContext appDbContext,
-    [FromServices] IPasswordHasher passwordHasher
+    [FromServices] IPasswordHasher passwordHasher,
+    [FromServices] TokenService tokenService
   )
   {
-    // TODO: Implement actual auth flow
-    // 1. We want to make sure that
-    //    the user exists
-    // 2. We want to make sure that
-    //    tha the password is correct
-    // 3. We want to issue an access token
-    //    with a refresh token
-    // 4. We want to store the refresh
-    //    token
-    // 5. We want to set the refresh
-    //    token in a cookie
-
-    // TODO: Things we need
-    // 1. We need a user model
-    // 2. We need a refresh token model
-
     var user = await appDbContext.Users.SingleOrDefaultAsync(u => u.Username == loginRequest.Username);
 
     if (user is null)
@@ -48,6 +34,26 @@ internal static class Endpoint
       return Results.Unauthorized();
     }
 
-    return Results.Ok();
+    var accessToken = tokenService.GenerateAccessToken(user);
+
+    var refreshToken = tokenService.GenerateRefreshToken(user);
+    await appDbContext.RefreshTokens.AddAsync(refreshToken);
+    await appDbContext.SaveChangesAsync();
+
+    httpContext.Response.Cookies.Append(
+      "fiscalos_refresh_cookie",
+      refreshToken.Token,
+      new CookieOptions
+      {
+        HttpOnly = true,
+        Expires = refreshToken.ExpiresAt,
+        // TODO: Revisit when decided
+        // on hosting setup
+        SameSite = SameSiteMode.None,
+        Secure = true
+      }
+    );
+
+    return Results.Ok(new Response(accessToken));
   }
 }
