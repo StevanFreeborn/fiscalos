@@ -1,3 +1,6 @@
+
+using FiscalOS.Core.Identity;
+
 namespace FiscalOS.API.Login;
 
 internal static class Endpoint
@@ -11,7 +14,8 @@ internal static class Endpoint
 
   private static async Task<IResult> HandleAsync(
     [FromBody] LoginRequest loginRequest,
-    [FromServices] AppDbContext appDbContext
+    [FromServices] AppDbContext appDbContext,
+    [FromServices] IPasswordHasher passwordHasher
   )
   {
     // TODO: Implement actual auth flow
@@ -33,6 +37,13 @@ internal static class Endpoint
     var user = await appDbContext.Users.SingleOrDefaultAsync(u => u.Username == loginRequest.Username);
 
     if (user is null)
+    {
+      return Results.Unauthorized();
+    }
+
+    var isCorrectPassword = passwordHasher.Verify(loginRequest.Password, user.HashedPassword);
+
+    if (isCorrectPassword is false)
     {
       return Results.Unauthorized();
     }
