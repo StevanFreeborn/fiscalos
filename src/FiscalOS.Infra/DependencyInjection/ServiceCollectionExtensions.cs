@@ -4,7 +4,9 @@ public static class ServiceCollectionExtensions
 {
   public static IServiceCollection AddInfrastructure(this IServiceCollection services)
   {
-    services.AddSingleton<IPasswordHasher, PasswordHasher>(static (_) => PasswordHasher.New());
+    services.AddSingleton(TimeProvider.System);
+    services.AddSingleton<ITokenGenerator, TokenGenerator>(TokenGenerator.From);
+    services.AddSingleton<IPasswordHasher, PasswordHasher>(PasswordHasher.From);
     services.ConfigureOptions<AppDbContextOptionsSetup>();
     services.AddDbContext<AppDbContext>();
     services.AddHostedService<MigrationService>();
