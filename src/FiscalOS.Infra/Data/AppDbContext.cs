@@ -45,18 +45,24 @@ public sealed class AppDbContext(IOptions<AppDbContextOptions> ctxOptions) : DbC
 
     modelBuilder.Entity<User>(static eb =>
     {
+
       eb.HasMany(static u => u.RefreshTokens)
         .WithOne(static t => t.User)
         .HasForeignKey(static t => t.UserId)
         .OnDelete(DeleteBehavior.Cascade);
 
       eb.Property(static u => u.Username);
-      eb.Property(static u => u.HashedPassword); });
+      eb.HasIndex(static u => u.Username).IsUnique();
+
+      eb.Property(static u => u.HashedPassword);
+    });
     modelBuilder.Entity<RefreshToken>(static eb =>
     {
       eb.Property(static t => t.Id);
       eb.Property(static t => t.ExpiresAt);
+
       eb.Property(static t => t.Token);
+      eb.HasIndex(static t => t.Token).IsUnique();
     });
   }
 }
