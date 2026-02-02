@@ -6,7 +6,11 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FiscalOS.Core\FiscalOS.Core.csproj" />
+    <ProjectReference Include="..\FiscalOS.Infra\FiscalOS.Infra.csproj" />
   </ItemGroup>
 
 </Project>
