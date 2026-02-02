@@ -1,9 +1,3 @@
-using FiscalOS.API.Data;
-
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
 namespace FiscalOS.API.Tests.Infra;
 
 public class TestApi : WebApplicationFactory<Program>

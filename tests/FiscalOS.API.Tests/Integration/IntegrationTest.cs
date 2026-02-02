@@ -19,11 +19,25 @@ public abstract class IntegrationTest(TestApi testApi) : IClassFixture<TestApi>,
     await action(context);
   }
 
+  protected async Task ExecuteDbContextAsync(Func<DbContext, IServiceProvider, Task> action)
+  {
+    await using var scope = testApi.Services.CreateAsyncScope();
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await action(context, scope.ServiceProvider);
+  }
+
   protected async Task<T> ExecuteDbContextAsync<T>(Func<DbContext, Task<T>> action)
   {
     await using var scope = testApi.Services.CreateAsyncScope();
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     return await action(context);
+  }
+
+  protected async Task<T> ExecuteDbContextAsync<T>(Func<DbContext, IServiceProvider, Task<T>> action)
+  {
+    await using var scope = testApi.Services.CreateAsyncScope();
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    return await action(context, scope.ServiceProvider);
   }
 
   public async ValueTask DisposeAsync()

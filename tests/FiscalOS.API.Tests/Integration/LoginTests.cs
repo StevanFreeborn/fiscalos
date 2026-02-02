@@ -1,4 +1,4 @@
-using FiscalOS.API.Identity;
+using FiscalOS.Core.Identity;
 
 namespace FiscalOS.API.Tests.Integration;
 
@@ -40,11 +40,14 @@ public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
   [Fact]
   public async Task Login_WhenUserExistsButPasswordIsIncorrect_ItShouldReturn401WithProblemDetails()
   {
-    await ExecuteDbContextAsync(static async context =>
+    await ExecuteDbContextAsync(static async (context, sp) =>
     {
+      var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
+
       context.Add(new User
       {
         Username = "Stevan",
+        HashedPassword = passwordHasher.Hash("@Password1"),
       });
 
       await context.SaveChangesAsync(TestContext.Current.CancellationToken);
