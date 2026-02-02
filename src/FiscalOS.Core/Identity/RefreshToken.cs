@@ -5,7 +5,7 @@ public sealed class RefreshToken : Entity
   public string Token { get; init; } = string.Empty;
   public DateTimeOffset ExpiresAt { get; init; }
   public Guid UserId { get; init; }
-  public User User { get; init; } = new();
+  public User User { get; init; } = User.New();
 
   private RefreshToken()
   {
