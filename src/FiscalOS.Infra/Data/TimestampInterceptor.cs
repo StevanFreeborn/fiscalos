@@ -4,6 +4,15 @@ namespace FiscalOS.Infra.Data;
 
 internal sealed class TimestampInterceptor : SaveChangesInterceptor
 {
+  private TimestampInterceptor()
+  {
+  }
+
+  public static TimestampInterceptor New()
+  {
+    return new();
+  }
+
   public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
   {
     UpdateEntities(eventData.Context);
