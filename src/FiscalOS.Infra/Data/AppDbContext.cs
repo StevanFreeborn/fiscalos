@@ -51,9 +51,7 @@ public sealed class AppDbContext(IOptions<AppDbContextOptions> ctxOptions) : DbC
         .OnDelete(DeleteBehavior.Cascade);
 
       eb.Property(static u => u.Username);
-      eb.Property(static u => u.HashedPassword);
-    });
-
+      eb.Property(static u => u.HashedPassword); });
     modelBuilder.Entity<RefreshToken>(static eb =>
     {
       eb.Property(static t => t.Id);
