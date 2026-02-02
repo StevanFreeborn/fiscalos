@@ -1,30 +1,41 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
+namespace FiscalOS.Infra.Authentication;
 
-using FiscalOS.Core.Identity;
-
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-
-namespace FiscalOS.API.Login;
-
-internal sealed class TokenService(
-  TimeProvider timeProvider,
-  IOptions<JwtOptions> jwtOptions
-)
+public sealed class TokenGenerator : ITokenGenerator
 {
   private const int RefreshTokenExpiryInHours = 12;
-  private readonly JwtOptions _jwtOptions = jwtOptions.Value;
-  private readonly TimeProvider _timeProvider = timeProvider;
+  private readonly IOptions<JwtOptions> _jwtOptions;
+  private readonly TimeProvider _timeProvider;
+
+  private TokenGenerator(
+    TimeProvider timeProvider,
+    IOptions<JwtOptions> jwtOptions
+  )
+  {
+    _timeProvider = timeProvider;
+    _jwtOptions = jwtOptions;
+  }
+
+  public static TokenGenerator From(IServiceProvider serviceProvider)
+  {
+    var timeProvider = serviceProvider.GetRequiredService<TimeProvider>();
+    var jwtOptions = serviceProvider.GetRequiredService<IOptions<JwtOptions>>();
+    return new(timeProvider, jwtOptions);
+  }
+
+  public static TokenGenerator From(
+    TimeProvider timeProvider,
+    IOptions<JwtOptions> jwtOptions
+  )
+  {
+    return new(timeProvider, jwtOptions);
+  }
 
   public string GenerateAccessToken(User user)
   {
     var tokenHandler = new JwtSecurityTokenHandler();
-    var secretKeyBytes = Encoding.UTF8.GetBytes(_jwtOptions.Secret);
+    var secretKeyBytes = Encoding.UTF8.GetBytes(_jwtOptions.Value.Secret);
     var issuedAt = _timeProvider.GetUtcNow();
-    var expiresAt = issuedAt.AddMinutes(_jwtOptions.ExpiryInMinutes);
+    var expiresAt = issuedAt.AddMinutes(_jwtOptions.Value.ExpiryInMinutes);
     List<Claim> claims = [
       new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
       new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
@@ -35,8 +46,8 @@ internal sealed class TokenService(
       Subject = new(claims),
       IssuedAt = issuedAt.UtcDateTime,
       Expires = expiresAt.UtcDateTime,
-      Issuer = _jwtOptions.Issuer,
-      Audience = _jwtOptions.Audience,
+      Issuer = _jwtOptions.Value.Issuer,
+      Audience = _jwtOptions.Value.Audience,
       SigningCredentials = new(
         new SymmetricSecurityKey(secretKeyBytes),
         SecurityAlgorithms.HmacSha256Signature
