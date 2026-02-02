@@ -11,11 +11,18 @@
 
   <ItemGroup>
     <PackageReference Include="AwesomeAssertions" />
+    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
+    <PackageReference Include="Moq" />
     <PackageReference Include="xunit.v3.mtp-v2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\FiscalOS.Infra\FiscalOS.Infra.csproj" />
   </ItemGroup>
+
+  <Target Name="GenerateHtmlCoverageReport" AfterTargets="Test">
+    <Exec
+      Command="reportgenerator -reports:./TestResults/Coverage/*.xml -targetdir:./TestResults/Coverage/Report/ -reporttypes:Html_Dark" />
+  </Target>
 
 </Project>
