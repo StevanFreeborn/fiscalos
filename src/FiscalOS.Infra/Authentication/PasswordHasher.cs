@@ -1,4 +1,4 @@
-namespace FiscalOS.Infra.Identity;
+namespace FiscalOS.Infra.Authentication;
 
 public sealed class PasswordHasher : IPasswordHasher
 {
@@ -13,6 +13,11 @@ public sealed class PasswordHasher : IPasswordHasher
   }
 
   public static PasswordHasher New()
+  {
+    return new();
+  }
+
+  public static PasswordHasher From(IServiceProvider serviceProvider)
   {
     return new();
   }

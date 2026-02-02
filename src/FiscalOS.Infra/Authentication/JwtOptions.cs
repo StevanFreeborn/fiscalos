@@ -1,8 +1,6 @@
-using Microsoft.Extensions.Options;
+namespace FiscalOS.Infra.Authentication;
 
-namespace FiscalOS.API.Login;
-
-internal sealed record JwtOptions
+public sealed record JwtOptions
 {
   public string Issuer { get; init; } = string.Empty;
   public string Audience { get; init; } = string.Empty;
@@ -10,7 +8,7 @@ internal sealed record JwtOptions
   public int ExpiryInMinutes { get; init; } = 5;
 }
 
-internal sealed record JwtOptionsSetup : IConfigureOptions<JwtOptions>
+public sealed record JwtOptionsSetup : IConfigureOptions<JwtOptions>
 {
   private const string SectionName = nameof(JwtOptions);
   private readonly IConfiguration _configuration;
