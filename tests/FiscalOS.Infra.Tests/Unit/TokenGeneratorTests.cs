@@ -1,6 +1,3 @@
-using System.Globalization;
-using System.Security.Cryptography;
-
 namespace FiscalOS.Infra.Tests.Unit;
 
 public class TokenGeneratorTests

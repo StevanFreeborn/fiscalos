@@ -1,6 +1,3 @@
-using FiscalOS.Core.Authentication;
-using FiscalOS.Core.Identity;
-
 namespace FiscalOS.API.Tests.Integration;
 
 public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
@@ -16,9 +13,6 @@ public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
     };
 
     var res = await Client.PostAsJsonAsync("/login", req, TestContext.Current.CancellationToken);
-
-    var content = await res.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
-    Console.WriteLine(content);
 
     res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
@@ -62,6 +56,38 @@ public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
     var res = await Client.PostAsJsonAsync("/login", req, TestContext.Current.CancellationToken);
 
     res.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+  }
+
+  [Fact]
+  public async Task Login_WhenUserExistsAndPasswordIsCorrect_ItShouldReturn200WithJwtToken()
+  {
+    await ExecuteDbContextAsync(static async (context, sp) =>
+    {
+      var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
+
+      context.Add(User.From("Stevan", passwordHasher.Hash("@Password1")));
+
+      await context.SaveChangesAsync(TestContext.Current.CancellationToken);
+    });
+
+    var req = new
+    {
+      username = "Stevan",
+      password = "@Password1",
+    };
+
+    var res = await Client.PostAsJsonAsync("/login", req, TestContext.Current.CancellationToken);
+
+    res.StatusCode.Should().Be(HttpStatusCode.OK);
+
+
+    var content = await res.Content.ReadFromJsonAsync<Login.Response>(TestContext.Current.CancellationToken);
+
+    content!.AccessToken.Should().NotBeNullOrEmpty();
+
+    res.Headers.TryGetValues("Set-Cookie", out var cookies).Should().BeTrue();
+
+    cookies.Should().NotBeNull();
   }
 }
 
