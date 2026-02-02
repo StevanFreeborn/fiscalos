@@ -1,3 +1,5 @@
+using FiscalOS.Infra.Authentication;
+
 namespace FiscalOS.Infra.Tests.Unit;
 
 public class PasswordHasherTests
