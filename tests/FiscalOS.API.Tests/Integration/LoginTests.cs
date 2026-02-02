@@ -1,3 +1,4 @@
+using FiscalOS.Core.Authentication;
 using FiscalOS.Core.Identity;
 
 namespace FiscalOS.API.Tests.Integration;
@@ -15,6 +16,9 @@ public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
     };
 
     var res = await Client.PostAsJsonAsync("/login", req, TestContext.Current.CancellationToken);
+
+    var content = await res.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+    Console.WriteLine(content);
 
     res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
@@ -44,11 +48,7 @@ public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
     {
       var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
 
-      context.Add(new User
-      {
-        Username = "Stevan",
-        HashedPassword = passwordHasher.Hash("@Password1"),
-      });
+      context.Add(User.From("Stevan", passwordHasher.Hash("@Password1")));
 
       await context.SaveChangesAsync(TestContext.Current.CancellationToken);
     });
