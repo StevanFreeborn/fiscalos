@@ -1,6 +1,4 @@
-using FiscalOS.API.Identity;
-
-namespace FiscalOS.API.Tests.Unit;
+namespace FiscalOS.Infra.Tests.Unit;
 
 public class PasswordHasherTests
 {
