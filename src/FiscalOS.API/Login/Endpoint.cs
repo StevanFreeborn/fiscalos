@@ -1,5 +1,4 @@
-
-using FiscalOS.Core.Identity;
+using FiscalOS.Core.Authentication;
 
 namespace FiscalOS.API.Login;
 
@@ -13,11 +12,11 @@ internal static class Endpoint
   }
 
   private static async Task<IResult> HandleAsync(
+    HttpContext httpContext,
     [FromBody] LoginRequest loginRequest,
-    [FromServices] HttpContext httpContext,
     [FromServices] AppDbContext appDbContext,
     [FromServices] IPasswordHasher passwordHasher,
-    [FromServices] TokenService tokenService
+    [FromServices] ITokenGenerator tokenService
   )
   {
     var user = await appDbContext.Users.SingleOrDefaultAsync(u => u.Username == loginRequest.Username);
@@ -47,13 +46,11 @@ internal static class Endpoint
       {
         HttpOnly = true,
         Expires = refreshToken.ExpiresAt,
-        // TODO: Revisit when decided
-        // on hosting setup
-        SameSite = SameSiteMode.None,
+        SameSite = SameSiteMode.Strict,
         Secure = true
       }
     );
 
-    return Results.Ok(new Response(accessToken));
+    return Results.Ok(Response.From(accessToken));
   }
 }
