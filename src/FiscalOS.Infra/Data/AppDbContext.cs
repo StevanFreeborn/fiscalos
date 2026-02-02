@@ -1,6 +1,8 @@
-namespace FiscalOS.API.Data;
+using FiscalOS.Core.Data;
 
-internal sealed class AppDbContext(IOptions<AppDbContextOptions> ctxOptions) : DbContext
+namespace FiscalOS.Infra.Data;
+
+public sealed class AppDbContext(IOptions<AppDbContextOptions> ctxOptions) : DbContext
 {
   private const string DataSourceKey = "Data Source=";
   private readonly AppDbContextOptions _ctxOptions = ctxOptions.Value;
@@ -20,12 +22,28 @@ internal sealed class AppDbContext(IOptions<AppDbContextOptions> ctxOptions) : D
 
     var connectionString = $"{DataSourceKey}{dbPath}";
 
-    optionsBuilder.UseSqlite(connectionString);
+    optionsBuilder.UseSqlite(connectionString)
+      .AddInterceptors(new TimestampInterceptor());
   }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     base.OnModelCreating(modelBuilder);
+
+    var entityTypes = modelBuilder.Model.GetEntityTypes()
+      .Where(static e => typeof(Entity).IsAssignableFrom(e.ClrType));
+
+    foreach (var entityType in entityTypes)
+    {
+      modelBuilder.Entity(entityType.ClrType)
+          .HasKey(nameof(Entity.Id));
+
+      modelBuilder.Entity(entityType.ClrType)
+          .Property(nameof(Entity.CreatedAt));
+
+      modelBuilder.Entity(entityType.ClrType)
+          .Property(nameof(Entity.UpdatedAt));
+    }
 
     modelBuilder.Entity<User>(static eb =>
     {
@@ -34,8 +52,8 @@ internal sealed class AppDbContext(IOptions<AppDbContextOptions> ctxOptions) : D
         .HasForeignKey(static t => t.UserId)
         .OnDelete(DeleteBehavior.Cascade);
 
-      eb.Property(static u => u.Id).ValueGeneratedOnAdd();
       eb.Property(static u => u.Username);
+      eb.Property(static u => u.HashedPassword);
     });
 
     modelBuilder.Entity<RefreshToken>(static eb =>
