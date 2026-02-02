@@ -1,9 +1,9 @@
-namespace FiscalOS.API.Identity;
+namespace FiscalOS.Core.Identity;
 
-internal sealed class User
+public sealed class User : Entity
 {
-  public Guid Id { get; init; }
   public string Username { get; init; } = string.Empty;
+  public string HashedPassword { get; init; } = string.Empty;
 
   public ICollection<RefreshToken> RefreshTokens { get; init; } = [];
 }
