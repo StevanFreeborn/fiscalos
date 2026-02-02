@@ -1,14 +1,6 @@
-using System.Security.Cryptography;
+namespace FiscalOS.Infra.Identity;
 
-namespace FiscalOS.API.Identity;
-
-internal interface IPasswordHasher
-{
-  string Hash(string password);
-  bool Verify(string providedPassword, string hashedPassword);
-}
-
-internal class PasswordHasher : IPasswordHasher
+public sealed class PasswordHasher : IPasswordHasher
 {
   private const int SaltSize = 16;
   private const int HashSize = 32;

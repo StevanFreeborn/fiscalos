@@ -1,6 +1,6 @@
-namespace FiscalOS.API.Data;
+namespace FiscalOS.Infra.Data;
 
-internal sealed record AppDbContextOptions
+public sealed record AppDbContextOptions
 {
   public string DatabaseFilePath { get; init; } = string.Empty;
   public string GetFullyQualifiedDatabasePath()
@@ -9,7 +9,7 @@ internal sealed record AppDbContextOptions
   }
 }
 
-internal sealed record AppDbContextOptionsSetup : IConfigureOptions<AppDbContextOptions>
+public sealed record AppDbContextOptionsSetup : IConfigureOptions<AppDbContextOptions>
 {
   private const string SectionName = nameof(AppDbContextOptions);
   private readonly IConfiguration _configuration;

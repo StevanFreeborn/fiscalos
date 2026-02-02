@@ -1,4 +1,4 @@
-namespace FiscalOS.API.Data;
+namespace FiscalOS.Infra.Data;
 
 internal sealed class MigrationService(
   IServiceProvider serviceProvider,
@@ -13,7 +13,7 @@ internal sealed class MigrationService(
 
     using var scope = _serviceProvider.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await context.Database.MigrateAsync(cancellationToken);
+    await context.Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
 
     logger.LogInformation("Database migrations applied.");
   }
