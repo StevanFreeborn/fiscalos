@@ -33,7 +33,6 @@ public sealed class TokenGenerator : ITokenGenerator
   public string GenerateAccessToken(User user)
   {
     var tokenHandler = new JwtSecurityTokenHandler();
-    var secretKeyBytes = Encoding.UTF8.GetBytes(_jwtOptions.Value.Secret);
     var issuedAt = _timeProvider.GetUtcNow();
     var expiresAt = issuedAt.AddMinutes(_jwtOptions.Value.ExpiryInMinutes);
     List<Claim> claims = [
@@ -49,7 +48,7 @@ public sealed class TokenGenerator : ITokenGenerator
       Issuer = _jwtOptions.Value.Issuer,
       Audience = _jwtOptions.Value.Audience,
       SigningCredentials = new(
-        new SymmetricSecurityKey(secretKeyBytes),
+        _jwtOptions.Value.Key,
         SecurityAlgorithms.HmacSha256Signature
       ),
     };
