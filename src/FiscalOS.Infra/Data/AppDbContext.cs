@@ -45,7 +45,6 @@ public sealed class AppDbContext(IOptions<AppDbContextOptions> ctxOptions) : DbC
 
     modelBuilder.Entity<User>(static eb =>
     {
-
       eb.HasMany(static u => u.RefreshTokens)
         .WithOne(static t => t.User)
         .HasForeignKey(static t => t.UserId)
@@ -56,10 +55,12 @@ public sealed class AppDbContext(IOptions<AppDbContextOptions> ctxOptions) : DbC
 
       eb.Property(static u => u.HashedPassword);
     });
+
     modelBuilder.Entity<RefreshToken>(static eb =>
     {
       eb.Property(static t => t.Id);
       eb.Property(static t => t.ExpiresAt);
+      eb.Property(static t => t.UserId);
 
       eb.Property(static t => t.Token);
       eb.HasIndex(static t => t.Token).IsUnique();
