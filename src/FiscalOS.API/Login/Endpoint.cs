@@ -1,3 +1,5 @@
+using FiscalOS.API.Http;
+
 namespace FiscalOS.API.Login;
 
 internal static class Endpoint
@@ -32,22 +34,13 @@ internal static class Endpoint
     }
 
     var accessToken = tokenService.GenerateAccessToken(user);
-
     var refreshToken = tokenService.GenerateRefreshToken(user);
-    await appDbContext.RefreshTokens.AddAsync(refreshToken);
+
+    user.AddRefreshToken(refreshToken);
+
     await appDbContext.SaveChangesAsync();
 
-    httpContext.Response.Cookies.Append(
-      "fiscalos_refresh_cookie",
-      refreshToken.Token,
-      new CookieOptions
-      {
-        HttpOnly = true,
-        Expires = refreshToken.ExpiresAt,
-        SameSite = SameSiteMode.Strict,
-        Secure = true
-      }
-    );
+    httpContext.SetRefreshTokenCookie(refreshToken);
 
     return Results.Ok(Response.From(accessToken));
   }
