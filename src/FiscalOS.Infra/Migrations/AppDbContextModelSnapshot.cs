@@ -29,6 +29,9 @@ namespace FiscalOS.Infra.Migrations
                     b.Property<DateTimeOffset>("ExpiresAt")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("Revoked")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Token")
                         .IsRequired()
                         .HasColumnType("TEXT");
