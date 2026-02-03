@@ -2,10 +2,12 @@ namespace FiscalOS.Core.Identity;
 
 public sealed class User : Entity
 {
+  private readonly List<RefreshToken> _refreshTokens = [];
+
   public string Username { get; init; } = string.Empty;
   public string HashedPassword { get; init; } = string.Empty;
 
-  public ICollection<RefreshToken> RefreshTokens { get; init; } = [];
+  public IEnumerable<RefreshToken> RefreshTokens => _refreshTokens;
 
   private User()
   {
@@ -23,5 +25,12 @@ public sealed class User : Entity
       Username = username,
       HashedPassword = hashedPassword,
     };
+  }
+
+  public void AddRefreshToken(RefreshToken refreshToken)
+  {
+    ArgumentNullException.ThrowIfNull(refreshToken);
+
+    _refreshTokens.Add(refreshToken);
   }
 }
