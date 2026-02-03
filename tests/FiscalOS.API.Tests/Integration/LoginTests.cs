@@ -2,6 +2,8 @@ namespace FiscalOS.API.Tests.Integration;
 
 public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
 {
+  private static readonly Uri LoginUri = new("/login", UriKind.Relative);
+
   [Theory]
   [ClassData<LoginValidationTestCases>]
   public async Task Login_WhenUserSubmitsInvalidRequest_ItShouldReturn400WithProblemDetails(LoginValidationTestCase tc)
@@ -12,7 +14,7 @@ public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
       password = tc.Password,
     };
 
-    var res = await Client.PostAsJsonAsync("/login", req, TestContext.Current.CancellationToken);
+    var res = await Client.PostAsJsonAsync(LoginUri, req, TestContext.Current.CancellationToken);
 
     res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
@@ -30,7 +32,7 @@ public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
       password = "@Password2",
     };
 
-    var res = await Client.PostAsJsonAsync("/login", req, TestContext.Current.CancellationToken);
+    var res = await Client.PostAsJsonAsync(LoginUri, req, TestContext.Current.CancellationToken);
 
     res.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
   }
@@ -53,13 +55,13 @@ public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
       password = "@Password2",
     };
 
-    var res = await Client.PostAsJsonAsync("/login", req, TestContext.Current.CancellationToken);
+    var res = await Client.PostAsJsonAsync(LoginUri, req, TestContext.Current.CancellationToken);
 
     res.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
   }
 
   [Fact]
-  public async Task Login_WhenUserExistsAndPasswordIsCorrect_ItShouldReturn200WithJwtToken()
+  public async Task Login_WhenUserExistsAndPasswordIsCorrect_ItShouldReturn200WithJwtTokenAndSetRefreshCookie()
   {
     await ExecuteDbContextAsync(static async (context, sp) =>
     {
@@ -76,10 +78,9 @@ public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
       password = "@Password1",
     };
 
-    var res = await Client.PostAsJsonAsync("/login", req, TestContext.Current.CancellationToken);
+    var res = await Client.PostAsJsonAsync(LoginUri, req, TestContext.Current.CancellationToken);
 
     res.StatusCode.Should().Be(HttpStatusCode.OK);
-
 
     var content = await res.Content.ReadFromJsonAsync<Login.Response>(TestContext.Current.CancellationToken);
 
@@ -87,7 +88,10 @@ public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
 
     res.Headers.TryGetValues("Set-Cookie", out var cookies).Should().BeTrue();
 
-    cookies.Should().NotBeNull();
+    var hasRefreshTokenCookie = cookies!
+      .Any(static c => c.StartsWith("fiscalos_refresh_cookie=", StringComparison.OrdinalIgnoreCase));
+
+    hasRefreshTokenCookie.Should().BeTrue();
   }
 }
 
