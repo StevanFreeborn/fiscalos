@@ -3,6 +3,7 @@ using FiscalOS.Infra.Authentication;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddValidation();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddInfrastructure();
 
@@ -28,10 +29,10 @@ builder.Services.AddAuthorizationBuilder()
 
 var app = builder.Build();
 
+app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.UseHttpsRedirection();
+app.UseStatusCodePages();
 
 app.MapLoginEndpoint();
 
