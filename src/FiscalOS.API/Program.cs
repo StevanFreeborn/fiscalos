@@ -1,19 +1,41 @@
+using FiscalOS.Infra.Authentication;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddValidation();
-builder.Services.AddOpenApi();
 
 builder.Services.AddInfrastructure();
 
+builder.Services.AddAuthentication(static o =>
+  {
+    o.DefaultAuthenticateScheme = Schemes.Default;
+    o.DefaultChallengeScheme = Schemes.Default;
+  })
+  .AddJwtBearer(Schemes.Default)
+  .AddJwtBearer(Schemes.AllowExpiredTokens);
+
+builder.Services.AddAuthorizationBuilder()
+  .AddPolicy(Schemes.Default, static policy =>
+  {
+    policy.AuthenticationSchemes = [Schemes.Default];
+    policy.RequireAuthenticatedUser();
+  })
+  .AddPolicy(Schemes.AllowExpiredTokens, static policy =>
+  {
+    policy.AuthenticationSchemes = [Schemes.AllowExpiredTokens];
+    policy.RequireAuthenticatedUser();
+  });
+
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-  app.MapOpenApi();
-}
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseHttpsRedirection();
 
 app.MapLoginEndpoint();
+
+app.MapRefreshEndpoint()
+  .RequireAuthorization(Schemes.AllowExpiredTokens);
 
 app.Run();
