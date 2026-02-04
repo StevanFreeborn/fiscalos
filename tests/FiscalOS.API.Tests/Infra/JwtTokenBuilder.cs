@@ -7,7 +7,7 @@ internal sealed class JwtTokenBuilder
   private const int ExpiryInMinutes = 5;
   private static readonly string Secret = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
   private readonly List<Claim> _claims = [];
-  private DateTimeOffset _issuedAt = DateTimeOffset.UtcNow;
+  private DateTimeOffset _expiresAt = DateTimeOffset.UtcNow.AddMinutes(ExpiryInMinutes);
 
   public static JwtOptions DefaultJwtOptions => new()
   {
@@ -28,22 +28,23 @@ internal sealed class JwtTokenBuilder
     return this;
   }
 
-  public JwtTokenBuilder IssuedAt(DateTimeOffset issuedAt)
+  public JwtTokenBuilder WithExpiresAt(DateTimeOffset expiresAt)
   {
-    _issuedAt = issuedAt;
+    _expiresAt = expiresAt;
     return this;
   }
 
   public string Build()
   {
     var tokenHandler = new JwtSecurityTokenHandler();
-    var expiresAt = _issuedAt.AddMinutes(ExpiryInMinutes);
+    var issuedAt = _expiresAt.AddMinutes(-ExpiryInMinutes);
 
     var descriptor = new SecurityTokenDescriptor()
     {
       Subject = new(_claims),
-      IssuedAt = _issuedAt.UtcDateTime,
-      Expires = expiresAt.UtcDateTime,
+      NotBefore = issuedAt.UtcDateTime,
+      IssuedAt = issuedAt.UtcDateTime,
+      Expires = _expiresAt.UtcDateTime,
       Issuer = Issuer,
       Audience = Audience,
       SigningCredentials = new(
@@ -52,7 +53,7 @@ internal sealed class JwtTokenBuilder
       ),
     };
 
-    var securityToken = tokenHandler.CreateJwtSecurityToken(descriptor);
+    var securityToken = tokenHandler.CreateToken(descriptor);
     var jwtToken = tokenHandler.WriteToken(securityToken);
 
     return jwtToken;

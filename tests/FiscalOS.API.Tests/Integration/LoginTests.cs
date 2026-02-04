@@ -16,11 +16,7 @@ public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
 
     var res = await Client.PostAsJsonAsync(LoginUri, req, TestContext.Current.CancellationToken);
 
-    res.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-
-    var problem = await res.Content.ReadFromJsonAsync<ValidationProblemDetails>(TestContext.Current.CancellationToken);
-
-    problem!.Errors.Should().BeEquivalentTo(tc.ExpectedErrors);
+    await res.Should().BeValidationProblemDetails(tc.ExpectedErrors);
   }
 
   [Fact]
@@ -34,7 +30,7 @@ public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
 
     var res = await Client.PostAsJsonAsync(LoginUri, req, TestContext.Current.CancellationToken);
 
-    res.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    await res.Should().BeProblemDetails(HttpStatusCode.Unauthorized);
   }
 
   [Fact]
@@ -57,7 +53,7 @@ public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
 
     var res = await Client.PostAsJsonAsync(LoginUri, req, TestContext.Current.CancellationToken);
 
-    res.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    await res.Should().BeProblemDetails(HttpStatusCode.Unauthorized);
   }
 
   [Fact]
@@ -80,18 +76,8 @@ public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
 
     var res = await Client.PostAsJsonAsync(LoginUri, req, TestContext.Current.CancellationToken);
 
-    res.StatusCode.Should().Be(HttpStatusCode.OK);
-
-    var content = await res.Content.ReadFromJsonAsync<Login.Response>(TestContext.Current.CancellationToken);
-
-    content!.AccessToken.Should().NotBeNullOrEmpty();
-
-    res.Headers.TryGetValues("Set-Cookie", out var cookies).Should().BeTrue();
-
-    var hasRefreshTokenCookie = cookies!
-      .Any(static c => c.StartsWith("fiscalos_refresh_cookie=", StringComparison.OrdinalIgnoreCase));
-
-    hasRefreshTokenCookie.Should().BeTrue();
+    res.Should().HaveSetCookieHeader("fiscalos_refresh_cookie");
+    await res.Should().BeJsonContentOfType<Login.Response>(HttpStatusCode.OK);
   }
 }
 
