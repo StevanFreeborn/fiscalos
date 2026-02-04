@@ -1,6 +1,6 @@
 namespace FiscalOS.Infra.Tests.Assertions;
 
-internal static class JwtTokenAssertionExtensions
+internal static class JwtTokenAssertions
 {
   public static AndConstraint<string> HaveClaim(
     this StringAssertions assertions,

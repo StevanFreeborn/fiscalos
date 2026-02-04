@@ -1,9 +1,13 @@
 global using System.IdentityModel.Tokens.Jwt;
 global using System.Net;
+global using System.Net.Http.Headers;
 global using System.Net.Http.Json;
 global using System.Security.Claims;
 global using System.Security.Cryptography;
 
+global using AwesomeAssertions.Execution;
+global using AwesomeAssertions.Primitives;
+global using FiscalOS.API.Tests.Assertions;
 global using FiscalOS.API.Tests.Infra;
 global using FiscalOS.Core.Authentication;
 global using FiscalOS.Core.Identity;

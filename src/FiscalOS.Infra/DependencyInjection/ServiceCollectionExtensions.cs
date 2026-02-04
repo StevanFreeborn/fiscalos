@@ -4,6 +4,8 @@ public static class ServiceCollectionExtensions
 {
   public static IServiceCollection AddInfrastructure(this IServiceCollection services)
   {
+    services.AddSingleton<IAuthorizationMiddlewareResultHandler, ProblemDetailsAuthResultHandler>();
+
     services.AddSingleton(TimeProvider.System);
 
     services.ConfigureOptions<JwtOptionsSetup>();
