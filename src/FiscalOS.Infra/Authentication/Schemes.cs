@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-
 namespace FiscalOS.Infra.Authentication;
 
 public static class Schemes
