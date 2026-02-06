@@ -1,21 +1,25 @@
 namespace FiscalOS.Infra.Data;
 
-public sealed class AppDbContext(IOptions<AppDbContextOptions> ctxOptions) : DbContext
+public sealed class AppDbContext(
+  IOptions<AppDbContextOptions> ctxOptions,
+  IFileSystem fileSystem
+) : DbContext
 {
   private const string DataSourceKey = "Data Source=";
   private readonly AppDbContextOptions _ctxOptions = ctxOptions.Value;
+  private readonly IFileSystem _fileSystem = fileSystem;
 
   public DbSet<User> Users => Set<User>();
   public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
   protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
   {
-    var dbPath = _ctxOptions.GetFullyQualifiedDatabasePath();
-    var dbDirectory = Path.GetDirectoryName(dbPath) ?? throw new InvalidOperationException("Database directory path could not be determined.");
+    var dbPath = _fileSystem.Path.GetFullPath(_ctxOptions.DatabaseFilePath, AppContext.BaseDirectory);
+    var dbDirectory = _fileSystem.Path.GetDirectoryName(dbPath) ?? throw new InvalidOperationException("Database directory path could not be determined.");
 
-    if (Directory.Exists(dbDirectory) is false)
+    if (_fileSystem.Directory.Exists(dbDirectory) is false)
     {
-      Directory.CreateDirectory(dbDirectory);
+      _fileSystem.Directory.CreateDirectory(dbDirectory);
     }
 
     var connectionString = $"{DataSourceKey}{dbPath}";
