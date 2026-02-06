@@ -1,5 +1,3 @@
-using FiscalOS.Infra.Authentication;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddValidation();
