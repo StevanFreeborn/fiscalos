@@ -1,6 +1,7 @@
 global using FiscalOS.AdminCLI;
 global using FiscalOS.Core.Authentication;
 global using FiscalOS.Core.Identity;
+global using FiscalOS.Core.Security;
 global using FiscalOS.Infra.Data;
 global using FiscalOS.Infra.DependencyInjection;
 

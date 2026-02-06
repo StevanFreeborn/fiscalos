@@ -3,7 +3,9 @@ namespace FiscalOS.AdminCLI;
 internal sealed class App(
   IAnsiConsole console,
   IPasswordHasher passwordHasher,
-  IServiceScopeFactory serviceScopeFactory
+  IServiceScopeFactory serviceScopeFactory,
+  IEncryptor encryptor,
+  IKeyRing keyRing
 ) : IHostedService
 {
   private readonly IAnsiConsole _console = console;
@@ -32,12 +34,18 @@ internal sealed class App(
         );
 
         var hashedPassword = passwordHasher.Hash(password);
-        var user = User.From(username, hashedPassword);
+        var userEncryptionKey = await encryptor.GenerateEncryptedKeyAsync(cancellationToken);
+        var user = User.From(username, hashedPassword, userEncryptionKey);
 
         await appDbContext.Users.AddAsync(user, cancellationToken);
         await appDbContext.SaveChangesAsync(cancellationToken);
 
         _console.MarkupLine($"User [green]{username}[/] created successfully.");
+        break;
+      case Commands.GenerateKey:
+        var key = encryptor.GenerateKey();
+        var keyRingEntry = await keyRing.SaveKeyAsync(key);
+        _console.MarkupLine($"Key generated with id [green]{keyRingEntry.KeyId}[/] generated successfully.");
         break;
       case Commands.Exit:
       default:
