@@ -39,8 +39,10 @@ public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
     await ExecuteDbContextAsync(static async (context, sp) =>
     {
       var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
+      var encryptor = sp.GetRequiredService<IEncryptor>();
 
-      context.Add(User.From("Stevan", passwordHasher.Hash("@Password1")));
+      var userEncryptionKey = await encryptor.GenerateEncryptedKeyAsync(TestContext.Current.CancellationToken);
+      context.Add(User.From("Stevan", passwordHasher.Hash("@Password1"), userEncryptionKey));
 
       await context.SaveChangesAsync(TestContext.Current.CancellationToken);
     });
@@ -62,8 +64,10 @@ public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
     await ExecuteDbContextAsync(static async (context, sp) =>
     {
       var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
+      var encryptor = sp.GetRequiredService<IEncryptor>();
 
-      context.Add(User.From("Stevan", passwordHasher.Hash("@Password1")));
+      var userEncryptionKey = await encryptor.GenerateEncryptedKeyAsync(TestContext.Current.CancellationToken);
+      context.Add(User.From("Stevan", passwordHasher.Hash("@Password1"), userEncryptionKey));
 
       await context.SaveChangesAsync(TestContext.Current.CancellationToken);
     });

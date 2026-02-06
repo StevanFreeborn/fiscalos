@@ -16,6 +16,8 @@ public class TestApi : WebApplicationFactory<Program>
       }));
 
       c.AddSingleton(Options.Create(JwtTokenBuilder.DefaultJwtOptions));
+
+      c.AddSingleton<IKeyRing>(TestKeyRing.From);
     });
   }
 }

@@ -35,9 +35,12 @@ public class RefreshTests(TestApi testApi) : IntegrationTest(testApi)
     {
       var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
       var tokenGenerator = sp.GetRequiredService<ITokenGenerator>();
+      var encryptor = sp.GetRequiredService<IEncryptor>();
 
-      var user1 = User.From("User1", passwordHasher.Hash("@Password1"));
-      var user2 = User.From("User2", passwordHasher.Hash("@Password2"));
+      var user1EncryptionKey = await encryptor.GenerateEncryptedKeyAsync(TestContext.Current.CancellationToken);
+      var user2EncryptionKey = await encryptor.GenerateEncryptedKeyAsync(TestContext.Current.CancellationToken);
+      var user1 = User.From("User1", passwordHasher.Hash("@Password1"), user1EncryptionKey);
+      var user2 = User.From("User2", passwordHasher.Hash("@Password2"), user2EncryptionKey);
       var refreshToken1 = tokenGenerator.GenerateRefreshToken(user2);
       var refreshToken2 = tokenGenerator.GenerateRefreshToken(user2);
       user2.AddRefreshToken(refreshToken1);
@@ -79,8 +82,10 @@ public class RefreshTests(TestApi testApi) : IntegrationTest(testApi)
     {
       var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
       var tokenGenerator = sp.GetRequiredService<ITokenGenerator>();
+      var encryptor = sp.GetRequiredService<IEncryptor>();
 
-      var user = User.From("User1", passwordHasher.Hash("@Password1"));
+      var userEncryptionKey = await encryptor.GenerateEncryptedKeyAsync(TestContext.Current.CancellationToken);
+      var user = User.From("User1", passwordHasher.Hash("@Password1"), userEncryptionKey);
       var refreshToken = tokenGenerator.GenerateRefreshToken(user);
       refreshToken.Revoke();
 
@@ -113,8 +118,10 @@ public class RefreshTests(TestApi testApi) : IntegrationTest(testApi)
       var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
       var tokenGenerator = sp.GetRequiredService<ITokenGenerator>();
       var timeProvider = sp.GetRequiredService<TimeProvider>();
+      var encryptor = sp.GetRequiredService<IEncryptor>();
 
-      var user = User.From("User1", passwordHasher.Hash("@Password1"));
+      var userEncryptionKey = await encryptor.GenerateEncryptedKeyAsync(TestContext.Current.CancellationToken);
+      var user = User.From("User1", passwordHasher.Hash("@Password1"), userEncryptionKey);
       var refreshToken = RefreshToken.From(user.Id, "expiredtoken", timeProvider.GetUtcNow().AddHours(-1));
       user.AddRefreshToken(refreshToken);
 
@@ -147,8 +154,10 @@ public class RefreshTests(TestApi testApi) : IntegrationTest(testApi)
       var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
       var tokenGenerator = sp.GetRequiredService<ITokenGenerator>();
       var timeProvider = sp.GetRequiredService<TimeProvider>();
+      var encryptor = sp.GetRequiredService<IEncryptor>();
 
-      var user = User.From("User1", passwordHasher.Hash("@Password1"));
+      var userEncryptionKey = await encryptor.GenerateEncryptedKeyAsync(TestContext.Current.CancellationToken);
+      var user = User.From("User1", passwordHasher.Hash("@Password1"), userEncryptionKey);
       var refreshToken = tokenGenerator.GenerateRefreshToken(user);
       user.AddRefreshToken(refreshToken);
 

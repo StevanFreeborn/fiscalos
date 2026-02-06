@@ -2,25 +2,22 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <RootNamespace>FiscalOS.API.Tests</RootNamespace>
+    <RootNamespace>FiscalOS.Core.Tests</RootNamespace>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="AwesomeAssertions" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
-    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
-    <PackageReference Include="Moq" />
-    <PackageReference Include="xunit.v3.mtp-v2" />
-  </ItemGroup>
 
   <ItemGroup>
     <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\FiscalOS.API\FiscalOS.API.csproj" />
+    <PackageReference Include="AwesomeAssertions" />
+    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
+    <PackageReference Include="Moq" />
+    <PackageReference Include="xunit.v3.mtp-v2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\FiscalOS.Core\FiscalOS.Core.csproj" />
-    <ProjectReference Include="..\..\src\FiscalOS.Infra\FiscalOS.Infra.csproj" />
   </ItemGroup>
 
 </Project>

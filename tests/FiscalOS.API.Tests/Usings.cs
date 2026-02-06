@@ -7,10 +7,12 @@ global using System.Security.Cryptography;
 
 global using AwesomeAssertions.Execution;
 global using AwesomeAssertions.Primitives;
+
 global using FiscalOS.API.Tests.Assertions;
 global using FiscalOS.API.Tests.Infra;
 global using FiscalOS.Core.Authentication;
 global using FiscalOS.Core.Identity;
+global using FiscalOS.Core.Security;
 global using FiscalOS.Infra.Authentication;
 global using FiscalOS.Infra.Data;
 
