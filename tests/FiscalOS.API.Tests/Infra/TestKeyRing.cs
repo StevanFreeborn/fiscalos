@@ -3,7 +3,7 @@ namespace FiscalOS.API.Tests.Infra;
 
 internal sealed class TestKeyRing : IKeyRing
 {
-  private readonly string _key = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+  private string _key = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
 
   private TestKeyRing()
   {
@@ -26,6 +26,8 @@ internal sealed class TestKeyRing : IKeyRing
 
   public Task<KeyRingEntry> SaveKeyAsync(string key)
   {
-    throw new NotImplementedException();
+    _key = key;
+    var entry = KeyRingEntry.From(Guid.NewGuid().ToString(), key);
+    return Task.FromResult(entry);
   }
 }
