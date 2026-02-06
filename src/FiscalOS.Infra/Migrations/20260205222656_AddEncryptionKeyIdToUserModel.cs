@@ -5,25 +5,25 @@
 namespace FiscalOS.Infra.Migrations
 {
   /// <inheritdoc />
-  public partial class AddRevokedPropertyToRefreshToken : Migration
+  public partial class AddEncryptionKeyIdToUserModel : Migration
   {
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)
     {
-      migrationBuilder.AddColumn<bool>(
-          name: "Revoked",
-          table: "RefreshTokens",
-          type: "INTEGER",
+      migrationBuilder.AddColumn<string>(
+          name: "EncryptionKeyId",
+          table: "Users",
+          type: "TEXT",
           nullable: false,
-          defaultValue: false);
+          defaultValue: "");
     }
 
     /// <inheritdoc />
     protected override void Down(MigrationBuilder migrationBuilder)
     {
       migrationBuilder.DropColumn(
-          name: "Revoked",
-          table: "RefreshTokens");
+          name: "EncryptionKeyId",
+          table: "Users");
     }
   }
 }
