@@ -3,11 +3,6 @@ namespace FiscalOS.Infra.Data;
 public sealed record AppDbContextOptions
 {
   public string DatabaseFilePath { get; init; } = string.Empty;
-
-  public string GetFullyQualifiedDatabasePath()
-  {
-    return Path.GetFullPath(DatabaseFilePath, AppContext.BaseDirectory);
-  }
 }
 
 public sealed record AppDbContextOptionsSetup : IConfigureOptions<AppDbContextOptions>
