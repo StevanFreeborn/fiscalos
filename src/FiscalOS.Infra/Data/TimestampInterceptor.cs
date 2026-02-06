@@ -1,5 +1,3 @@
-using FiscalOS.Core.Data;
-
 namespace FiscalOS.Infra.Data;
 
 internal sealed class TimestampInterceptor : SaveChangesInterceptor
