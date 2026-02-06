@@ -20,9 +20,4 @@
     <ProjectReference Include="..\..\src\FiscalOS.Infra\FiscalOS.Infra.csproj" />
   </ItemGroup>
 
-  <Target Name="GenerateHtmlCoverageReport" AfterTargets="Test">
-    <Exec
-      Command="reportgenerator -reports:./TestResults/Coverage/*.xml -targetdir:./TestResults/Coverage/Report/ -reporttypes:Html_Dark" />
-  </Target>
-
 </Project>

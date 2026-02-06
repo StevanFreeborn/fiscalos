@@ -17,7 +17,8 @@ public class TokenGeneratorTests
   [Fact]
   public void GenerateAccessToken_WhenCalled_ItShouldReturnValidJwtToken()
   {
-    var user = User.From("testuser", "hashedpassword");
+    var encryptedDataKey = EncryptedDataKey.From("keyId", "encryptedKey");
+    var user = User.From("testuser", "hashedpassword", encryptedDataKey);
 
     var madeUp256BitSecret = RandomNumberGenerator.GetBytes(32);
 
@@ -58,7 +59,8 @@ public class TokenGeneratorTests
   [Fact]
   public void GenerateRefreshToken_WhenCalled_ItShouldReturnRefreshTokenWithCorrectProperties()
   {
-    var user = User.From("testuser", "hashedpassword");
+    var encryptedDataKey = EncryptedDataKey.From("keyId", "encryptedKey");
+    var user = User.From("testuser", "hashedpassword", encryptedDataKey);
 
     var now = DateTimeOffset.UtcNow;
 
