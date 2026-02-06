@@ -7,12 +7,17 @@ public static class ServiceCollectionExtensions
     services.AddSingleton<IAuthorizationMiddlewareResultHandler, ProblemDetailsAuthResultHandler>();
 
     services.AddSingleton(TimeProvider.System);
+    services.AddSingleton<IFileSystem, FileSystem>();
 
     services.ConfigureOptions<JwtOptionsSetup>();
     services.ConfigureOptions<JwtBearerOptionsSetup>();
 
-    services.AddSingleton<ITokenGenerator, TokenGenerator>(TokenGenerator.From);
-    services.AddSingleton<IPasswordHasher, PasswordHasher>(PasswordHasher.From);
+    services.AddSingleton<ITokenGenerator>(TokenGenerator.From);
+    services.AddSingleton<IPasswordHasher>(PasswordHasher.From);
+
+    services.ConfigureOptions<FileKeyRingOptionsSetup>();
+    services.AddSingleton<IKeyRing>(FileKeyRing.From);
+    services.AddSingleton<IEncryptor>(Encryptor.From);
 
     services.ConfigureOptions<AppDbContextOptionsSetup>();
     services.AddDbContext<AppDbContext>();
