@@ -1,4 +1,5 @@
 global using System.IdentityModel.Tokens.Jwt;
+global using System.IO.Abstractions;
 global using System.Security.Claims;
 global using System.Security.Cryptography;
 global using System.Text;
@@ -7,10 +8,13 @@ global using System.Text.Json;
 global using FiscalOS.Core.Authentication;
 global using FiscalOS.Core.Data;
 global using FiscalOS.Core.Identity;
+global using FiscalOS.Core.Security;
 global using FiscalOS.Infra.Authentication;
 global using FiscalOS.Infra.Authorization;
 global using FiscalOS.Infra.Data;
+global using FiscalOS.Infra.Security;
 
+global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Authorization.Policy;
 global using Microsoft.AspNetCore.Http;
