@@ -9,12 +9,14 @@ public record Request : IValidatableObject
   {
     if (string.IsNullOrWhiteSpace(Username))
     {
-      yield return new("The Username field is required.", [nameof(Username)]);
+      var fieldName = nameof(Username);
+      yield return new($"The {fieldName} field is required.", [fieldName]);
     }
 
     if (string.IsNullOrWhiteSpace(Password))
     {
-      yield return new("The Password field is required.", [nameof(Password)]);
+      var fieldName = nameof(Password);
+      yield return new($"The {fieldName} field is required.", [fieldName]);
     }
   }
 }
