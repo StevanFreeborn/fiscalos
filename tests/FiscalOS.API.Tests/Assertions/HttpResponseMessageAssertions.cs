@@ -78,17 +78,17 @@ internal sealed class HttpResponseMessageAssertions(
 
   private async Task<T> ValidateAndDeserialize<T>(HttpStatusCode expectedStatusCode) where T : ProblemDetails
   {
-    _chain.ForCondition(Subject.Content.Headers.ContentType?.MediaType is "application/problem+json")
-      .FailWith(
-        "Expected response to be application/problem+json, but found {0}",
-        Subject.Content.Headers.ContentType?.MediaType
-      );
-
     _chain.ForCondition(Subject.StatusCode == expectedStatusCode)
       .FailWith(
         "Expected response status code to be {0}, but found {1}",
         expectedStatusCode,
         Subject.StatusCode
+      );
+
+    _chain.ForCondition(Subject.Content.Headers.ContentType?.MediaType is "application/problem+json")
+      .FailWith(
+        "Expected response to be application/problem+json, but found {0}",
+        Subject.Content.Headers.ContentType?.MediaType
       );
 
     var problem = await Subject.Content.ReadFromJsonAsync<T>();
