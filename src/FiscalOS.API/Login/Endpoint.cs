@@ -11,7 +11,7 @@ internal static class Endpoint
 
   private static async Task<IResult> HandleAsync(
     HttpContext httpContext,
-    [FromBody] LoginRequest loginRequest,
+    [FromBody] Request loginRequest,
     [FromServices] AppDbContext appDbContext,
     [FromServices] IPasswordHasher passwordHasher,
     [FromServices] ITokenGenerator tokenService
