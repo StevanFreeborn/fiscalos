@@ -1,4 +1,3 @@
-
 namespace FiscalOS.API.Login;
 
 public record LoginRequest : IValidatableObject
