@@ -4,6 +4,8 @@ global using System.Net.Http.Headers;
 global using System.Net.Http.Json;
 global using System.Security.Claims;
 global using System.Security.Cryptography;
+global using System.Text;
+global using System.Text.Json;
 
 global using AwesomeAssertions.Execution;
 global using AwesomeAssertions.Primitives;
