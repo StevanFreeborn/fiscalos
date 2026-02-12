@@ -9,7 +9,9 @@ internal static class Endpoint
     return groupBuilder.MapPost(Route, HandleAsync);
   }
 
-  private static async Task<IResult> HandleAsync()
+  private static async Task<IResult> HandleAsync(
+    [FromBody] Request request
+  )
   {
     return Results.Ok();
   }
