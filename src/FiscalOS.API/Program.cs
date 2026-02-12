@@ -37,4 +37,6 @@ app.MapLoginEndpoint();
 app.MapRefreshEndpoint()
   .RequireAuthorization(Schemes.AllowExpiredTokens);
 
+app.MapAccountsEndpoints();
+
 app.Run();

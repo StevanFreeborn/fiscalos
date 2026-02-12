@@ -2,6 +2,8 @@ global using System.ComponentModel.DataAnnotations;
 global using System.Security.Claims;
 global using System.Text.Json.Serialization;
 
+global using FiscalOS.API.Accounts;
+global using FiscalOS.API.Accounts.Connect;
 global using FiscalOS.API.Http;
 global using FiscalOS.API.Login;
 global using FiscalOS.API.Refresh;
