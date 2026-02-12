@@ -1,3 +1,5 @@
+using FiscalOS.API.Tests.Common;
+
 namespace FiscalOS.API.Tests.Integration;
 
 public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
@@ -94,7 +96,7 @@ public class LoginValidationTestCases : TheoryData<LoginValidationTestCase>
       "No username or password",
       string.Empty,
       string.Empty,
-      new Dictionary<string, string[]>()
+      new SerializableDictionary<string, string[]>()
       {
         ["Username"] = ["The Username field is required."],
         ["Password"] = ["The Password field is required."]
@@ -105,7 +107,7 @@ public class LoginValidationTestCases : TheoryData<LoginValidationTestCase>
       "No username",
       string.Empty,
       "@Password1",
-      new Dictionary<string, string[]>()
+      new SerializableDictionary<string, string[]>()
       {
         ["Username"] = ["The Username field is required."],
       }
@@ -115,7 +117,7 @@ public class LoginValidationTestCases : TheoryData<LoginValidationTestCase>
       "No password",
       "Stevan",
       string.Empty,
-      new Dictionary<string, string[]>()
+      new SerializableDictionary<string, string[]>()
       {
         ["Password"] = ["The Password field is required."]
       }
@@ -128,7 +130,7 @@ public record LoginValidationTestCase : IXunitSerializable
   public string Name { get; private set; } = string.Empty;
   public string Username { get; private set; } = string.Empty;
   public string Password { get; private set; } = string.Empty;
-  public Dictionary<string, string[]> ExpectedErrors { get; private set; } = [];
+  public SerializableDictionary<string, string[]> ExpectedErrors { get; private set; } = [];
 
   public override string ToString()
   {
@@ -143,7 +145,7 @@ public record LoginValidationTestCase : IXunitSerializable
     string name,
     string username,
     string password,
-    Dictionary<string, string[]> expectedErrors
+    SerializableDictionary<string, string[]> expectedErrors
   )
   {
     Name = name;
@@ -157,7 +159,7 @@ public record LoginValidationTestCase : IXunitSerializable
     Name = info.GetValue<string>(nameof(Name)) ?? string.Empty;
     Username = info.GetValue<string>(nameof(Username)) ?? string.Empty;
     Password = info.GetValue<string>(nameof(Password)) ?? string.Empty;
-    ExpectedErrors = info.GetValue<Dictionary<string, string[]>>(nameof(ExpectedErrors)) ?? [];
+    ExpectedErrors = info.GetValue<SerializableDictionary<string, string[]>>(nameof(ExpectedErrors)) ?? [];
   }
 
   public void Serialize(IXunitSerializationInfo info)
