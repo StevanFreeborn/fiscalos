@@ -49,15 +49,20 @@ public sealed class AppDbContext(
 
     modelBuilder.Entity<User>(static eb =>
     {
+      eb.Property(static u => u.Username);
+      eb.HasIndex(static u => u.Username).IsUnique();
+
+      eb.Property(static u => u.HashedPassword);
+
       eb.HasMany(static u => u.RefreshTokens)
         .WithOne(static t => t.User)
         .HasForeignKey(static t => t.UserId)
         .OnDelete(DeleteBehavior.Cascade);
 
-      eb.Property(static u => u.Username);
-      eb.HasIndex(static u => u.Username).IsUnique();
-
-      eb.Property(static u => u.HashedPassword);
+      eb.HasMany(static u => u.Institutions)
+        .WithOne()
+        .HasForeignKey(static i => i.UserId)
+        .OnDelete(DeleteBehavior.Cascade);
     });
 
     modelBuilder.Entity<RefreshToken>(static eb =>
@@ -68,6 +73,34 @@ public sealed class AppDbContext(
 
       eb.Property(static t => t.Token);
       eb.HasIndex(static t => t.Token).IsUnique();
+    });
+
+    modelBuilder.Entity<Institution>(static eb =>
+    {
+      eb.Property(static i => i.Name);
+
+      eb.HasOne(static i => i.Metadata)
+        .WithOne()
+        .HasForeignKey<InstitutionMetadata>(static m => m.InstitutionId)
+        .OnDelete(DeleteBehavior.Cascade);
+    });
+
+    modelBuilder.Entity<InstitutionMetadata>(static eb =>
+    {
+      eb.HasDiscriminator(static m => m.Type)
+        .HasValue<Accounts.Plaid.PlaidMetadata>(Accounts.Plaid.PlaidMetadata.TypeValue);
+
+      eb.Property(static m => m.InstitutionId);
+      eb.Property(static m => m.Type);
+    });
+
+    modelBuilder.Entity<Accounts.Plaid.PlaidMetadata>(static eb =>
+    {
+      eb.HasBaseType<InstitutionMetadata>();
+
+      eb.Property(static m => m.PlaidId);
+      eb.Property(static m => m.PlaidName);
+      eb.Property(static m => m.EncryptedAccessToken);
     });
   }
 }
