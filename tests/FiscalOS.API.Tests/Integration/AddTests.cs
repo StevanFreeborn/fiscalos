@@ -222,8 +222,8 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
 
     var json = JsonSerializer.Serialize(new
     {
-      plaidInstitutionId = ((PlaidMetadata)institution.Metadata).PlaidId,
-      plaidAccountId = ((PlaidAccountMetadata)account.Metadata).PlaidId,
+      plaidInstitutionId = ((PlaidMetadata)institution.Metadata!).PlaidId,
+      plaidAccountId = ((PlaidAccountMetadata)account.Metadata!).PlaidId,
       plaidAccountName = ((PlaidAccountMetadata)account.Metadata).PlaidName,
     });
     using var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -270,7 +270,7 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
 
     var json = JsonSerializer.Serialize(new
     {
-      plaidInstitutionId = ((PlaidMetadata)institution.Metadata).PlaidId,
+      plaidInstitutionId = ((PlaidMetadata)institution.Metadata!).PlaidId,
       plaidAccountId = newAccountId,
       plaidAccountName = newAccountName,
     });

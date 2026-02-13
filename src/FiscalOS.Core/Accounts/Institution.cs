@@ -4,7 +4,7 @@ public sealed class Institution : Entity
 {
   public Guid UserId { get; init; }
   public string Name { get; init; } = string.Empty;
-  public InstitutionMetadata Metadata { get; init; } = null!;
+  public InstitutionMetadata? Metadata { get; init; }
 
   private Institution()
   {

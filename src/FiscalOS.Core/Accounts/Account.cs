@@ -4,9 +4,9 @@ public sealed class Account : Entity
 {
   public Guid UserId { get; init; }
   public Guid InstitutionId { get; init; }
-  public Institution Institution { get; init; } = null!;
+  public Institution? Institution { get; init; }
   public string Name { get; init; } = string.Empty;
-  public AccountMetadata Metadata { get; init; } = null!;
+  public AccountMetadata? Metadata { get; init; }
 
   public static Account From(Guid institutionId, string name, AccountMetadata accountMetadata)
   {

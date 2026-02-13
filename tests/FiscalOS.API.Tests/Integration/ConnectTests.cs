@@ -136,7 +136,7 @@ public class ConnectTests(TestApi testApi) : IntegrationTest(testApi)
     var json = JsonSerializer.Serialize(new
     {
       publicToken = "token",
-      plaidInstitutionId = ((PlaidMetadata)institution.Metadata).PlaidId,
+      plaidInstitutionId = ((PlaidMetadata)institution.Metadata!).PlaidId,
     });
     using var content = new StringContent(json, Encoding.UTF8, "application/json");
     using var request = new HttpRequestMessage(HttpMethod.Post, ConnectUri)
