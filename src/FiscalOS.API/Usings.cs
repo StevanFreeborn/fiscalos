@@ -8,6 +8,7 @@ global using FiscalOS.API.Http;
 global using FiscalOS.API.Login;
 global using FiscalOS.API.Refresh;
 global using FiscalOS.Core.Authentication;
+global using FiscalOS.Core.Security;
 global using FiscalOS.Infra.Accounts.Plaid;
 global using FiscalOS.Infra.Authentication;
 global using FiscalOS.Infra.Data;

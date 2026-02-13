@@ -15,8 +15,12 @@ global using FiscalOS.API.Tests.Infra;
 global using FiscalOS.Core.Authentication;
 global using FiscalOS.Core.Identity;
 global using FiscalOS.Core.Security;
+global using FiscalOS.Infra.Accounts.Plaid;
 global using FiscalOS.Infra.Authentication;
 global using FiscalOS.Infra.Data;
+
+global using Going.Plaid;
+global using Going.Plaid.Entity;
 
 global using Microsoft.AspNetCore.Hosting;
 global using Microsoft.AspNetCore.Mvc;

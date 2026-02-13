@@ -1,3 +1,5 @@
+using FiscalOS.Core.Accounts;
+
 namespace FiscalOS.API.Accounts.Connect;
 
 internal static class Endpoint
@@ -12,7 +14,10 @@ internal static class Endpoint
   private static async Task<IResult> HandleAsync(
     HttpContext httpContext,
     [FromBody] Request request,
-    [FromServices] AppDbContext appDbContext
+    [FromServices] AppDbContext appDbContext,
+    [FromServices] PlaidService plaidService,
+    [FromServices] IEncryptor encryptor,
+    CancellationToken ct
   )
   {
     var userId = httpContext.GetUserId();
@@ -25,7 +30,7 @@ internal static class Endpoint
         )
       )
       .ThenInclude(i => i.Metadata)
-      .SingleOrDefaultAsync(u => u.Id == userId);
+      .SingleOrDefaultAsync(u => u.Id == userId, ct);
 
     if (user is null)
     {
@@ -41,9 +46,21 @@ internal static class Endpoint
       return Results.Problem(
         statusCode: StatusCodes.Status409Conflict,
         title: "Institution already connected",
-        detail: "The user has already connected an institution with the provided Plaid Institution ID."
+        detail: "The user has already connected an institution with the provided Plaid Institution Id."
       );
     }
+
+    var (itemId, accessToken) = await plaidService.ExchangeTokenAsync(request.PublicToken);
+    var item = await plaidService.GetItemAsync(accessToken);
+
+    var encryptedAccessToken = await encryptor.EncryptAsyncFor(user, accessToken, ct);
+
+    var plaidMetadata = PlaidMetadata.From(item.InstitutionId, item.InstitutionName, encryptedAccessToken);
+    var institution = Institution.From(item.InstitutionName, plaidMetadata);
+
+    user.AddInstitution(institution);
+
+    await appDbContext.SaveChangesAsync(ct);
 
     return Results.Ok();
   }
