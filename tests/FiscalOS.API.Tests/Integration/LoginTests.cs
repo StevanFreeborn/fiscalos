@@ -38,16 +38,16 @@ public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
   [Fact]
   public async Task Login_WhenUserExistsButPasswordIsIncorrect_ItShouldReturn401WithProblemDetails()
   {
-    await ExecuteDbContextAsync(static async (context, sp) =>
+    await ExecuteAsync(static async (context, ct, sp) =>
     {
       var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
       var encryptor = sp.GetRequiredService<IEncryptor>();
 
-      var userEncryptionKey = await encryptor.GenerateEncryptedKeyAsync(TestContext.Current.CancellationToken);
+      var userEncryptionKey = await encryptor.GenerateEncryptedKeyAsync(ct);
       context.Add(User.From("Stevan", passwordHasher.Hash("@Password1"), userEncryptionKey));
 
-      await context.SaveChangesAsync(TestContext.Current.CancellationToken);
-    });
+      await context.SaveChangesAsync(ct);
+    }, TestContext.Current.CancellationToken);
 
     var req = new
     {
@@ -63,16 +63,16 @@ public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
   [Fact]
   public async Task Login_WhenUserExistsAndPasswordIsCorrect_ItShouldReturn200WithJwtTokenAndSetRefreshCookie()
   {
-    await ExecuteDbContextAsync(static async (context, sp) =>
+    await ExecuteAsync(static async (context, ct, sp) =>
     {
       var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
       var encryptor = sp.GetRequiredService<IEncryptor>();
 
-      var userEncryptionKey = await encryptor.GenerateEncryptedKeyAsync(TestContext.Current.CancellationToken);
+      var userEncryptionKey = await encryptor.GenerateEncryptedKeyAsync(ct);
       context.Add(User.From("Stevan", passwordHasher.Hash("@Password1"), userEncryptionKey));
 
-      await context.SaveChangesAsync(TestContext.Current.CancellationToken);
-    });
+      await context.SaveChangesAsync(ct);
+    }, TestContext.Current.CancellationToken);
 
     var req = new
     {

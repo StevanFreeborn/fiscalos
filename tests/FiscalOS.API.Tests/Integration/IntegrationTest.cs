@@ -6,48 +6,47 @@ public abstract class IntegrationTest(TestApi testApi) : IClassFixture<TestApi>,
 
   public async ValueTask InitializeAsync()
   {
-    await ExecuteDbContextAsync(static async context =>
+    await ExecuteAsync(static async (context, ct) =>
     {
-      await context.Database.EnsureCreatedAsync();
-    });
+      await context.Database.EnsureCreatedAsync(ct);
+    }, TestContext.Current.CancellationToken);
   }
 
-  protected async Task ExecuteDbContextAsync(Func<DbContext, Task> action)
+  protected async Task ExecuteAsync(Func<DbContext, CancellationToken, Task> action, CancellationToken ct)
   {
     await using var scope = testApi.Services.CreateAsyncScope();
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await action(context);
+    await action(context, ct);
   }
 
-  protected async Task ExecuteDbContextAsync(Func<DbContext, IServiceProvider, Task> action)
+  protected async Task ExecuteAsync(Func<DbContext, CancellationToken, IServiceProvider, Task> action, CancellationToken ct)
   {
     await using var scope = testApi.Services.CreateAsyncScope();
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await action(context, scope.ServiceProvider);
+    await action(context, ct, scope.ServiceProvider);
   }
 
-  protected async Task<T> ExecuteDbContextAsync<T>(Func<DbContext, Task<T>> action)
+  protected async Task<T> ExecuteAsync<T>(Func<DbContext, CancellationToken, Task<T>> action, CancellationToken ct)
   {
     await using var scope = testApi.Services.CreateAsyncScope();
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    return await action(context);
+    return await action(context, ct);
   }
 
-  protected async Task<T> ExecuteDbContextAsync<T>(Func<DbContext, IServiceProvider, Task<T>> action)
+  protected async Task<T> ExecuteAsync<T>(Func<DbContext, CancellationToken, IServiceProvider, Task<T>> action, CancellationToken ct)
   {
     await using var scope = testApi.Services.CreateAsyncScope();
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    return await action(context, scope.ServiceProvider);
+    return await action(context, ct, scope.ServiceProvider);
   }
 
   public async ValueTask DisposeAsync()
   {
-    await ExecuteDbContextAsync(static async context =>
+    await ExecuteAsync(static async (context, ct) =>
     {
-      await context.Database.EnsureDeletedAsync();
-    });
+      await context.Database.EnsureDeletedAsync(ct);
+    }, TestContext.Current.CancellationToken);
 
     GC.SuppressFinalize(this);
   }
-
 }
