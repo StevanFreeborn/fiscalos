@@ -13,6 +13,9 @@ public sealed class User : Entity
   private readonly List<Institution> _institutions = [];
   public IEnumerable<Institution> Institutions => _institutions;
 
+  private readonly List<Account> _accounts = [];
+  public IEnumerable<Account> Accounts => _accounts;
+
   private User()
   {
   }
@@ -49,5 +52,12 @@ public sealed class User : Entity
     ArgumentNullException.ThrowIfNull(institution, nameof(institution));
 
     _institutions.Add(institution);
+  }
+
+  public void AddAccount(Account account)
+  {
+    ArgumentNullException.ThrowIfNull(account, nameof(account));
+
+    _accounts.Add(account);
   }
 }
