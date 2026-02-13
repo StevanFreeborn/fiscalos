@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Configuration;
+
 namespace FiscalOS.API.Tests.Infra;
 
 public class TestApi : WebApplicationFactory<Program>
@@ -7,6 +9,12 @@ public class TestApi : WebApplicationFactory<Program>
     base.ConfigureWebHost(builder);
 
     builder.ConfigureLogging(static c => c.ClearProviders());
+
+    builder.ConfigureAppConfiguration(static c =>
+    {
+      var testConfigPath = Path.Combine(AppContext.BaseDirectory, "appsettings.Test.json");
+      c.AddJsonFile(testConfigPath, optional: false);
+    });
 
     builder.ConfigureTestServices(static c =>
     {
