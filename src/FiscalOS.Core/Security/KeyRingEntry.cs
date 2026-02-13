@@ -13,8 +13,8 @@ public sealed record KeyRingEntry
 
   public static KeyRingEntry From(string keyId, string key)
   {
-    ArgumentNullException.ThrowIfNull(keyId);
-    ArgumentNullException.ThrowIfNull(key);
+    ArgumentNullException.ThrowIfNull(keyId, nameof(keyId));
+    ArgumentNullException.ThrowIfNull(key, nameof(key));
 
     return new(keyId, key);
   }

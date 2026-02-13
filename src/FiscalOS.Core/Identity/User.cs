@@ -24,9 +24,9 @@ public sealed class User : Entity
 
   public static User From(string username, string hashedPassword, EncryptedDataKey encryptedDataKey)
   {
-    ArgumentNullException.ThrowIfNull(username);
-    ArgumentNullException.ThrowIfNull(hashedPassword);
-    ArgumentNullException.ThrowIfNull(encryptedDataKey);
+    ArgumentNullException.ThrowIfNull(username, nameof(username));
+    ArgumentNullException.ThrowIfNull(hashedPassword, nameof(hashedPassword));
+    ArgumentNullException.ThrowIfNull(encryptedDataKey, nameof(encryptedDataKey));
 
     return new()
     {
@@ -39,14 +39,14 @@ public sealed class User : Entity
 
   public void AddRefreshToken(RefreshToken refreshToken)
   {
-    ArgumentNullException.ThrowIfNull(refreshToken);
+    ArgumentNullException.ThrowIfNull(refreshToken, nameof(refreshToken));
 
     _refreshTokens.Add(refreshToken);
   }
 
   public void AddInstitution(Institution institution)
   {
-    ArgumentNullException.ThrowIfNull(institution);
+    ArgumentNullException.ThrowIfNull(institution, nameof(institution));
 
     _institutions.Add(institution);
   }
