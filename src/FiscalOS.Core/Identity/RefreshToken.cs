@@ -24,7 +24,7 @@ public sealed class RefreshToken : Entity
 
   public static RefreshToken From(User user, string token, DateTimeOffset expiresAt)
   {
-    ArgumentNullException.ThrowIfNull(user);
+    ArgumentNullException.ThrowIfNull(user, nameof(user));
 
     return new()
     {

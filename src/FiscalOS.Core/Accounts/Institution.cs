@@ -10,10 +10,10 @@ public sealed class Institution : Entity
   {
   }
 
-  public static Institution From(string name, InstitutionMetadata metadata)
+  public static Institution From(string? name, InstitutionMetadata metadata)
   {
-    ArgumentNullException.ThrowIfNull(name);
-    ArgumentNullException.ThrowIfNull(metadata);
+    ArgumentNullException.ThrowIfNull(name, nameof(name));
+    ArgumentNullException.ThrowIfNull(metadata, nameof(metadata));
 
     return new Institution()
     {

@@ -13,8 +13,8 @@ public sealed record EncryptedDataKey
 
   public static EncryptedDataKey From(string keyIdUsed, string encryptedKey)
   {
-    ArgumentNullException.ThrowIfNull(keyIdUsed);
-    ArgumentNullException.ThrowIfNull(encryptedKey);
+    ArgumentNullException.ThrowIfNull(keyIdUsed, nameof(keyIdUsed));
+    ArgumentNullException.ThrowIfNull(encryptedKey, nameof(encryptedKey));
 
     return new(keyIdUsed, encryptedKey);
   }
