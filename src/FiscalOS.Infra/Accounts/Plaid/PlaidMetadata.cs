@@ -2,7 +2,7 @@ namespace FiscalOS.Infra.Accounts.Plaid;
 
 public sealed class PlaidMetadata : InstitutionMetadata
 {
-  public const string TypeValue = "Plaid";
+  public const string TypeValue = Providers.Plaid;
   public string PlaidId { get; init; } = string.Empty;
   public string PlaidName { get; init; } = string.Empty;
   public string EncryptedAccessToken { get; init; } = string.Empty;

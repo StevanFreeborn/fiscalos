@@ -1,3 +1,4 @@
+using Account = FiscalOS.Core.Accounts.Account;
 using Institution = FiscalOS.Core.Accounts.Institution;
 
 namespace FiscalOS.Infra.Data;
@@ -65,6 +66,11 @@ public sealed class AppDbContext(
         .WithOne()
         .HasForeignKey(static i => i.UserId)
         .OnDelete(DeleteBehavior.Cascade);
+
+      eb.HasMany(static u => u.Accounts)
+        .WithOne()
+        .HasForeignKey(static a => a.UserId)
+        .OnDelete(DeleteBehavior.Cascade);
     });
 
     modelBuilder.Entity<RefreshToken>(static eb =>
@@ -103,6 +109,38 @@ public sealed class AppDbContext(
       eb.Property(static m => m.PlaidId);
       eb.Property(static m => m.PlaidName);
       eb.Property(static m => m.EncryptedAccessToken);
+    });
+
+    modelBuilder.Entity<Account>(static eb =>
+    {
+      eb.Property(static a => a.Name);
+
+      eb.HasOne(static a => a.Institution)
+        .WithMany()
+        .HasForeignKey(static a => a.InstituionId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+      eb.HasOne(static a => a.Metadata)
+        .WithOne()
+        .HasForeignKey<AccountMetadata>(static m => m.AccountId)
+        .OnDelete(DeleteBehavior.Cascade);
+    });
+
+    modelBuilder.Entity<AccountMetadata>(static eb =>
+    {
+      eb.HasDiscriminator(static m => m.Type)
+        .HasValue<PlaidAccountMetadata>(PlaidAccountMetadata.TypeValue);
+
+      eb.Property(static m => m.AccountId);
+      eb.Property(static m => m.Type);
+    });
+
+    modelBuilder.Entity<PlaidAccountMetadata>(static eb =>
+    {
+      eb.HasBaseType<AccountMetadata>();
+
+      eb.Property(static m => m.PlaidId);
+      eb.Property(static m => m.PlaidName);
     });
   }
 }
