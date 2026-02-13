@@ -167,13 +167,13 @@ public class ConnectTests(TestApi testApi) : IntegrationTest(testApi)
       await context.AddAsync(user, ct);
       await context.SaveChangesAsync(ct);
 
-      var publicToken = await plaidClient.SandboxPublicTokenCreateAsync(new()
+      var publicTokenResponse = await plaidClient.SandboxPublicTokenCreateAsync(new()
       {
         InstitutionId = plaidInstitutionId,
         InitialProducts = [Products.Transactions],
       });
 
-      return (user, publicToken.PublicToken);
+      return (user, publicTokenResponse.PublicToken);
     }, TestContext.Current.CancellationToken);
 
     var jwt = JwtTokenBuilder.New()
