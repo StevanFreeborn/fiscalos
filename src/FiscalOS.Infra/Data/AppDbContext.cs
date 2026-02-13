@@ -117,7 +117,7 @@ public sealed class AppDbContext(
 
       eb.HasOne(static a => a.Institution)
         .WithMany()
-        .HasForeignKey(static a => a.InstituionId)
+        .HasForeignKey(static a => a.InstitutionId)
         .OnDelete(DeleteBehavior.Cascade);
 
       eb.HasOne(static a => a.Metadata)
