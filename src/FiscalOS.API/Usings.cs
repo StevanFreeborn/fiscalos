@@ -3,6 +3,7 @@ global using System.Security.Claims;
 global using System.Text.Json.Serialization;
 
 global using FiscalOS.API.Accounts;
+global using FiscalOS.API.Accounts.Add;
 global using FiscalOS.API.Accounts.Connect;
 global using FiscalOS.API.Http;
 global using FiscalOS.API.Login;

@@ -6,8 +6,10 @@ internal static class AccountsExtensions
 
   public static RouteGroupBuilder MapAccountsEndpoints(this WebApplication app)
   {
-    var accountsGroup = app.MapGroup(RouteGroupPrefix).RequireAuthorization();
+    var accountsGroup = app.MapGroup(RouteGroupPrefix)
+      .RequireAuthorization();
 
+    accountsGroup.MapAddEndpoint();
     accountsGroup.MapConnectEndpoint();
 
     return accountsGroup;
