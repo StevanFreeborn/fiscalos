@@ -34,20 +34,12 @@ internal static class Endpoint
 
     if (user is null)
     {
-      return Results.Problem(
-        statusCode: StatusCodes.Status401Unauthorized,
-        title: "Unauthorized",
-        detail: "You are not authorized to connect an institution. Please log in and try again."
-      );
+      return Results.Unauthorized();
     }
 
     if (user.Institutions.Any())
     {
-      return Results.Problem(
-        statusCode: StatusCodes.Status409Conflict,
-        title: "Institution already connected",
-        detail: "The user has already connected an institution with the provided Plaid Institution Id."
-      );
+      return Results.Conflict();
     }
 
     var (itemId, accessToken) = await plaidService.ExchangeTokenAsync(request.PublicToken);
