@@ -1,3 +1,5 @@
+using Institution = FiscalOS.Core.Accounts.Institution;
+
 namespace FiscalOS.Infra.Data;
 
 public sealed class AppDbContext(
@@ -88,13 +90,13 @@ public sealed class AppDbContext(
     modelBuilder.Entity<InstitutionMetadata>(static eb =>
     {
       eb.HasDiscriminator(static m => m.Type)
-        .HasValue<Accounts.Plaid.PlaidMetadata>(Accounts.Plaid.PlaidMetadata.TypeValue);
+        .HasValue<PlaidMetadata>(PlaidMetadata.TypeValue);
 
       eb.Property(static m => m.InstitutionId);
       eb.Property(static m => m.Type);
     });
 
-    modelBuilder.Entity<Accounts.Plaid.PlaidMetadata>(static eb =>
+    modelBuilder.Entity<PlaidMetadata>(static eb =>
     {
       eb.HasBaseType<InstitutionMetadata>();
 
