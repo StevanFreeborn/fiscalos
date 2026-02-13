@@ -12,11 +12,15 @@ public sealed class PlaidMetadata : InstitutionMetadata
   }
 
   public static PlaidMetadata From(
-    string plaidId,
-    string plaidName,
+    string? plaidId,
+    string? plaidName,
     string encryptedAccessToken
   )
   {
+    ArgumentNullException.ThrowIfNull(plaidId, nameof(plaidId));
+    ArgumentNullException.ThrowIfNull(plaidName, nameof(plaidName));
+    ArgumentNullException.ThrowIfNull(encryptedAccessToken, nameof(encryptedAccessToken));
+
     return new PlaidMetadata
     {
       PlaidId = plaidId,
