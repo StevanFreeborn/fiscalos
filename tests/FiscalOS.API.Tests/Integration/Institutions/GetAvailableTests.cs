@@ -6,8 +6,10 @@ namespace FiscalOS.API.Tests.Integration.Institutions;
 
 public class GetAvailableTests(TestApi testApi) : IntegrationTest(testApi)
 {
-  private static Uri GetAvailableUri(Guid id) => new($"/institutions/{id}/available", UriKind.Relative);
-
+  private static Uri GetAvailableUri(Guid id)
+  {
+    return new($"/institutions/{id}/available", UriKind.Relative);
+  }
   [Fact]
   public async Task GetAvailable_WhenCalledAndUnauthenticated_ItShouldReturn401WithProblemDetails()
   {
@@ -46,7 +48,6 @@ public class GetAvailableTests(TestApi testApi) : IntegrationTest(testApi)
 
       context.Add(user);
       await context.SaveChangesAsync(ct);
-      
       return user;
     }, TestContext.Current.CancellationToken);
 
@@ -89,7 +90,6 @@ public class GetAvailableTests(TestApi testApi) : IntegrationTest(testApi)
       {
         AccessToken = exchangeTokenResponse.AccessToken,
       });
-      
       var encryptedAccessToken = await encryptor.EncryptAsyncFor(user, exchangeTokenResponse.AccessToken, ct);
       var institutionMetadata = PlaidMetadata.From(institutionId, "Some Bank", encryptedAccessToken);
       var institution = Institution.From("Some Bank", institutionMetadata);
@@ -99,7 +99,6 @@ public class GetAvailableTests(TestApi testApi) : IntegrationTest(testApi)
       context.Add(user);
       context.Add(institution);
       await context.SaveChangesAsync(ct);
-      
       return (user, institution, accountsResponse.Accounts);
     }, TestContext.Current.CancellationToken);
 
