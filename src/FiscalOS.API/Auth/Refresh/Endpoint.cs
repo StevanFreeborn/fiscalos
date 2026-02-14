@@ -1,12 +1,12 @@
-namespace FiscalOS.API.Refresh;
+namespace FiscalOS.API.Auth.Refresh;
 
 internal static class Endpoint
 {
   private const string Route = "/refresh";
 
-  public static RouteHandlerBuilder MapRefreshEndpoint(this WebApplication app)
+  public static RouteHandlerBuilder MapRefreshEndpoint(this RouteGroupBuilder groupBuilder)
   {
-    return app.MapPost(Route, HandleAsync);
+    return groupBuilder.MapPost(Route, HandleAsync);
   }
 
   private static async Task<IResult> HandleAsync(

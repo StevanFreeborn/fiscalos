@@ -1,4 +1,4 @@
-namespace FiscalOS.API.Refresh;
+namespace FiscalOS.API.Auth.Login;
 
 internal sealed record Response
 {

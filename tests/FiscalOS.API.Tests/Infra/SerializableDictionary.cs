@@ -1,4 +1,4 @@
-namespace FiscalOS.API.Tests.Common;
+namespace FiscalOS.API.Tests.Infra;
 
 public interface ISerializableDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IXunitSerializable
 {

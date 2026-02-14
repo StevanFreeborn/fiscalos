@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Configuration;
-
 namespace FiscalOS.API.Tests.Infra;
 
 public class TestApi : WebApplicationFactory<Program>

@@ -32,11 +32,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseStatusCodePages();
 
-app.MapLoginEndpoint();
-
-app.MapRefreshEndpoint()
-  .RequireAuthorization(Schemes.AllowExpiredTokens);
-
+app.MapAuthEndpoints();
 app.MapAccountsEndpoints();
+app.MapInstitutionsEndpoints();
 
 app.Run();

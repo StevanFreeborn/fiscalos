@@ -1,8 +1,8 @@
-namespace FiscalOS.API.Tests.Integration;
+namespace FiscalOS.API.Tests.Integration.Auth;
 
 public class RefreshTests(TestApi testApi) : IntegrationTest(testApi)
 {
-  private static readonly Uri RefreshUri = new("/refresh", UriKind.Relative);
+  private static readonly Uri RefreshUri = new("/auth/refresh", UriKind.Relative);
 
   [Fact]
   public async Task Refresh_WhenCalledWithNoAccessToken_ItShouldReturn401WithProblemDetails()
@@ -15,13 +15,11 @@ public class RefreshTests(TestApi testApi) : IntegrationTest(testApi)
   [Fact]
   public async Task Refresh_WhenCalledWithNonExistentRefreshToken_ItShouldReturn400WithProblemDetails()
   {
-    var jwt = JwtTokenBuilder.New()
-      .WithClaim(JwtRegisteredClaimNames.Sub, Guid.NewGuid().ToString())
+    using var request = HttpRequestBuilder.New()
+      .Post(RefreshUri)
+      .WithUserId(Guid.NewGuid())
+      .WithRefreshCookie("nonexistenttoken")
       .Build();
-
-    using var request = new HttpRequestMessage(HttpMethod.Post, RefreshUri);
-    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
-    request.Headers.Add("Cookie", "fiscalos_refresh_cookie=nonexistenttoken");
 
     var response = await Client.SendAsync(request, TestContext.Current.CancellationToken);
 
@@ -53,13 +51,11 @@ public class RefreshTests(TestApi testApi) : IntegrationTest(testApi)
       return (new User[] { user1, user2 }, refreshToken1);
     }, TestContext.Current.CancellationToken);
 
-    var jwt = JwtTokenBuilder.New()
-      .WithClaim(JwtRegisteredClaimNames.Sub, users[0].Id.ToString())
+    using var request = HttpRequestBuilder.New()
+      .Post(RefreshUri)
+      .WithUserId(users[0].Id)
+      .WithRefreshCookie(refreshToken.Token)
       .Build();
-
-    using var request = new HttpRequestMessage(HttpMethod.Post, RefreshUri);
-    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
-    request.Headers.Add("Cookie", $"fiscalos_refresh_cookie={refreshToken.Token}");
 
     var response = await Client.SendAsync(request, TestContext.Current.CancellationToken);
 
@@ -98,13 +94,11 @@ public class RefreshTests(TestApi testApi) : IntegrationTest(testApi)
       return (user, refreshToken);
     }, TestContext.Current.CancellationToken);
 
-    var jwt = JwtTokenBuilder.New()
-      .WithClaim(JwtRegisteredClaimNames.Sub, user.Id.ToString())
+    using var request = HttpRequestBuilder.New()
+      .Post(RefreshUri)
+      .WithUserId(user.Id)
+      .WithRefreshCookie(refreshToken.Token)
       .Build();
-
-    using var request = new HttpRequestMessage(HttpMethod.Post, RefreshUri);
-    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
-    request.Headers.Add("Cookie", $"fiscalos_refresh_cookie={refreshToken.Token}");
 
     var response = await Client.SendAsync(request, TestContext.Current.CancellationToken);
 
@@ -132,13 +126,11 @@ public class RefreshTests(TestApi testApi) : IntegrationTest(testApi)
       return (user, refreshToken);
     }, TestContext.Current.CancellationToken);
 
-    var jwt = JwtTokenBuilder.New()
-      .WithClaim(JwtRegisteredClaimNames.Sub, user.Id.ToString())
+    using var request = HttpRequestBuilder.New()
+      .Post(RefreshUri)
+      .WithUserId(user.Id)
+      .WithRefreshCookie(refreshToken.Token)
       .Build();
-
-    using var request = new HttpRequestMessage(HttpMethod.Post, RefreshUri);
-    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
-    request.Headers.Add("Cookie", $"fiscalos_refresh_cookie={refreshToken.Token}");
 
     var response = await Client.SendAsync(request, TestContext.Current.CancellationToken);
 
@@ -168,19 +160,19 @@ public class RefreshTests(TestApi testApi) : IntegrationTest(testApi)
       return (user, refreshToken);
     }, TestContext.Current.CancellationToken);
 
-    var jwt = JwtTokenBuilder.New()
-      .WithClaim(JwtRegisteredClaimNames.Sub, user.Id.ToString())
-      .WithExpiresAt(DateTime.UtcNow.AddMinutes(accessTokenExpiresAtOffset))
+    using var request = HttpRequestBuilder.New()
+      .Post(RefreshUri)
+      .WithBearerToken(JwtTokenBuilder.New()
+        .WithClaim(JwtRegisteredClaimNames.Sub, user.Id.ToString())
+        .WithExpiresAt(DateTime.UtcNow.AddMinutes(accessTokenExpiresAtOffset))
+        .Build())
+      .WithRefreshCookie(refreshToken.Token)
       .Build();
-
-    using var request = new HttpRequestMessage(HttpMethod.Post, RefreshUri);
-    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
-    request.Headers.Add("Cookie", $"fiscalos_refresh_cookie={refreshToken.Token}");
 
     var response = await Client.SendAsync(request, TestContext.Current.CancellationToken);
 
     response.Should().HaveSetCookieHeader("fiscalos_refresh_cookie");
-    await response.Should().BeJsonContentOfType<Refresh.Response>(HttpStatusCode.OK);
+    await response.Should().BeJsonContentOfType<API.Auth.Refresh.Response>(HttpStatusCode.OK);
 
     var oldRefreshTokenInDb = await ExecuteAsync(
       async (context, ct) => await context.Set<RefreshToken>()
