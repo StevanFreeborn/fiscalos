@@ -8,6 +8,9 @@ public sealed class Account : Entity
   public string Name { get; init; } = string.Empty;
   public AccountMetadata? Metadata { get; init; }
 
+  private readonly List<Balance> _balances = [];
+  public IEnumerable<Balance> Balances => _balances;
+
   public static Account From(Guid institutionId, string name, AccountMetadata accountMetadata)
   {
     return new()
@@ -16,5 +19,12 @@ public sealed class Account : Entity
       Name = name,
       Metadata = accountMetadata,
     };
+  }
+
+  public void AddBalance(Balance balance)
+  {
+    ArgumentNullException.ThrowIfNull(balance);
+
+    _balances.Add(balance);
   }
 }
