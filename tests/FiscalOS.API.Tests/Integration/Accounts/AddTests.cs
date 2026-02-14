@@ -16,7 +16,7 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
   }
 
   [Fact]
-  public async Task Add_WhenCalledWithoutInstitutionIdOrAccountIdOrAccountName_ItShouldReturn400WithProblemDetails()
+  public async Task Add_WhenCalledWithoutRequiredInformation_ItShouldReturn400WithProblemDetails()
   {
     using var request = HttpRequestBuilder.New()
       .Post(AddUri)
@@ -31,6 +31,7 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
       ["PlaidInstitutionId"] = ["The PlaidInstitutionId field is required."],
       ["PlaidAccountId"] = ["The PlaidAccountId field is required."],
       ["PlaidAccountName"] = ["The PlaidAccountName field is required."],
+      ["AccountCurrencyCode"] = ["The AccountCurrencyCode field is required."],
     });
   }
 
@@ -44,6 +45,7 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
       {
         plaidAccountId = "accountId",
         plaidAccountName = "Some Account",
+        accountCurrencyCode = "USD",
       })
       .Build();
 
@@ -65,6 +67,7 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
       {
         plaidInstitutionId = "institutionId",
         plaidAccountName = "Some Account",
+        accountCurrencyCode = "USD",
       })
       .Build();
 
@@ -86,6 +89,7 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
       {
         plaidInstitutionId = "institutionId",
         plaidAccountId = "accountId",
+        accountCurrencyCode = "USD",
       })
       .Build();
 
@@ -108,6 +112,7 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
         plaidInstitutionId = "id",
         plaidAccountId = "id",
         plaidAccountName = "Some Account",
+        accountCurrencyCode = "USD",
       })
       .Build();
 
@@ -141,6 +146,7 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
         plaidInstitutionId = "id",
         plaidAccountId = "id",
         plaidAccountName = "Some Account",
+        accountCurrencyCode = "USD",
       })
       .Build();
 
@@ -189,6 +195,7 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
         plaidInstitutionId = ((PlaidMetadata)institution.Metadata!).PlaidId,
         plaidAccountId = ((PlaidAccountMetadata)account.Metadata!).PlaidId,
         plaidAccountName = ((PlaidAccountMetadata)account.Metadata).PlaidName,
+        accountCurrencyCode = "USD",
       })
       .Build();
 
@@ -223,6 +230,7 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
     var newAccountId = "newAccountId";
     var newAccountName = "New Account";
     var expectedBalance = 100;
+    var expectedCurrencyCode = "USD";
 
     using var request = HttpRequestBuilder.New()
       .Post(AddUri)
@@ -234,6 +242,7 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
         plaidAccountName = newAccountName,
         accountCurrentBalance = expectedBalance,
         accountAvailableBalance = expectedBalance,
+        accountCurrencyCode = expectedCurrencyCode,
       })
       .Build();
 
@@ -264,7 +273,8 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
       .Balances.Should().ContainSingle(
         b => b.AccountId == updatedUser.Accounts.First().Id &&
           b.Current == expectedBalance &&
-          b.Available == expectedBalance
+          b.Available == expectedBalance &&
+          b.CurrencyCode == expectedCurrencyCode
       );
   }
 }

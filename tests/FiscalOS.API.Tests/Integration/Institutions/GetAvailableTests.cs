@@ -10,6 +10,7 @@ public class GetAvailableTests(TestApi testApi) : IntegrationTest(testApi)
   {
     return new($"/institutions/{id}/available", UriKind.Relative);
   }
+
   [Fact]
   public async Task GetAvailable_WhenCalledAndUnauthenticated_ItShouldReturn401WithProblemDetails()
   {
