@@ -222,6 +222,7 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
 
     var newAccountId = "newAccountId";
     var newAccountName = "New Account";
+    var expectedBalance = 100;
 
     using var request = HttpRequestBuilder.New()
       .Post(AddUri)
@@ -231,6 +232,8 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
         plaidInstitutionId = ((PlaidMetadata)institution.Metadata!).PlaidId,
         plaidAccountId = newAccountId,
         plaidAccountName = newAccountName,
+        accountCurrentBalance = expectedBalance,
+        accountAvailableBalance = expectedBalance,
       })
       .Build();
 
@@ -242,6 +245,9 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
       async (context, ct) => await context.Set<User>()
         .Include(u => u.Accounts)
         .ThenInclude(a => a.Metadata)
+        .Include(u => u.Accounts)
+        .ThenInclude(a => a.Balances)
+        .AsSplitQuery()
         .FirstAsync(u => u.Id == user.Id, ct),
       TestContext.Current.CancellationToken
     );
@@ -253,5 +259,12 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
         ((PlaidAccountMetadata)a.Metadata).PlaidId == newAccountId &&
         ((PlaidAccountMetadata)a.Metadata).PlaidName == newAccountName
     );
+
+    updatedUser.Accounts.First()
+      .Balances.Should().ContainSingle(
+        b => b.AccountId == updatedUser.Accounts.First().Id &&
+          b.Current == expectedBalance &&
+          b.Available == expectedBalance
+      );
   }
 }
