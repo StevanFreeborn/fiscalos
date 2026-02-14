@@ -22,6 +22,9 @@ internal sealed record AccountDto
 {
   public string ProviderId { get; init; } = string.Empty;
   public string ProviderName { get; init; } = string.Empty;
+  public decimal CurrentBalance { get; init; }
+  public decimal AvailableBalance { get; init; }
+  public string CurrencyCode { get; init; } = string.Empty;
 
   [JsonConstructor]
   private AccountDto()
@@ -33,7 +36,10 @@ internal sealed record AccountDto
     return new AccountDto
     {
       ProviderId = plaidAccount.AccountId,
-      ProviderName = plaidAccount.Name
+      ProviderName = plaidAccount.Name,
+      AvailableBalance = plaidAccount.Available,
+      CurrentBalance = plaidAccount.Current,
+      CurrencyCode = plaidAccount.CurrencyCode,
     };
   }
 }
