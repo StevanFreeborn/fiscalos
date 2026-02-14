@@ -1,3 +1,5 @@
+using FiscalOS.API.Institutions.GetAvailable;
+
 using Institution = FiscalOS.Core.Accounts.Institution;
 
 namespace FiscalOS.API.Tests.Integration.Institutions;
@@ -108,7 +110,7 @@ public class GetAvailableTests(TestApi testApi) : IntegrationTest(testApi)
 
     var response = await Client.SendAsync(request, TestContext.Current.CancellationToken);
 
-    (await response.Should().BeJsonContentOfType<List<Account>>(HttpStatusCode.OK))
-      .Which.Should().BeEquivalentTo(expectedAccounts);
+    (await response.Should().BeJsonContentOfType<Response>(HttpStatusCode.OK))
+      .Which.Accounts.Should().BeEquivalentTo(expectedAccounts.Select(AccountDto.FromPlaidAccount));
   }
 }
