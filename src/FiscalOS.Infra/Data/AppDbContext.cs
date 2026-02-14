@@ -153,6 +153,7 @@ public sealed class AppDbContext(
       eb.Property(static b => b.AccountId);
       eb.Property(static b => b.Current);
       eb.Property(static b => b.Available);
+      eb.Property(static b => b.CurrencyCode);
     });
   }
 }
