@@ -42,12 +42,9 @@ internal static class Endpoint
       return Results.Conflict();
     }
 
-    // TODO: We need to get the initial balance
-    // of the account
-
     var accountMetadata = PlaidAccountMetadata.From(request.PlaidAccountId, request.PlaidAccountName);
     var account = Account.From(user.Institutions.First().Id, request.PlaidAccountName, accountMetadata);
-    var balance = Balance.From(request.AccountCurrentBalance, request.AccountAvailableBalance);
+    var balance = Balance.From(request.AccountCurrentBalance, request.AccountAvailableBalance, request.AccountCurrencyCode);
 
     account.AddBalance(balance);
     user.AddAccount(account);
