@@ -1,5 +1,3 @@
-using FiscalOS.Core.Identity;
-
 namespace FiscalOS.API.Http;
 
 internal static class HttpContextExtensions

@@ -1,4 +1,4 @@
-namespace FiscalOS.API.Accounts.Connect;
+namespace FiscalOS.API.Institutions.Connect;
 
 public record Request : IValidatableObject
 {

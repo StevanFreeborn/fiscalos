@@ -1,12 +1,12 @@
-namespace FiscalOS.API.Login;
+namespace FiscalOS.API.Auth.Login;
 
 internal static class Endpoint
 {
   private const string Route = "/login";
 
-  public static RouteHandlerBuilder MapLoginEndpoint(this WebApplication app)
+  public static RouteHandlerBuilder MapLoginEndpoint(this RouteGroupBuilder groupBuilder)
   {
-    return app.MapPost(Route, HandleAsync);
+    return groupBuilder.MapPost(Route, HandleAsync);
   }
 
   private static async Task<IResult> HandleAsync(

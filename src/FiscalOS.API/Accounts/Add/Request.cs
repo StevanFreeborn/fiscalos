@@ -1,4 +1,3 @@
-
 namespace FiscalOS.API.Accounts.Add;
 
 public record Request : IValidatableObject

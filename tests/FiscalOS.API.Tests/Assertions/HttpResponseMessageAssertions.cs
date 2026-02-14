@@ -21,18 +21,19 @@ internal sealed class HttpResponseMessageAssertions(
     HttpStatusCode expectedStatusCode
   )
   {
-    _chain.ForCondition(Subject.Content.Headers.ContentType?.MediaType is "application/json")
-      .FailWith(
-        "Expected response to be application/json, but found {0}",
-        Subject.Content.Headers.ContentType?.MediaType
-      );
-
     _chain.ForCondition(Subject.StatusCode == expectedStatusCode)
       .FailWith(
         "Expected response status code to be {0}, but found {1}",
         expectedStatusCode,
         Subject.StatusCode
       );
+
+    _chain.ForCondition(Subject.Content.Headers.ContentType?.MediaType is "application/json")
+      .FailWith(
+        "Expected response to be application/json, but found {0}",
+        Subject.Content.Headers.ContentType?.MediaType
+      );
+
 
     var content = await Subject.Content.ReadFromJsonAsync<T>();
 

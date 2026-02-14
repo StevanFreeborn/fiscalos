@@ -10,7 +10,6 @@ internal static class AccountsExtensions
       .RequireAuthorization();
 
     accountsGroup.MapAddEndpoint();
-    accountsGroup.MapConnectEndpoint();
 
     return accountsGroup;
   }

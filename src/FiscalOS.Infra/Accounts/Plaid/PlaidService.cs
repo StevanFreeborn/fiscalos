@@ -1,3 +1,4 @@
+
 namespace FiscalOS.Infra.Accounts.Plaid;
 
 public sealed class PlaidService
@@ -28,6 +29,21 @@ public sealed class PlaidService
     }
 
     return (ptr.ItemId, ptr.AccessToken);
+  }
+
+  public async Task<List<Going.Plaid.Entity.Account>> GetAccountsAsync(string accessToken)
+  {
+    var ar = await _client.AccountsGetAsync(new()
+    {
+      AccessToken = accessToken,
+    }).ConfigureAwait(false);
+
+    if (ar.IsSuccessStatusCode is false)
+    {
+      throw new PlaidException("Unable to retrieve accounts");
+    }
+
+    return [.. ar.Accounts];
   }
 
   public async Task<ItemWithConsentFields> GetItemAsync(string accessToken)

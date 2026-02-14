@@ -1,22 +1,23 @@
-using FiscalOS.API.Tests.Common;
-
-namespace FiscalOS.API.Tests.Integration;
+namespace FiscalOS.API.Tests.Integration.Auth;
 
 public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
 {
-  private static readonly Uri LoginUri = new("/login", UriKind.Relative);
+  private static readonly Uri LoginUri = new("/auth/login", UriKind.Relative);
 
   [Theory]
   [ClassData<LoginValidationTestCases>]
   public async Task Login_WhenUserSubmitsInvalidRequest_ItShouldReturn400WithProblemDetails(LoginValidationTestCase tc)
   {
-    var req = new
-    {
-      username = tc.Username,
-      password = tc.Password,
-    };
+    using var request = HttpRequestBuilder.New()
+      .Post(LoginUri)
+      .WithBody(new
+      {
+        username = tc.Username,
+        password = tc.Password,
+      })
+      .Build();
 
-    var res = await Client.PostAsJsonAsync(LoginUri, req, TestContext.Current.CancellationToken);
+    var res = await Client.SendAsync(request, TestContext.Current.CancellationToken);
 
     await res.Should().BeValidationProblemDetails(tc.ExpectedErrors);
   }
@@ -24,13 +25,16 @@ public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
   [Fact]
   public async Task Login_WhenUserDoesNotExist_ItShouldReturn401WithProblemDetails()
   {
-    var req = new
-    {
-      username = "Test",
-      password = "@Password2",
-    };
+    using var request = HttpRequestBuilder.New()
+      .Post(LoginUri)
+      .WithBody(new
+      {
+        username = "Test",
+        password = "@Password2",
+      })
+      .Build();
 
-    var res = await Client.PostAsJsonAsync(LoginUri, req, TestContext.Current.CancellationToken);
+    var res = await Client.SendAsync(request, TestContext.Current.CancellationToken);
 
     await res.Should().BeProblemDetails(HttpStatusCode.Unauthorized);
   }
@@ -49,13 +53,16 @@ public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
       await context.SaveChangesAsync(ct);
     }, TestContext.Current.CancellationToken);
 
-    var req = new
-    {
-      username = "Stevan",
-      password = "@Password2",
-    };
+    using var request = HttpRequestBuilder.New()
+      .Post(LoginUri)
+      .WithBody(new
+      {
+        username = "Stevan",
+        password = "@Password2",
+      })
+      .Build();
 
-    var res = await Client.PostAsJsonAsync(LoginUri, req, TestContext.Current.CancellationToken);
+    var res = await Client.SendAsync(request, TestContext.Current.CancellationToken);
 
     await res.Should().BeProblemDetails(HttpStatusCode.Unauthorized);
   }
@@ -74,16 +81,19 @@ public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
       await context.SaveChangesAsync(ct);
     }, TestContext.Current.CancellationToken);
 
-    var req = new
-    {
-      username = "Stevan",
-      password = "@Password1",
-    };
+    using var request = HttpRequestBuilder.New()
+      .Post(LoginUri)
+      .WithBody(new
+      {
+        username = "Stevan",
+        password = "@Password1",
+      })
+      .Build();
 
-    var res = await Client.PostAsJsonAsync(LoginUri, req, TestContext.Current.CancellationToken);
+    var res = await Client.SendAsync(request, TestContext.Current.CancellationToken);
 
     res.Should().HaveSetCookieHeader("fiscalos_refresh_cookie");
-    await res.Should().BeJsonContentOfType<Login.Response>(HttpStatusCode.OK);
+    await res.Should().BeJsonContentOfType<API.Auth.Login.Response>(HttpStatusCode.OK);
   }
 }
 

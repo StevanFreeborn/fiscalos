@@ -1,5 +1,3 @@
-using FiscalOS.Core.Accounts;
-
 namespace FiscalOS.API.Accounts.Add;
 
 internal static class Endpoint

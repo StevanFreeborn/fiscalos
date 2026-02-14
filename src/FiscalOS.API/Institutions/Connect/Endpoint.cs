@@ -1,6 +1,4 @@
-using FiscalOS.Core.Accounts;
-
-namespace FiscalOS.API.Accounts.Connect;
+namespace FiscalOS.API.Institutions.Connect;
 
 internal static class Endpoint
 {
