@@ -124,6 +124,11 @@ public sealed class AppDbContext(
         .WithOne()
         .HasForeignKey<AccountMetadata>(static m => m.AccountId)
         .OnDelete(DeleteBehavior.Cascade);
+
+      eb.HasMany(static a => a.Balances)
+        .WithOne()
+        .HasForeignKey(static b => b.AccountId)
+        .OnDelete(DeleteBehavior.Cascade);
     });
 
     modelBuilder.Entity<AccountMetadata>(static eb =>
@@ -141,6 +146,13 @@ public sealed class AppDbContext(
 
       eb.Property(static m => m.PlaidId);
       eb.Property(static m => m.PlaidName);
+    });
+
+    modelBuilder.Entity<Balance>(static eb =>
+    {
+      eb.Property(static b => b.AccountId);
+      eb.Property(static b => b.Current);
+      eb.Property(static b => b.Available);
     });
   }
 }
