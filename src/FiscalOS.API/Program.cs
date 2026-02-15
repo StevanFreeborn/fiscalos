@@ -1,4 +1,8 @@
+using FiscalOS.ServiceDefaults;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddServiceDefaults();
 
 builder.Services.AddValidation();
 builder.Services.AddProblemDetails();
@@ -31,6 +35,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseStatusCodePages();
+
+app.MapDefaultEndpoints();
 
 app.MapAuthEndpoints();
 app.MapAccountsEndpoints();
