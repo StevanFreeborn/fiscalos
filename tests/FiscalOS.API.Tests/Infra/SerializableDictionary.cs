@@ -4,7 +4,7 @@ public interface ISerializableDictionary<TKey, TValue> : IDictionary<TKey, TValu
 {
 }
 
-public class SerializableDictionary<TKey, TValue> 
+public class SerializableDictionary<TKey, TValue>
   : Dictionary<TKey, TValue>, ISerializableDictionary<TKey, TValue> where TKey : notnull
 {
   public SerializableDictionary() { }
