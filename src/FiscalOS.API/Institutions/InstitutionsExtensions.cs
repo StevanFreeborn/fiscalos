@@ -11,6 +11,7 @@ internal static class InstitutionsExtensions
 
     institutionsGroup.MapConnectEndpoint();
     institutionsGroup.MapGetAvailableEndpoint();
+    institutionsGroup.MapLinkEndpoint();
 
     return institutionsGroup;
   }
