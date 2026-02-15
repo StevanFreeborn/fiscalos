@@ -5,7 +5,7 @@ public static class ServiceCollectionExtensions
   public static IServiceCollection AddInfrastructure(this IServiceCollection services)
   {
     services.AddSingleton<IAuthorizationMiddlewareResultHandler, ProblemDetailsAuthResultHandler>();
-    
+
     services.AddHttpClient();
     services.AddSingleton(TimeProvider.System);
     services.AddSingleton<IFileSystem, FileSystem>();
