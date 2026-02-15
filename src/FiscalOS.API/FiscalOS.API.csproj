@@ -10,6 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\FiscalOS.Core\FiscalOS.Core.csproj" />
     <ProjectReference Include="..\FiscalOS.Infra\FiscalOS.Infra.csproj" />
+    <ProjectReference Include="..\FiscalOS.ServiceDefaults\FiscalOS.ServiceDefaults.csproj" />
   </ItemGroup>
 
 </Project>
