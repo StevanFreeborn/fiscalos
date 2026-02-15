@@ -1,4 +1,7 @@
 
+
+using System.Reflection;
+
 namespace FiscalOS.Infra.Accounts.Plaid;
 
 public sealed class PlaidService
@@ -14,6 +17,31 @@ public sealed class PlaidService
   {
     var client = sp.GetRequiredService<PlaidClient>();
     return new(client);
+  }
+
+  public async Task<string> CreateLinkTokenAsync(string id)
+  {
+    var assemblyName = Assembly.GetExecutingAssembly().GetName().FullName;
+    var environmentName = System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+    var ltr = await _client.LinkTokenCreateAsync(new()
+    {
+      ClientName = $"{assemblyName}_{environmentName}",
+      Products = [Products.Transactions],
+      CountryCodes = [CountryCode.Us],
+      Language = Language.English,
+      User = new()
+      {
+        ClientUserId = id,
+      },
+    }).ConfigureAwait(false);
+
+    if (ltr.IsSuccessStatusCode is false)
+    {
+      throw new PlaidException("Unable to create link token");
+    }
+
+    return ltr.LinkToken;
   }
 
   public async Task<(string ItemId, string AccessToken)> ExchangeTokenAsync(string publicToken)
