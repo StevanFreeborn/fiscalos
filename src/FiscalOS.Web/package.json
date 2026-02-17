@@ -17,6 +17,7 @@
     "format": "prettier --write --experimental-cli src/"
   },
   "dependencies": {
+    "jwt-decode": "^4.0.0",
     "pinia": "^3.0.4",
     "vue": "beta",
     "vue-router": "^5.0.2"
