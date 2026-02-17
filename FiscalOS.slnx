@@ -1,0 +1,20 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/src/">
+    <Project Path="src/FiscalOS.AdminCLI/FiscalOS.AdminCLI.csproj" />
+    <Project Path="src/FiscalOS.API/FiscalOS.API.csproj" />
+    <Project Path="src/FiscalOS.Core/FiscalOS.Core.csproj" />
+    <Project Path="src/FiscalOS.Infra/FiscalOS.Infra.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/FiscalOS.API.Tests/FiscalOS.API.Tests.csproj" />
+    <Project Path="tests/FiscalOS.Core.Tests/FiscalOS.Core.Tests.csproj" />
+    <Project Path="tests/FiscalOS.Infra.Tests/FiscalOS.Infra.Tests.csproj" />
+  </Folder>
+  <Project Path="src/FiscalOS.AppHost/FiscalOS.AppHost.csproj" />
+  <Project Path="src/FiscalOS.ServiceDefaults/FiscalOS.ServiceDefaults.csproj" />
+</Solution>
