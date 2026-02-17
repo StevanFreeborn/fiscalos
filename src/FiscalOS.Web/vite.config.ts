@@ -7,6 +7,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 import mkcert from 'vite-plugin-mkcert';
 
 export default defineConfig({
+  publicDir: 'static',
   plugins: [
     vue(),
     vueJsx(),
