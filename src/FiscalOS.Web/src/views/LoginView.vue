@@ -15,7 +15,6 @@ async function handleSubmit(e: SubmitEvent) {
   );
 
   if (loginResult.err) {
-
     alert(loginResult.val.join('\n'));
     return;
   }
@@ -26,7 +25,6 @@ async function handleSubmit(e: SubmitEvent) {
 </script>
 
 <template>
-  <h1>Login View</h1>
   <form v-on:submit.prevent="handleSubmit">
     <div>
       <label for="username">Username</label>
@@ -42,4 +40,38 @@ async function handleSubmit(e: SubmitEvent) {
   </form>
 </template>
 
-<style scoped></style>
+<style scoped>
+  form,
+  form > div {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-surface);
+  }
+
+  form {
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 0.25rem;
+  }
+
+  form > div {
+    gap: 0.25rem;
+  }
+
+  form > div label {
+    font-weight: 700;
+  }
+
+  form > div input {
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    border: 1px solid black;
+    background-color: var(--bg-element);
+  }
+
+  form > div button {
+    background-color: var(--brand-primary);
+    padding: 0.5rem 0.25rem;
+    border-radius: 0.25rem;
+  }
+</style>
