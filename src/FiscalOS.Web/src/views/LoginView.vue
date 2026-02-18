@@ -1,30 +1,28 @@
 <script setup lang="ts">
-  import { useUserStore } from '@/stores/userStore';
-  import { useRouter } from 'vue-router';
+import { useAuthService } from '@/composables/useAuthService';
+import { useUserStore } from '@/stores/userStore';
+import { useRouter } from 'vue-router';
 
-  const { logUserIn } = useUserStore();
-  const router = useRouter();
+const router = useRouter();
+const userStore = useUserStore();
+const authService = useAuthService(userStore);
 
-  async function handleSubmit(e: SubmitEvent) {
-    const data = Object.fromEntries(new FormData(e.currentTarget as HTMLFormElement));
-    const response = await fetch('/api/auth/login', {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
+async function handleSubmit(e: SubmitEvent) {
+  const data = Object.fromEntries(new FormData(e.currentTarget as HTMLFormElement));
+  const loginResult = await authService.login(
+    data['username']!.toString(),
+    data['password']!.toString()
+  );
 
-    if (response.ok === false) {
-      alert('Failed to login');
-      return;
-    }
+  if (loginResult.err) {
 
-    const responseBody = await response.json();
-
-    logUserIn(responseBody.accessToken)
-    router.push('/');
+    alert(loginResult.val.join('\n'));
+    return;
   }
+
+  userStore.logUserIn(loginResult.val.accessToken);
+  router.push('/');
+}
 </script>
 
 <template>
@@ -32,11 +30,11 @@
   <form v-on:submit.prevent="handleSubmit">
     <div>
       <label for="username">Username</label>
-      <input type="text" name="username" id="username">
+      <input type="text" name="username" id="username" />
     </div>
     <div>
       <label for="password">Password</label>
-      <input type="password" name="password" id="password">
+      <input type="password" name="password" id="password" />
     </div>
     <div>
       <button type="submit">Login</button>
