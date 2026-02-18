@@ -19,6 +19,7 @@
   "dependencies": {
     "jwt-decode": "^4.0.0",
     "pinia": "^3.0.4",
+    "ts-results": "^3.3.0",
     "vue": "beta",
     "vue-router": "^5.0.2"
   },
