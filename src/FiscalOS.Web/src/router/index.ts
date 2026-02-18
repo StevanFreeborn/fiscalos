@@ -8,6 +8,7 @@ const router = createRouter({
   routes: [
     {
       path: '/public',
+      component: () => import('../components/PublicLayout.vue'),
       redirect: '/public/login',
       beforeEnter: () => {
         const userStore = useUserStore();

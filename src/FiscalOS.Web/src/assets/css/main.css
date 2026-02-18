@@ -1,0 +1,71 @@
+@import './reset.css';
+
+@font-face {
+  font-family: 'CaskaydiaCove NFM';
+  src: url('../fonts/CaskaydiaCoveNFM-Regular.eot');
+  src:
+    url('../fonts/CaskaydiaCoveNFM-Regular.eot?#iefix') format('embedded-opentype'),
+    url('../fonts/CaskaydiaCoveNFM-Regular.woff2') format('woff2'),
+    url('../fonts/CaskaydiaCoveNFM-Regular.woff') format('woff'),
+    url('../fonts/CaskaydiaCoveNFM-Regular.svg#CaskaydiaCoveNFM-Regular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --palette-lavender: #b39cd0;
+  --palette-rose: #d09c9f;
+  --palette-sage: #b9d09c;
+  --palette-mint: #9cd0cd;
+
+  --neutral-white: #ffffff;
+  --neutral-100: #f5f5f5;
+  --neutral-200: #e5e5e5;
+  --neutral-800: #262626;
+  --neutral-900: #171717;
+  --neutral-black: #000000;
+
+  --bg-app: var(--neutral-white);
+  --bg-surface: var(--neutral-100);
+  --bg-element: var(--neutral-200);
+
+  --text-primary: var(--neutral-black);
+  --text-secondary: var(--neutral-800);
+  --border-subtle: var(--neutral-200);
+
+  --brand-primary: var(--palette-lavender);
+  --brand-secondary: var(--palette-rose);
+  --brand-accent: var(--palette-mint);
+  --state-success: var(--palette-sage);
+  --state-error: var(--palette-rose);
+
+  font-family: 'CaskaydiaCove NFM', monospace;
+  font-size: 16px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-app: var(--neutral-black);
+    --bg-surface: var(--neutral-900);
+    --bg-element: var(--neutral-800);
+
+    --text-primary: var(--neutral-white);
+    --text-secondary: var(--neutral-200);
+    --border-subtle: var(--neutral-800);
+  }
+}
+
+body {
+  color: var(--text-primary);
+  background: var(--bg-app);
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
