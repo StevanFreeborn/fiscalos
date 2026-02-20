@@ -1,7 +1,7 @@
-import { AuthService } from "@/services/authService";
-import { Client, ClientConfig } from "@/services/client";
-import { useUserStore } from "@/stores/userStore";
-import { createRouter, createWebHistory } from "vue-router";
+import { AuthService } from '@/services/authService';
+import { Client, ClientConfig } from '@/services/client';
+import { useUserStore } from '@/stores/userStore';
+import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,24 +22,25 @@ const router = createRouter({
       children: [
         {
           path: 'login',
-          component: () => import('../views/LoginView.vue')
-        }
+          component: () => import('../views/LoginView.vue'),
+        },
       ],
     },
     {
       path: '/',
+      component: () => import('../components/ProtectedLayout.vue'),
       beforeEnter: async () => {
         const userStore = useUserStore();
 
         if (userStore.user === null) {
-          return { path: '/public/login' }
+          return { path: '/public/login' };
         }
 
         const isExpired = userStore.user.expiresAtInSeconds < Date.now() / 1000;
 
         if (isExpired) {
           const clientConfig = new ClientConfig(
-            { Authorization: `Bearer ${userStore.user.token}`},
+            { Authorization: `Bearer ${userStore.user.token}` },
             true
           );
           const client = new Client(clientConfig);
@@ -48,7 +49,7 @@ const router = createRouter({
 
           if (refreshResult.err) {
             userStore.logUserOut();
-            return { path: '/public/login' }
+            return { path: '/public/login' };
           }
 
           userStore.logUserIn(refreshResult.val.accessToken);
@@ -56,8 +57,13 @@ const router = createRouter({
 
         return true;
       },
-      component: () => import('../views/HomeView.vue'),
-    }
+      children: [
+        {
+          path: '/',
+          component: () => import('../views/HomeView.vue'),
+        },
+      ],
+    },
   ],
 });
 

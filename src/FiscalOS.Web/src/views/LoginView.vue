@@ -15,7 +15,7 @@ async function handleSubmit(e: SubmitEvent) {
   );
 
   if (loginResult.err) {
-    alert(loginResult.val.join('\n'));
+    alert(loginResult.val.map(e => e.message).join('\n'));
     return;
   }
 
@@ -25,7 +25,7 @@ async function handleSubmit(e: SubmitEvent) {
 </script>
 
 <template>
-  <form v-on:submit.prevent="handleSubmit">
+  <form @submit.prevent="handleSubmit">
     <div>
       <label for="username">Username</label>
       <input type="text" name="username" id="username" />
