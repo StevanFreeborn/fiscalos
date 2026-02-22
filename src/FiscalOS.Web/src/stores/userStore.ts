@@ -10,6 +10,7 @@ export type User = {
   id: string;
   expiresAtInSeconds: number;
   token: string;
+  sidebarCollapsed: boolean;
 };
 
 type JwtTokenPayload = {
@@ -20,6 +21,10 @@ type JwtTokenPayload = {
 function getUserFromLocalStorage(): User | null {
   const user = localStorage.getItem(USER_KEY);
   return user === null ? null : JSON.parse(user);
+}
+
+function saveUserToLocalSotrage(user: User) {
+  localStorage.setItem(USER_KEY, JSON.stringify(user));
 }
 
 export type UserStore = ReturnType<typeof useUserStore>;
@@ -35,9 +40,10 @@ export const useUserStore = defineStore('userStore', () => {
       id: sub,
       expiresAtInSeconds: exp,
       token: jwtToken,
+      sidebarCollapsed: false,
     };
-    localStorage.setItem(USER_KEY, JSON.stringify(loggedInUser));
     user.value = loggedInUser;
+    saveUserToLocalSotrage(loggedInUser);
   }
 
   function logUserOut() {
@@ -74,10 +80,24 @@ export const useUserStore = defineStore('userStore', () => {
     return { response, accessToken: refreshResult.val.accessToken };
   }
 
+  async function toggleSidebar() {
+    if (user.value === null) {
+      return;
+    }
+
+    const updatedUser = {
+      ...user.value,
+      sidebarCollapsed: !user.value?.sidebarCollapsed,
+    }
+    user.value = updatedUser;
+    saveUserToLocalSotrage(updatedUser);
+  }
+
   return {
     user: user,
     logUserIn,
     logUserOut,
     refreshAccessToken,
+    toggleSidebar,
   };
 });

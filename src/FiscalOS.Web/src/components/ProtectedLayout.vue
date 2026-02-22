@@ -21,6 +21,6 @@
 
   main {
     flex: 1;
-    border: 1px solid blue;
+    padding: 1rem;
   }
 </style>

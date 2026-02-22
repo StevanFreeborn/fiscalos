@@ -2,6 +2,7 @@ global using System.ComponentModel.DataAnnotations;
 global using System.Security.Claims;
 global using System.Text.Json.Serialization;
 
+global using FiscalOS.API.Institutions.Get;
 global using FiscalOS.API.Accounts;
 global using FiscalOS.API.Accounts.Add;
 global using FiscalOS.API.Auth;
