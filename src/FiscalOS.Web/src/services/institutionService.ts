@@ -1,6 +1,6 @@
 import { Err, Ok, Result } from 'ts-results';
 import { type InjectionKey } from 'vue';
-import { ClientRequestWithBody, type IClient } from './client';
+import { ClientRequest, ClientRequestWithBody, type IClient } from './client';
 
 type InstitutionServiceFactoryKeyType = InjectionKey<IInstitutionServiceFactory>;
 
@@ -20,6 +20,7 @@ export class InstitutionServiceFactory implements InstitutionServiceFactory {
 export interface IInstitutionService {
   createLinkToken: () => Promise<Result<LinkTokenResponse, Error[]>>;
   connect: (publicToken: string, plaidInstitutionId: string) => Promise<Result<boolean, Error[]>>;
+  getInstitutions: () => Promise<Result<Institution[], Error[]>>;
 }
 
 export class InstitutionService implements IInstitutionService {
@@ -27,6 +28,7 @@ export class InstitutionService implements IInstitutionService {
   private readonly endpoints = {
     link: '/api/institutions/link',
     connect: '/api/institutions/connect',
+    institutions: '/api/institutions',
   };
 
   constructor(client: IClient) {
@@ -84,8 +86,32 @@ export class InstitutionService implements IInstitutionService {
       return Err([new Error('Failed to connect institution')]);
     }
   }
+
+  async getInstitutions() {
+    const request = new ClientRequest(this.endpoints.institutions);
+
+    try {
+      const res = await this.client.get(request);
+
+      if (res.ok === false) {
+        return Err([new Error('Failed to get institutions')]);
+      }
+
+      const data = await res.json();
+
+      return Ok(data.institutions as Institution[]);
+    } catch (e) {
+      console.error(e);
+      return Err([new Error('Failed to get institutions')]);
+    }
+  }
 }
 
 type LinkTokenResponse = {
   linkToken: string;
+};
+
+export type Institution = {
+  id: string;
+  name: string;
 };

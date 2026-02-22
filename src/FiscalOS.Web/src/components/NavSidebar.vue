@@ -1,14 +1,28 @@
 <script setup lang="ts">
   import LeftArrowIcon from '@/components/icons/RightArrowIcon.vue';
-  import { computed, ref } from 'vue';
+  import { useUserStore } from '@/stores/userStore';
+  import { computed } from 'vue';
+import { useRouter } from 'vue-router';
 
-  const isCollapsed = ref(false);
+  const userStore = useUserStore();
+  const router = useRouter();
+
   const asideClasses = computed(() => ({
-    collapsed: isCollapsed.value,
+    collapsed: userStore.user?.sidebarCollapsed,
   }));
 
   function handleToggleButtonClick() {
-    isCollapsed.value = !isCollapsed.value;
+    userStore.toggleSidebar();
+  }
+
+  function handleLogout() {
+    // TODO: Also need to log user
+    // out on the server...which is
+    // basically just clearing
+    // refresh token cookie and revoking
+    // it in the database
+    userStore.logUserOut();
+    router.push({ path: '/public/login' });
   }
 </script>
 
@@ -20,6 +34,13 @@
       class="toggle-button"
     >
       <LeftArrowIcon />
+    </button>
+    <button
+      class="logout-button"
+      type="button"
+      @click="handleLogout"
+    >
+      Logout
     </button>
   </aside>
 </template>
@@ -45,6 +66,12 @@
       position: absolute;
       right: 0;
     }
+  }
+
+  .logout-button {
+    background: var(--bg-element);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
   }
 
   .toggle-button {
