@@ -12,6 +12,7 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/FiscalOS.API.Tests/FiscalOS.API.Tests.csproj" />
+    <Project Path="tests/FiscalOS.AppHost.Tests/FiscalOS.AppHost.Tests.csproj" />
     <Project Path="tests/FiscalOS.Core.Tests/FiscalOS.Core.Tests.csproj" />
     <Project Path="tests/FiscalOS.Infra.Tests/FiscalOS.Infra.Tests.csproj" />
   </Folder>

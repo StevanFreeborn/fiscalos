@@ -1,9 +1,11 @@
+using FiscalOS.AppHost;
+
 var builder = DistributedApplication.CreateBuilder(args);
 
-var api = builder.AddProject<Projects.FiscalOS_API>("API")
+var api = builder.AddProject<Projects.FiscalOS_API>(ProjectNames.API)
   .WithHttpHealthCheck("/health");
 
-builder.AddViteApp("web", "../FiscalOS.Web")
+builder.AddViteApp(ProjectNames.Web, "../FiscalOS.Web")
   .WithReference(api)
   .WithHttpsEndpoint(port: 7061, env: "PORT");
 
