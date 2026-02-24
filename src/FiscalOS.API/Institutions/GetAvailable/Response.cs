@@ -2,14 +2,14 @@ namespace FiscalOS.API.Institutions.GetAvailable;
 
 internal sealed record Response
 {
-  public IEnumerable<AccountDto> Accounts { get; init; } = [];
+  public IEnumerable<AvailableAccountDto> Accounts { get; init; } = [];
 
   [JsonConstructor]
   private Response()
   {
   }
 
-  public static Response From(IEnumerable<AccountDto> accounts)
+  public static Response From(IEnumerable<AvailableAccountDto> accounts)
   {
     return new Response
     {
@@ -18,8 +18,9 @@ internal sealed record Response
   }
 }
 
-internal sealed record AccountDto
+internal sealed record AvailableAccountDto
 {
+  public string ProviderInstitutionId { get; init; } = string.Empty;
   public string ProviderId { get; init; } = string.Empty;
   public string ProviderName { get; init; } = string.Empty;
   public decimal CurrentBalance { get; init; }
@@ -27,14 +28,18 @@ internal sealed record AccountDto
   public string CurrencyCode { get; init; } = string.Empty;
 
   [JsonConstructor]
-  private AccountDto()
+  private AvailableAccountDto()
   {
   }
 
-  public static AccountDto FromPlaidAccount(Going.Plaid.Entity.Account plaidAccount)
+  public static AvailableAccountDto From(
+    PlaidMetadata plaidMetadata,
+    Going.Plaid.Entity.Account plaidAccount
+  )
   {
-    return new AccountDto
+    return new AvailableAccountDto
     {
+      ProviderInstitutionId = plaidMetadata.PlaidId,
       ProviderId = plaidAccount.AccountId,
       ProviderName = plaidAccount.Name,
       AvailableBalance = plaidAccount.Available,

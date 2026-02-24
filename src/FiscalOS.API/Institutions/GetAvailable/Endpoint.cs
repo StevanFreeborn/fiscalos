@@ -44,7 +44,7 @@ internal static class Endpoint
 
     var accessToken = await encryptor.DecryptAsyncFor(user, plaidMetadata.EncryptedAccessToken, ct);
     var accounts = await plaidService.GetAccountsAsync(accessToken);
-    var accountsDtos = accounts.Select(AccountDto.FromPlaidAccount);
+    var accountsDtos = accounts.Select(a => AvailableAccountDto.From(plaidMetadata, a));
 
     return Results.Ok(Response.From(accountsDtos));
   }
