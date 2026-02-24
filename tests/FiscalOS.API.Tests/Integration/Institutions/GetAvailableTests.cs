@@ -111,6 +111,6 @@ public class GetAvailableTests(TestApi testApi) : IntegrationTest(testApi)
     var response = await Client.SendAsync(request, TestContext.Current.CancellationToken);
 
     (await response.Should().BeJsonContentOfType<Response>(HttpStatusCode.OK))
-      .Which.Accounts.Should().BeEquivalentTo(expectedAccounts.Select(AccountDto.FromPlaidAccount));
+      .Which.Accounts.Should().BeEquivalentTo(expectedAccounts.Select(AvailableAccountDto.FromPlaidAccount));
   }
 }

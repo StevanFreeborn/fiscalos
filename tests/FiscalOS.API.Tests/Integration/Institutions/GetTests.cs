@@ -65,7 +65,7 @@ public class GetTests(TestApi testApi) : IntegrationTest(testApi)
     (await res.Should().BeJsonContentOfType<Response>(HttpStatusCode.OK))
       .Which.Institutions.Should().BeEquivalentTo(
       [
-        InstitutionDto.FromInstitution(institution),
+        InstitutionDto.From(institution),
       ]);
   }
 }
