@@ -18,22 +18,44 @@ internal sealed record Response
   }
 }
 
+internal sealed record AccountDto
+{
+  public string Id { get; init; } = string.Empty;
+  public string Name { get; init; } = string.Empty;
+
+  [JsonConstructor]
+  private AccountDto()
+  {
+  }
+
+  public static AccountDto From(Account account)
+  {
+    return new()
+    {
+      Id = account.Id.ToString(),
+      Name = account.Name,
+    };
+  }
+}
+
 internal sealed record InstitutionDto
 {
   public string Id { get; init; } = string.Empty;
   public string Name { get; init; } = string.Empty;
+  public IEnumerable<AccountDto> Accounts { get; init; } = [];
 
   [JsonConstructor]
   private InstitutionDto()
   {
   }
 
-  public static InstitutionDto FromInstitution(Institution institution)
+  public static InstitutionDto From(Institution institution)
   {
-    return new InstitutionDto
+    return new()
     {
       Id = institution.Id.ToString(),
       Name = institution.Name,
+      Accounts = institution.Accounts.Select(AccountDto.From),
     };
   }
 }

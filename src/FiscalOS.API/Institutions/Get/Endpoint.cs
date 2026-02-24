@@ -18,6 +18,7 @@ internal static class Endpoint
 
     var user = await appDbContext.Users
       .Include(u => u.Institutions)
+      .ThenInclude(i => i.Accounts)
       .FirstOrDefaultAsync(u => u.Id == userId);
 
     if (user is null)
@@ -26,7 +27,7 @@ internal static class Endpoint
     }
 
     var institutionDtos = user.Institutions
-      .Select(InstitutionDto.FromInstitution)
+      .Select(InstitutionDto.From)
       .OrderBy(dto => dto.Name);
 
     return Results.Ok(Response.From(institutionDtos));
