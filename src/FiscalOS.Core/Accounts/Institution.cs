@@ -6,6 +6,9 @@ public sealed class Institution : Entity
   public string Name { get; init; } = string.Empty;
   public InstitutionMetadata? Metadata { get; init; }
 
+  private readonly List<Account> _accounts = [];
+  public IEnumerable<Account> Accounts => _accounts;
+
   private Institution()
   {
   }
