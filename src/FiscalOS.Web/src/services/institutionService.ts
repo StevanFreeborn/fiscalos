@@ -21,12 +21,16 @@ export interface IInstitutionService {
   createLinkToken: () => Promise<Result<LinkTokenResponse, Error[]>>;
   connect: (publicToken: string, plaidInstitutionId: string) => Promise<Result<boolean, Error[]>>;
   getInstitutions: () => Promise<Result<Institution[], Error[]>>;
+  getAvailableAccounts: (institutionId: string) => Promise<Result<AvailableAccount[], Error[]>>;
 }
 
 export class InstitutionService implements IInstitutionService {
   private readonly client: IClient;
   private readonly endpoints = {
     link: '/api/institutions/link',
+    available(id: string) {
+      return `/api/institutions/${id}/available`;
+    },
     connect: '/api/institutions/connect',
     institutions: '/api/institutions',
   };
@@ -105,13 +109,47 @@ export class InstitutionService implements IInstitutionService {
       return Err([new Error('Failed to get institutions')]);
     }
   }
+
+  async getAvailableAccounts(institutionId: string) {
+    const request = new ClientRequest(this.endpoints.available(institutionId));
+
+    try {
+      const res = await this.client.get(request);
+
+      if (res.ok === false) {
+        return Err([new Error('Failed to get available accounts')]);
+      }
+
+      const data = await res.json();
+
+      return Ok(data.accounts as AvailableAccount[]);
+    } catch (e) {
+      console.error(e);
+      return Err([new Error('Failed to get available accounts')]);
+    }
+  }
 }
 
 type LinkTokenResponse = {
   linkToken: string;
 };
 
+type Account = {
+  id: string;
+  name: string;
+}
+
 export type Institution = {
   id: string;
   name: string;
+  accounts: Account[];
+};
+
+export type AvailableAccount = {
+  providerInstitutionId: string;
+  providerId: string;
+  providerName: string;
+  currentBalance: number;
+  availableBalance: number;
+  currencyCode: string;
 };
