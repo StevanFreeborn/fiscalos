@@ -1,4 +1,4 @@
-namespace FiscalOS.Infra.Accounts.Plaid;
+namespace FiscalOS.Infra.Common;
 
 public class PlaidException : Exception
 {

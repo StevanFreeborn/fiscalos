@@ -1,4 +1,4 @@
-namespace FiscalOS.Infra.Accounts;
+namespace FiscalOS.Infra.Common;
 
 public static class Providers
 {

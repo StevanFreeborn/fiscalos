@@ -1,5 +1,10 @@
 namespace FiscalOS.Infra.DependencyInjection;
 
+using FiscalOS.Core.Queuing;
+using FiscalOS.Infra.Accounts.Plaid;
+using FiscalOS.Infra.Queuing;
+using FiscalOS.Infra.Transactions.Plaid;
+
 public static class ServiceCollectionExtensions
 {
   public static IServiceCollection AddInfrastructure(this IServiceCollection services)
@@ -33,7 +38,18 @@ public static class ServiceCollectionExtensions
       var options = clientOptions.Value.ToPlaidOptions();
       return new PlaidClient(options, factory, logger);
     });
-    services.AddSingleton(PlaidService.From);
+    services.AddSingleton<IPlaidAccountService>(PlaidAccountService.From);
+    services.AddSingleton<IPlaidTransactionService>(PlaidTransactionService.From);
+
+    services.AddScoped<IPlaidAddedTransactionHandler>(PlaidAddedTransactionHandler.From);
+    services.AddScoped<IPlaidModifiedTransactionHandler>(PlaidModifiedTransactionHandler.From);
+    services.AddScoped<IPlaidRemovedTransactionHandler>(PlaidRemovedTransactionHandler.From);
+    services.AddScoped<IPlaidTransactionProcessor>(PlaidTransactionProcessor.From);
+    services.AddScoped<IPlaidTransactionSyncer>(PlaidTransactionSyncer.From);
+
+    services.AddSingleton<IAsyncQueue<SyncUpdatesQueueItem>>(ChannelAsyncQueue<SyncUpdatesQueueItem>.From);
+    services.AddScoped<IAsyncQueueProcessor<SyncUpdatesQueueItem>>(SyncUpdatesProcessor.From);
+    services.AddHostedService(AsyncQueueHostedService<SyncUpdatesQueueItem>.From);
 
     return services;
   }

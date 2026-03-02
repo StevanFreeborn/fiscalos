@@ -92,7 +92,7 @@ public class GetAvailableTests(TestApi testApi) : IntegrationTest(testApi)
         AccessToken = exchangeTokenResponse.AccessToken,
       });
       var encryptedAccessToken = await encryptor.EncryptAsyncFor(user, exchangeTokenResponse.AccessToken, ct);
-      var institutionMetadata = PlaidMetadata.From(institutionId, "Some Bank", encryptedAccessToken);
+      var institutionMetadata = PlaidInstitutionMetadata.From(institutionId, "Some Bank", encryptedAccessToken);
       var institution = Institution.From("Some Bank", institutionMetadata);
 
       user.AddInstitution(institution);

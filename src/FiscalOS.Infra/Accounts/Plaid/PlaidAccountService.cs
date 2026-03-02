@@ -1,22 +1,29 @@
-
-
-using System.Reflection;
-
 namespace FiscalOS.Infra.Accounts.Plaid;
 
-public sealed class PlaidService
+public interface IPlaidAccountService
 {
+  Task<string> CreateLinkTokenAsync(string id);
+  Task<(string ItemId, string AccessToken)> ExchangeTokenAsync(string publicToken);
+  Task<List<Going.Plaid.Entity.Account>> GetAccountsAsync(string accessToken);
+  Task<ItemWithConsentFields> GetItemAsync(string accessToken);
+}
+
+internal sealed class PlaidAccountService : IPlaidAccountService
+{
+  private readonly IOptions<PlaidClientOptions> _options;
   private readonly PlaidClient _client;
 
-  private PlaidService(PlaidClient client)
+  private PlaidAccountService(PlaidClient client, IOptions<PlaidClientOptions> options)
   {
     _client = client;
+    _options = options;
   }
 
-  public static PlaidService From(IServiceProvider sp)
+  public static PlaidAccountService From(IServiceProvider sp)
   {
     var client = sp.GetRequiredService<PlaidClient>();
-    return new(client);
+    var options = sp.GetRequiredService<IOptions<PlaidClientOptions>>();
+    return new(client, options);
   }
 
   public async Task<string> CreateLinkTokenAsync(string id)
@@ -34,6 +41,7 @@ public sealed class PlaidService
       {
         ClientUserId = id,
       },
+      Webhook = _options.Value.Webhook,
     }).ConfigureAwait(false);
 
     if (ltr.IsSuccessStatusCode is false)

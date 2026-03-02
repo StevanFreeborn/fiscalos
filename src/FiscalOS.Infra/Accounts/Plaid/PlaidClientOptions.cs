@@ -4,6 +4,7 @@ public sealed record PlaidClientOptions
 {
   public string ClientId { get; init; } = string.Empty;
   public string Secret { get; init; } = string.Empty;
+  public string Webhook { get; init; } = string.Empty;
 
   public IOptions<PlaidOptions> ToPlaidOptions()
   {

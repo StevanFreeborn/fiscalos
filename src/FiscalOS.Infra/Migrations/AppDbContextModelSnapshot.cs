@@ -135,7 +135,7 @@ namespace FiscalOS.Infra.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Institution");
+                    b.ToTable("Institutions");
                 });
 
             modelBuilder.Entity("FiscalOS.Core.Accounts.InstitutionMetadata", b =>
@@ -241,9 +241,91 @@ namespace FiscalOS.Infra.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("FiscalOS.Core.Transactions.Transaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("AccountId1")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("Date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MerchantName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("AccountId1");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Transaction");
+                });
+
+            modelBuilder.Entity("FiscalOS.Core.Transactions.TransactionMetadata", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("TransactionId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(5)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TransactionId")
+                        .IsUnique();
+
+                    b.ToTable("TransactionMetadata");
+
+                    b.HasDiscriminator<string>("Type").HasValue("Plaid");
+
+                    b.UseTphMappingStrategy();
+                });
+
             modelBuilder.Entity("FiscalOS.Infra.Accounts.Plaid.PlaidAccountMetadata", b =>
                 {
                     b.HasBaseType("FiscalOS.Core.Accounts.AccountMetadata");
+
+                    b.Property<string>("Cursor")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("PlaidId")
                         .IsRequired()
@@ -256,11 +338,15 @@ namespace FiscalOS.Infra.Migrations
                     b.HasDiscriminator().HasValue("Plaid");
                 });
 
-            modelBuilder.Entity("FiscalOS.Infra.Accounts.Plaid.PlaidMetadata", b =>
+            modelBuilder.Entity("FiscalOS.Infra.Accounts.Plaid.PlaidInstitutionMetadata", b =>
                 {
                     b.HasBaseType("FiscalOS.Core.Accounts.InstitutionMetadata");
 
                     b.Property<string>("EncryptedAccessToken")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ItemId")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -269,6 +355,17 @@ namespace FiscalOS.Infra.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PlaidName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasDiscriminator().HasValue("Plaid");
+                });
+
+            modelBuilder.Entity("FiscalOS.Infra.Transactions.Plaid.PlaidTransactionMetadata", b =>
+                {
+                    b.HasBaseType("FiscalOS.Core.Transactions.TransactionMetadata");
+
+                    b.Property<string>("PlaidId")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -278,7 +375,7 @@ namespace FiscalOS.Infra.Migrations
             modelBuilder.Entity("FiscalOS.Core.Accounts.Account", b =>
                 {
                     b.HasOne("FiscalOS.Core.Accounts.Institution", "Institution")
-                        .WithMany()
+                        .WithMany("Accounts")
                         .HasForeignKey("InstitutionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -312,11 +409,13 @@ namespace FiscalOS.Infra.Migrations
 
             modelBuilder.Entity("FiscalOS.Core.Accounts.Institution", b =>
                 {
-                    b.HasOne("FiscalOS.Core.Identity.User", null)
+                    b.HasOne("FiscalOS.Core.Identity.User", "User")
                         .WithMany("Institutions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("FiscalOS.Core.Accounts.InstitutionMetadata", b =>
@@ -339,15 +438,51 @@ namespace FiscalOS.Infra.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("FiscalOS.Core.Transactions.Transaction", b =>
+                {
+                    b.HasOne("FiscalOS.Core.Accounts.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FiscalOS.Core.Accounts.Account", null)
+                        .WithMany("Transactions")
+                        .HasForeignKey("AccountId1");
+
+                    b.HasOne("FiscalOS.Core.Identity.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("FiscalOS.Core.Transactions.TransactionMetadata", b =>
+                {
+                    b.HasOne("FiscalOS.Core.Transactions.Transaction", null)
+                        .WithOne("Metadata")
+                        .HasForeignKey("FiscalOS.Core.Transactions.TransactionMetadata", "TransactionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("FiscalOS.Core.Accounts.Account", b =>
                 {
                     b.Navigation("Balances");
 
                     b.Navigation("Metadata");
+
+                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("FiscalOS.Core.Accounts.Institution", b =>
                 {
+                    b.Navigation("Accounts");
+
                     b.Navigation("Metadata");
                 });
 
@@ -358,6 +493,11 @@ namespace FiscalOS.Infra.Migrations
                     b.Navigation("Institutions");
 
                     b.Navigation("RefreshTokens");
+                });
+
+            modelBuilder.Entity("FiscalOS.Core.Transactions.Transaction", b =>
+                {
+                    b.Navigation("Metadata");
                 });
 #pragma warning restore 612, 618
         }

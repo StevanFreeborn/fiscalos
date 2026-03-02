@@ -33,7 +33,7 @@ internal sealed record AvailableAccountDto
   }
 
   public static AvailableAccountDto From(
-    PlaidMetadata plaidMetadata,
+    PlaidInstitutionMetadata plaidMetadata,
     Going.Plaid.Entity.Account plaidAccount
   )
   {

@@ -12,7 +12,7 @@ internal static class Endpoint
   private static async Task<IResult> HandleAsync(
     HttpContext httpContext,
     [FromServices] AppDbContext appDbContext,
-    [FromServices] PlaidService plaidService
+    [FromServices] IPlaidAccountService plaidAccountService
   )
   {
     var userId = httpContext.GetUserId();
@@ -24,7 +24,7 @@ internal static class Endpoint
       return Results.Unauthorized();
     }
 
-    var linkToken = await plaidService.CreateLinkTokenAsync(user.Id.ToString());
+    var linkToken = await plaidAccountService.CreateLinkTokenAsync(user.Id.ToString());
 
     return Results.Ok(Response.From(linkToken));
   }

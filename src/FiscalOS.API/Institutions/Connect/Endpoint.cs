@@ -13,7 +13,7 @@ internal static class Endpoint
     HttpContext httpContext,
     [FromBody] Request request,
     [FromServices] AppDbContext appDbContext,
-    [FromServices] PlaidService plaidService,
+    [FromServices] IPlaidAccountService plaidAccountService,
     [FromServices] IEncryptor encryptor,
     CancellationToken ct
   )
@@ -23,8 +23,8 @@ internal static class Endpoint
     var user = await appDbContext.Users
       .Include(u => u.Institutions
         .Where(
-          i => i.Metadata is PlaidMetadata &&
-            ((PlaidMetadata)i.Metadata).PlaidId == request.PlaidInstitutionId
+          i => i.Metadata is PlaidInstitutionMetadata &&
+            ((PlaidInstitutionMetadata)i.Metadata).PlaidId == request.PlaidInstitutionId
         )
       )
       .ThenInclude(i => i.Metadata)
@@ -40,12 +40,11 @@ internal static class Endpoint
       return Results.Conflict();
     }
 
-    var (itemId, accessToken) = await plaidService.ExchangeTokenAsync(request.PublicToken);
-    var item = await plaidService.GetItemAsync(accessToken);
-
+    var (itemId, accessToken) = await plaidAccountService.ExchangeTokenAsync(request.PublicToken);
+    var item = await plaidAccountService.GetItemAsync(accessToken);
     var encryptedAccessToken = await encryptor.EncryptAsyncFor(user, accessToken, ct);
 
-    var plaidMetadata = PlaidMetadata.From(item.InstitutionId, item.InstitutionName, encryptedAccessToken);
+    var plaidMetadata = PlaidInstitutionMetadata.From(item.InstitutionId, item.InstitutionName, encryptedAccessToken, itemId);
     var institution = Institution.From(item.InstitutionName, plaidMetadata);
 
     user.AddInstitution(institution);

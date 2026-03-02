@@ -10,5 +10,7 @@
     "source.fixAll": "explicit"
   },
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "cSpell.words": ["Encryptor"],
+  "python-envs.defaultEnvManager": "ms-python.python:system"
 }

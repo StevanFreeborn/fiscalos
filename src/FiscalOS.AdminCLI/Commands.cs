@@ -4,11 +4,13 @@ internal static class Commands
 {
   public const string CreateUser = "Create User";
   public const string GenerateKey = "Generate Key";
+  public const string RemoveInstitution = "Remove Institution";
   public const string Exit = "Exit";
 
   public static readonly string[] All = [
     CreateUser,
     GenerateKey,
+    RemoveInstitution,
     Exit
   ];
 }

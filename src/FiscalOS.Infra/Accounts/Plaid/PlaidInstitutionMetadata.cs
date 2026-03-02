@@ -1,31 +1,37 @@
+using FiscalOS.Infra.Common;
+
 namespace FiscalOS.Infra.Accounts.Plaid;
 
-public sealed class PlaidMetadata : InstitutionMetadata
+public sealed class PlaidInstitutionMetadata : InstitutionMetadata
 {
   public const string TypeValue = Providers.Plaid;
   public string PlaidId { get; init; } = string.Empty;
   public string PlaidName { get; init; } = string.Empty;
   public string EncryptedAccessToken { get; init; } = string.Empty;
+  public string ItemId { get; init; } = string.Empty;
 
-  private PlaidMetadata() : base(TypeValue)
+  private PlaidInstitutionMetadata() : base(TypeValue)
   {
   }
 
-  public static PlaidMetadata From(
+  public static PlaidInstitutionMetadata From(
     string? plaidId,
     string? plaidName,
-    string encryptedAccessToken
+    string encryptedAccessToken,
+    string itemId
   )
   {
     ArgumentNullException.ThrowIfNull(plaidId, nameof(plaidId));
     ArgumentNullException.ThrowIfNull(plaidName, nameof(plaidName));
     ArgumentNullException.ThrowIfNull(encryptedAccessToken, nameof(encryptedAccessToken));
+    ArgumentNullException.ThrowIfNull(itemId, nameof(itemId));
 
-    return new PlaidMetadata
+    return new()
     {
       PlaidId = plaidId,
       PlaidName = plaidName,
-      EncryptedAccessToken = encryptedAccessToken
+      EncryptedAccessToken = encryptedAccessToken,
+      ItemId = itemId,
     };
   }
 }

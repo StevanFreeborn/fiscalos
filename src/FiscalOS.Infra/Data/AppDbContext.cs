@@ -1,5 +1,9 @@
+using FiscalOS.Core.Transactions;
+using FiscalOS.Infra.Transactions.Plaid;
+
 using Account = FiscalOS.Core.Accounts.Account;
 using Institution = FiscalOS.Core.Accounts.Institution;
+using Transaction = FiscalOS.Core.Transactions.Transaction;
 
 namespace FiscalOS.Infra.Data;
 
@@ -14,6 +18,8 @@ public sealed class AppDbContext(
 
   public DbSet<User> Users => Set<User>();
   public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+  public DbSet<Institution> Institutions => Set<Institution>();
+  public DbSet<Transaction> Transactions => Set<Transaction>();
 
   protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
   {
@@ -63,7 +69,7 @@ public sealed class AppDbContext(
         .OnDelete(DeleteBehavior.Cascade);
 
       eb.HasMany(static u => u.Institutions)
-        .WithOne()
+        .WithOne(static i => i.User)
         .HasForeignKey(static i => i.UserId)
         .OnDelete(DeleteBehavior.Cascade);
 
@@ -96,19 +102,20 @@ public sealed class AppDbContext(
     modelBuilder.Entity<InstitutionMetadata>(static eb =>
     {
       eb.HasDiscriminator(static m => m.Type)
-        .HasValue<PlaidMetadata>(PlaidMetadata.TypeValue);
+        .HasValue<PlaidInstitutionMetadata>(PlaidInstitutionMetadata.TypeValue);
 
       eb.Property(static m => m.InstitutionId);
       eb.Property(static m => m.Type);
     });
 
-    modelBuilder.Entity<PlaidMetadata>(static eb =>
+    modelBuilder.Entity<PlaidInstitutionMetadata>(static eb =>
     {
       eb.HasBaseType<InstitutionMetadata>();
 
       eb.Property(static m => m.PlaidId);
       eb.Property(static m => m.PlaidName);
       eb.Property(static m => m.EncryptedAccessToken);
+      eb.Property(static m => m.ItemId);
     });
 
     modelBuilder.Entity<Account>(static eb =>
@@ -146,6 +153,7 @@ public sealed class AppDbContext(
 
       eb.Property(static m => m.PlaidId);
       eb.Property(static m => m.PlaidName);
+      eb.Property(static m => m.Cursor);
     });
 
     modelBuilder.Entity<Balance>(static eb =>
@@ -154,6 +162,41 @@ public sealed class AppDbContext(
       eb.Property(static b => b.Current);
       eb.Property(static b => b.Available);
       eb.Property(static b => b.CurrencyCode);
+    });
+
+    modelBuilder.Entity<Transaction>(static eb =>
+    {
+      eb.HasOne(static t => t.User)
+      .WithMany()
+      .HasForeignKey(static t => t.UserId)
+      .OnDelete(DeleteBehavior.Cascade);
+
+      eb.HasOne(static t => t.Account)
+      .WithMany()
+      .HasForeignKey(static t => t.AccountId)
+      .OnDelete(DeleteBehavior.Cascade);
+
+      eb.Property(static t => t.MerchantName);
+      eb.Property(static t => t.Description);
+      eb.Property(static t => t.Amount);
+      eb.Property(static t => t.Date);
+    });
+
+    modelBuilder.Entity<TransactionMetadata>(static eb =>
+    {
+      eb.HasDiscriminator(static m => m.Type)
+        .HasValue(PlaidTransactionMetadata.TypeValue);
+
+      eb.Property(static m => m.TransactionId);
+      eb.Property(static m => m.Type);
+    });
+
+    modelBuilder.Entity<PlaidTransactionMetadata>(static eb =>
+    {
+      eb.HasDiscriminator(static m => m.Type)
+        .HasValue(PlaidTransactionMetadata.TypeValue);
+
+      eb.Property(static m => m.PlaidId);
     });
   }
 }
