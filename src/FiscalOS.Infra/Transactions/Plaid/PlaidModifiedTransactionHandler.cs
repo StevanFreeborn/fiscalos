@@ -63,9 +63,9 @@ internal sealed class PlaidModifiedTransactionHandler : IPlaidModifiedTransactio
         existing.UserId,
         existing.AccountId,
         plaidModifiedTransaction.MerchantName,
-        plaidModifiedTransaction.OriginalDescription,
+        plaidModifiedTransaction.Description,
         plaidModifiedTransaction.Amount,
-        plaidModifiedTransaction.Datetime,
+        plaidModifiedTransaction.PostedDate,
         plaidMetadata
       );
 
