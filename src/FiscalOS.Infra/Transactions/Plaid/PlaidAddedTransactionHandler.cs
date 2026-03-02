@@ -43,9 +43,9 @@ internal sealed class PlaidAddedTransactionHandler : IPlaidAddedTransactionHandl
         account.UserId,
         account.Id,
         addedTransaction.MerchantName,
-        addedTransaction.OriginalDescription,
+        addedTransaction.Description,
         addedTransaction.Amount,
-        addedTransaction.Datetime,
+        addedTransaction.PostedDate,
         transactionMetadata
       );
       account.AddTransaction(transaction);
