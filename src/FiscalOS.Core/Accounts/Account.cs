@@ -1,3 +1,5 @@
+using FiscalOS.Core.Transactions;
+
 namespace FiscalOS.Core.Accounts;
 
 public sealed class Account : Entity
@@ -10,6 +12,9 @@ public sealed class Account : Entity
 
   private readonly List<Balance> _balances = [];
   public IEnumerable<Balance> Balances => _balances;
+
+  private readonly List<Transaction> _transactions = [];
+  public IEnumerable<Transaction> Transactions => _transactions;
 
   public static Account From(Guid institutionId, string name, AccountMetadata accountMetadata)
   {
@@ -26,5 +31,12 @@ public sealed class Account : Entity
     ArgumentNullException.ThrowIfNull(balance);
 
     _balances.Add(balance);
+  }
+
+  public void AddTransaction(Transaction transaction)
+  {
+    ArgumentNullException.ThrowIfNull(transaction);
+
+    _transactions.Add(transaction);
   }
 }

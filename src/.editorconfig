@@ -1,0 +1,4 @@
+[*.cs]
+
+dotnet_code_quality.ca1711.allowed_suffixes = Queue
+dotnet_diagnostic.CA1031.severity = none

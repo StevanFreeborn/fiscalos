@@ -3,6 +3,7 @@ namespace FiscalOS.Core.Accounts;
 public sealed class Institution : Entity
 {
   public Guid UserId { get; init; }
+  public User? User { get; init; }
   public string Name { get; init; } = string.Empty;
   public InstitutionMetadata? Metadata { get; init; }
 

@@ -13,7 +13,7 @@ internal static class Endpoint
     HttpContext httpContext,
     [FromRoute] Guid id,
     [FromServices] AppDbContext appDbContext,
-    [FromServices] PlaidService plaidService,
+    [FromServices] IPlaidAccountService plaidAccountService,
     [FromServices] IEncryptor encryptor,
     CancellationToken ct
   )
@@ -37,13 +37,13 @@ internal static class Endpoint
 
     var institution = user.Institutions.First();
 
-    if (institution.Metadata is not PlaidMetadata plaidMetadata)
+    if (institution.Metadata is not PlaidInstitutionMetadata plaidMetadata)
     {
       return Results.BadRequest();
     }
 
     var accessToken = await encryptor.DecryptAsyncFor(user, plaidMetadata.EncryptedAccessToken, ct);
-    var accounts = await plaidService.GetAccountsAsync(accessToken);
+    var accounts = await plaidAccountService.GetAccountsAsync(accessToken);
     var accountsDtos = accounts.Select(a => AvailableAccountDto.From(plaidMetadata, a));
 
     return Results.Ok(Response.From(accountsDtos));

@@ -172,7 +172,7 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
       await context.AddAsync(user, ct);
 
       var encryptedAccessToken = await encryptor.EncryptAsyncFor(user, "accessToken", ct);
-      var plaidMetadata = PlaidMetadata.From("alreadyExists", "Some Bank", encryptedAccessToken);
+      var plaidMetadata = PlaidInstitutionMetadata.From("alreadyExists", "Some Bank", encryptedAccessToken);
       var institution = Institution.From("Some Bank", plaidMetadata);
 
       await context.AddAsync(institution, ct);
@@ -192,7 +192,7 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
       .WithUserId(user.Id)
       .WithBody(new
       {
-        plaidInstitutionId = ((PlaidMetadata)institution.Metadata!).PlaidId,
+        plaidInstitutionId = ((PlaidInstitutionMetadata)institution.Metadata!).PlaidId,
         plaidAccountId = ((PlaidAccountMetadata)account.Metadata!).PlaidId,
         plaidAccountName = ((PlaidAccountMetadata)account.Metadata).PlaidName,
         accountCurrencyCode = "USD",
@@ -217,7 +217,7 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
       var user = User.From("User1", passwordHasher.Hash("@Password1"), userEncryptionKey);
 
       var encryptedAccessToken = await encryptor.EncryptAsyncFor(user, "accessToken", ct);
-      var plaidMetadata = PlaidMetadata.From("id", "Some Bank", encryptedAccessToken);
+      var plaidMetadata = PlaidInstitutionMetadata.From("id", "Some Bank", encryptedAccessToken);
       var institution = Institution.From("Some Bank", plaidMetadata);
 
       user.AddInstitution(institution);
@@ -237,7 +237,7 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
       .WithUserId(user.Id)
       .WithBody(new
       {
-        plaidInstitutionId = ((PlaidMetadata)institution.Metadata!).PlaidId,
+        plaidInstitutionId = ((PlaidInstitutionMetadata)institution.Metadata!).PlaidId,
         plaidAccountId = newAccountId,
         plaidAccountName = newAccountName,
         accountCurrentBalance = expectedBalance,

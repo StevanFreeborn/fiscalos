@@ -5,9 +5,6 @@ public record Request : IValidatableObject
   public string PlaidInstitutionId { get; init; } = string.Empty;
   public string PlaidAccountId { get; init; } = string.Empty;
   public string PlaidAccountName { get; init; } = string.Empty;
-  public decimal AccountCurrentBalance { get; init; }
-  public decimal AccountAvailableBalance { get; init; }
-  public string AccountCurrencyCode { get; init; } = string.Empty;
 
   public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
   {
@@ -26,12 +23,6 @@ public record Request : IValidatableObject
     if (string.IsNullOrWhiteSpace(PlaidAccountName))
     {
       var fieldName = nameof(PlaidAccountName);
-      yield return new($"The {fieldName} field is required.", [fieldName]);
-    }
-
-    if (string.IsNullOrWhiteSpace(AccountCurrencyCode))
-    {
-      var fieldName = nameof(AccountCurrencyCode);
       yield return new($"The {fieldName} field is required.", [fieldName]);
     }
   }

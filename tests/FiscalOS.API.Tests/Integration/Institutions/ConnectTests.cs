@@ -101,7 +101,7 @@ public class ConnectTests(TestApi testApi) : IntegrationTest(testApi)
       var user = User.From("User1", passwordHasher.Hash("@Password1"), userEncryptionKey);
 
       var encryptedAccessToken = await encryptor.EncryptAsyncFor(user, "accessToken", ct);
-      var plaidMetadata = PlaidMetadata.From("alreadyExists", "Some Bank", encryptedAccessToken);
+      var plaidMetadata = PlaidInstitutionMetadata.From("alreadyExists", "Some Bank", encryptedAccessToken);
       var institution = Institution.From("Some Bank", plaidMetadata);
 
       user.AddInstitution(institution);
@@ -117,7 +117,7 @@ public class ConnectTests(TestApi testApi) : IntegrationTest(testApi)
       .WithBody(new
       {
         publicToken = "token",
-        plaidInstitutionId = ((PlaidMetadata)institution.Metadata!).PlaidId,
+        plaidInstitutionId = ((PlaidInstitutionMetadata)institution.Metadata!).PlaidId,
       })
       .Build();
 
@@ -179,7 +179,7 @@ public class ConnectTests(TestApi testApi) : IntegrationTest(testApi)
     var institution = updatedUser.Institutions.First();
     institution.Name.Should().NotBeNullOrEmpty();
 
-    var metadata = institution.Metadata.As<PlaidMetadata>();
+    var metadata = institution.Metadata.As<PlaidInstitutionMetadata>();
     metadata.PlaidId.Should().Be(plaidInstitutionId);
     metadata.PlaidName.Should().Be(institution.Name);
     metadata.EncryptedAccessToken.Should().NotBeNullOrEmpty();

@@ -1,4 +1,4 @@
-using FiscalOS.ServiceDefaults;
+using Going.Plaid.Converters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +6,12 @@ builder.AddServiceDefaults();
 
 builder.Services.AddValidation();
 builder.Services.AddProblemDetails();
+
+builder.Services.ConfigureHttpJsonOptions(static options =>
+{
+  options.SerializerOptions.Converters.Add(new EnumConverterFactory());
+  options.SerializerOptions.Converters.Add(new WebhookBaseConverter());
+});
 
 builder.Services.AddInfrastructure();
 
@@ -41,5 +47,6 @@ app.MapDefaultEndpoints();
 app.MapAuthEndpoints();
 app.MapAccountsEndpoints();
 app.MapInstitutionsEndpoints();
+app.MapTransactionsGroup();
 
 app.Run();
