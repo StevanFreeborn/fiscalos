@@ -19,6 +19,14 @@ internal sealed class PlaidRemovedTransactionHandler : IPlaidRemovedTransactionH
     _logger = logger;
   }
 
+  public static PlaidRemovedTransactionHandler From(
+    AppDbContext appDbContext,
+    ILogger<PlaidRemovedTransactionHandler> logger
+  )
+  {
+    return new(appDbContext, logger);
+  }
+
   public static PlaidRemovedTransactionHandler From(IServiceProvider serviceProvider)
   {
     return new(

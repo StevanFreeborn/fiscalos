@@ -1,6 +1,3 @@
-using FiscalOS.Core.Transactions;
-using FiscalOS.Infra.Common;
-
 namespace FiscalOS.Infra.Transactions.Plaid;
 
 public sealed class PlaidTransactionMetadata : TransactionMetadata
@@ -14,7 +11,7 @@ public sealed class PlaidTransactionMetadata : TransactionMetadata
 
   public static PlaidTransactionMetadata From(string? plaidId)
   {
-    ArgumentNullException.ThrowIfNull(plaidId);
+    ArgumentNullException.ThrowIfNull(plaidId, nameof(plaidId));
 
     return new()
     {

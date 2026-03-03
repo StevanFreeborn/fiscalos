@@ -20,6 +20,17 @@ public sealed class Transaction : Entity
   }
 
   public static Transaction From(
+    string merchantName,
+    string description,
+    decimal? amount,
+    DateTimeOffset? date,
+    TransactionMetadata metadata
+  )
+  {
+    return From(Guid.Empty, Guid.Empty, merchantName, description, amount, date, metadata);
+  }
+
+  public static Transaction From(
     Guid userId,
     Guid accountId,
     string merchantName,
@@ -29,8 +40,8 @@ public sealed class Transaction : Entity
     TransactionMetadata metadata
   )
   {
-    ArgumentNullException.ThrowIfNull(merchantName);
-    ArgumentNullException.ThrowIfNull(description);
+    ArgumentNullException.ThrowIfNull(merchantName, nameof(merchantName));
+    ArgumentNullException.ThrowIfNull(description, nameof(description));
 
     if (amount.HasValue is false)
     {

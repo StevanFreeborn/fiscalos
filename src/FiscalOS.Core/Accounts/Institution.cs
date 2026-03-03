@@ -25,4 +25,11 @@ public sealed class Institution : Entity
       Metadata = metadata
     };
   }
+
+  public void AddAccount(Account account)
+  {
+    ArgumentNullException.ThrowIfNull(account, nameof(account));
+
+    _accounts.Add(account);
+  }
 }

@@ -1,6 +1,3 @@
-using Going.Plaid;
-using Going.Plaid.Entity;
-
 namespace FiscalOS.API.Transactions.FireWebhook;
 
 internal static class Endpoint

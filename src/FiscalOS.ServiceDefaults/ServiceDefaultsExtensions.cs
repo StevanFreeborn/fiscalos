@@ -59,7 +59,7 @@ public static class ServiceDefaultsExtensions
 
   public static WebApplication MapDefaultEndpoints(this WebApplication app)
   {
-    ArgumentNullException.ThrowIfNull(app);
+    ArgumentNullException.ThrowIfNull(app, nameof(app));
 
     if (app.Environment.IsDevelopment())
     {
