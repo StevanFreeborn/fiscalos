@@ -22,8 +22,8 @@ public sealed class Transaction : Entity
   public static Transaction From(
     Guid userId,
     Guid accountId,
-    string? merchantName,
-    string? description,
+    string merchantName,
+    string description,
     decimal? amount,
     DateTimeOffset? date,
     TransactionMetadata metadata
