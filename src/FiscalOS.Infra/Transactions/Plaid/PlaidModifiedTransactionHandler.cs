@@ -5,7 +5,11 @@ namespace FiscalOS.Infra.Transactions.Plaid;
 
 internal interface IPlaidModifiedTransactionHandler
 {
-  void Handle(Account account, IEnumerable<Going.Plaid.Entity.Transaction> modified);
+  Task<int> HandleAsync(
+    Account account,
+    IEnumerable<Going.Plaid.Entity.Transaction> modified,
+    CancellationToken ct
+  );
 }
 
 internal sealed class PlaidModifiedTransactionHandler : IPlaidModifiedTransactionHandler
@@ -30,46 +34,68 @@ internal sealed class PlaidModifiedTransactionHandler : IPlaidModifiedTransactio
     );
   }
 
-  public void Handle(Account account, IEnumerable<Going.Plaid.Entity.Transaction> modified)
+  public async Task<int> HandleAsync(Account account, IEnumerable<Going.Plaid.Entity.Transaction> modified, CancellationToken ct)
   {
     var modifiedTransactionIds = modified.Select(t => t.TransactionId);
-    var existingModifiedTransactions = _appDbContext.Transactions
+    var existingModifiedTransactions = await _appDbContext.Transactions
       .Where(t => t.Metadata is PlaidTransactionMetadata && modifiedTransactionIds.Contains(((PlaidTransactionMetadata)t.Metadata).PlaidId))
-      .ToList();
+      .ToListAsync(ct)
+      .ConfigureAwait(false);
+
+    var modifiedCount = 0;
 
     foreach (var existing in existingModifiedTransactions)
     {
-      if (existing.Metadata is not PlaidTransactionMetadata plaidMetadata)
+      try
       {
-        _logger.LogWarning(
-          "Existing transaction {TransactionId} has non-Plaid metadata. Skipping update for this transaction.",
+        if (existing.Metadata is not PlaidTransactionMetadata plaidMetadata)
+        {
+          _logger.LogWarning(
+            "Existing transaction {TransactionId} has non-Plaid metadata. Skipping update for this transaction.",
+            existing.Id
+          );
+          modifiedCount++;
+          continue;
+        }
+
+        var plaidModifiedTransaction = modified.FirstOrDefault(t => t.TransactionId == plaidMetadata.PlaidId);
+
+        if (plaidModifiedTransaction is null)
+        {
+          _logger.LogWarning(
+            "No corresponding modified transaction found in Plaid response for existing transaction {TransactionId}. Skipping update for this transaction.",
+            existing.Id
+          );
+          modifiedCount++;
+          continue;
+        }
+
+        var newTransactionData = Transaction.From(
+          existing.UserId,
+          existing.AccountId,
+          plaidModifiedTransaction.Merchant,
+          plaidModifiedTransaction.Description,
+          plaidModifiedTransaction.Amount,
+          plaidModifiedTransaction.PostedDate,
+          plaidMetadata
+        );
+
+        _appDbContext.Entry(existing).CurrentValues.SetValues(newTransactionData);
+        modifiedCount++;
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError(
+          ex,
+          "Failed to update transaction {TransactionId} for account {AccountId}",
+          account.Id,
           existing.Id
         );
-        continue;
       }
-
-      var plaidModifiedTransaction = modified.FirstOrDefault(t => t.TransactionId == plaidMetadata.PlaidId);
-
-      if (plaidModifiedTransaction is null)
-      {
-        _logger.LogWarning(
-          "No corresponding modified transaction found in Plaid response for existing transaction {TransactionId}. Skipping update for this transaction.",
-          existing.Id
-        );
-        continue;
-      }
-
-      var newTransactionData = Transaction.From(
-        existing.UserId,
-        existing.AccountId,
-        plaidModifiedTransaction.MerchantName,
-        plaidModifiedTransaction.Description,
-        plaidModifiedTransaction.Amount,
-        plaidModifiedTransaction.PostedDate,
-        plaidMetadata
-      );
-
-      _appDbContext.Entry(existing).CurrentValues.SetValues(newTransactionData);
     }
+
+    _logger.LogInformation("Modified {ModifiedCount} transactions for account {AccountId}", modifiedCount, account.Id);
+
+    return modifiedCount;
   }
 }

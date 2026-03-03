@@ -83,11 +83,22 @@ internal sealed class PlaidTransactionSyncer : IPlaidTransactionSyncer
         break;
       }
 
-      plaidAccountMetadata.SetCursor(response.NextCursor);
       var balance = Balance.From(plaidAccount.Current, plaidAccount.Available, plaidAccount.CurrencyCode);
       account.AddBalance(balance);
 
-      await _transactionProcessor.ProcessAsync(account, response, cancellationToken).ConfigureAwait(false);
+      var isProcessedSuccessfully = await _transactionProcessor.ProcessAsync(account, response, cancellationToken).ConfigureAwait(false);
+
+      if (isProcessedSuccessfully is false)
+      {
+        _logger.LogWarning(
+          "Unable to process transactions for request {RequestId} for account {AccountId} successfully",
+          response.RequestId,
+          account.Id
+        );
+        break;
+      }
+
+      plaidAccountMetadata.SetCursor(response.NextCursor);
     }
   }
 }
