@@ -92,7 +92,12 @@ public class GetAvailableTests(TestApi testApi) : IntegrationTest(testApi)
         AccessToken = exchangeTokenResponse.AccessToken,
       });
       var encryptedAccessToken = await encryptor.EncryptAsyncFor(user, exchangeTokenResponse.AccessToken, ct);
-      var institutionMetadata = PlaidInstitutionMetadata.From(institutionId, "Some Bank", encryptedAccessToken);
+      var institutionMetadata = PlaidInstitutionMetadata.From(
+         institutionId,
+         "Some Bank",
+         encryptedAccessToken,
+         exchangeTokenResponse.ItemId
+      );
       var institution = Institution.From("Some Bank", institutionMetadata);
 
       user.AddInstitution(institution);
@@ -110,7 +115,8 @@ public class GetAvailableTests(TestApi testApi) : IntegrationTest(testApi)
 
     var response = await Client.SendAsync(request, TestContext.Current.CancellationToken);
 
+    var expectedResponseAccounts = expectedAccounts.Select(a => AvailableAccountDto.From((PlaidInstitutionMetadata)institution.Metadata!, a));
     (await response.Should().BeJsonContentOfType<Response>(HttpStatusCode.OK))
-      .Which.Accounts.Should().BeEquivalentTo(expectedAccounts.Select(AvailableAccountDto.FromPlaidAccount));
+      .Which.Accounts.Should().BeEquivalentTo(expectedResponseAccounts);
   }
 }

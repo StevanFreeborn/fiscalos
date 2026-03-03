@@ -45,7 +45,12 @@ public class GetTests(TestApi testApi) : IntegrationTest(testApi)
       var user = User.From("User1", passwordHasher.Hash("@Password1"), userEncryptionKey);
 
       var encryptedAccessToken = await encryptor.EncryptAsyncFor(user, "accessToken", ct);
-      var plaidMetadata = PlaidInstitutionMetadata.From("alreadyExists", "Some Bank", encryptedAccessToken);
+      var plaidMetadata = PlaidInstitutionMetadata.From(
+        "alreadyExists",
+        "Some Bank",
+        encryptedAccessToken,
+        "itemId"
+      );
       var institution = Institution.From("Some Bank", plaidMetadata);
 
       user.AddInstitution(institution);
