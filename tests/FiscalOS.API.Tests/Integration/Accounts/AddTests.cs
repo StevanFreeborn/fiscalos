@@ -172,7 +172,12 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
       await context.AddAsync(user, ct);
 
       var encryptedAccessToken = await encryptor.EncryptAsyncFor(user, "accessToken", ct);
-      var plaidMetadata = PlaidInstitutionMetadata.From("alreadyExists", "Some Bank", encryptedAccessToken);
+      var plaidMetadata = PlaidInstitutionMetadata.From(
+        "alreadyExists",
+        "Some Bank",
+        encryptedAccessToken,
+        "itemId"
+      );
       var institution = Institution.From("Some Bank", plaidMetadata);
 
       await context.AddAsync(institution, ct);
@@ -217,7 +222,12 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
       var user = User.From("User1", passwordHasher.Hash("@Password1"), userEncryptionKey);
 
       var encryptedAccessToken = await encryptor.EncryptAsyncFor(user, "accessToken", ct);
-      var plaidMetadata = PlaidInstitutionMetadata.From("id", "Some Bank", encryptedAccessToken);
+      var plaidMetadata = PlaidInstitutionMetadata.From(
+        "id",
+        "Some Bank",
+        encryptedAccessToken,
+        "itemId"
+      );
       var institution = Institution.From("Some Bank", plaidMetadata);
 
       user.AddInstitution(institution);
