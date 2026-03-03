@@ -1,3 +1,6 @@
+using Account = FiscalOS.Core.Accounts.Account;
+using Institution = FiscalOS.Core.Accounts.Institution;
+
 namespace FiscalOS.API.Institutions.Get;
 
 internal sealed record Response

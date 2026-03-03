@@ -169,8 +169,6 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
       var userEncryptionKey = await encryptor.GenerateEncryptedKeyAsync(ct);
       var user = User.From("User1", passwordHasher.Hash("@Password1"), userEncryptionKey);
 
-      await context.AddAsync(user, ct);
-
       var encryptedAccessToken = await encryptor.EncryptAsyncFor(user, "accessToken", ct);
       var plaidMetadata = PlaidInstitutionMetadata.From(
         "alreadyExists",
@@ -183,11 +181,13 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
       await context.AddAsync(institution, ct);
 
       var plaidAccountMetadata = PlaidAccountMetadata.From("accountId", "Some Account");
-      var account = Account.From(institution.Id, "Some Account", plaidAccountMetadata);
+      var account = Account.From("Some Account", plaidAccountMetadata);
 
+      institution.AddAccount(account);
       user.AddInstitution(institution);
       user.AddAccount(account);
 
+      await context.AddAsync(user, ct);
       await context.SaveChangesAsync(ct);
       return (user, institution, account);
     }, TestContext.Current.CancellationToken);

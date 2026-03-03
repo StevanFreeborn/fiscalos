@@ -1,3 +1,5 @@
+using Institution = FiscalOS.Core.Accounts.Institution;
+
 namespace FiscalOS.API.Institutions.Connect;
 
 internal static class Endpoint

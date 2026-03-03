@@ -1,3 +1,5 @@
+using Account = FiscalOS.Core.Accounts.Account;
+
 namespace FiscalOS.API.Accounts.Add;
 
 internal static class Endpoint
@@ -59,8 +61,9 @@ internal static class Endpoint
 
     var decryptedAccessToken = await encryptor.DecryptAsyncFor(user, plaidInstitutionMetadata.EncryptedAccessToken, ct);
     var accountMetadata = PlaidAccountMetadata.From(request.PlaidAccountId, request.PlaidAccountName);
-    var account = Account.From(user.Institutions.First().Id, request.PlaidAccountName, accountMetadata);
+    var account = Account.From(request.PlaidAccountName, accountMetadata);
     user.AddAccount(account);
+    user.Institutions.First().AddAccount(account);
 
     await appDbContext.SaveChangesAsync(ct);
     await queue.EnqueueAsync(new(plaidInstitutionMetadata.ItemId), ct);
