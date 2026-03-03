@@ -1,5 +1,3 @@
-using FiscalOS.Infra.Common;
-
 namespace FiscalOS.Infra.Accounts.Plaid;
 
 public sealed class PlaidInstitutionMetadata : InstitutionMetadata

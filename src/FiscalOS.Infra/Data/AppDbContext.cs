@@ -1,6 +1,3 @@
-using FiscalOS.Core.Transactions;
-using FiscalOS.Infra.Transactions.Plaid;
-
 using Account = FiscalOS.Core.Accounts.Account;
 using Institution = FiscalOS.Core.Accounts.Institution;
 using Transaction = FiscalOS.Core.Transactions.Transaction;
@@ -167,14 +164,14 @@ public sealed class AppDbContext(
     modelBuilder.Entity<Transaction>(static eb =>
     {
       eb.HasOne(static t => t.User)
-      .WithMany()
-      .HasForeignKey(static t => t.UserId)
-      .OnDelete(DeleteBehavior.Cascade);
+        .WithMany(static u => u.Transactions)
+        .HasForeignKey(static t => t.UserId)
+        .OnDelete(DeleteBehavior.Cascade);
 
       eb.HasOne(static t => t.Account)
-      .WithMany()
-      .HasForeignKey(static t => t.AccountId)
-      .OnDelete(DeleteBehavior.Cascade);
+        .WithMany(static a => a.Transactions)
+        .HasForeignKey(static t => t.AccountId)
+        .OnDelete(DeleteBehavior.Cascade);
 
       eb.Property(static t => t.MerchantName);
       eb.Property(static t => t.Description);

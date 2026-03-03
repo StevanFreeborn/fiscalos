@@ -17,6 +17,8 @@ public sealed class Balance : Entity
     string currencyCode
   )
   {
+    ArgumentNullException.ThrowIfNull(currencyCode, nameof(currencyCode));
+
     return new()
     {
       Current = current,

@@ -3,7 +3,7 @@ namespace FiscalOS.Infra.Transactions.Plaid;
 public static class PlaidExtensions
 {
 #pragma warning disable CA1034
-  extension(Transaction transaction)
+  extension(Going.Plaid.Entity.Transaction transaction)
   {
     public string Merchant => transaction.MerchantName ?? "Unknown merchant";
     public string Description => transaction.OriginalDescription ?? "";

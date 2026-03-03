@@ -13,12 +13,15 @@ global using FiscalOS.Core.Data;
 global using FiscalOS.Core.Identity;
 global using FiscalOS.Core.Queuing;
 global using FiscalOS.Core.Security;
+global using FiscalOS.Core.Transactions;
 global using FiscalOS.Infra.Accounts.Plaid;
 global using FiscalOS.Infra.Authentication;
 global using FiscalOS.Infra.Authorization;
 global using FiscalOS.Infra.Common;
 global using FiscalOS.Infra.Data;
+global using FiscalOS.Infra.Queuing;
 global using FiscalOS.Infra.Security;
+global using FiscalOS.Infra.Transactions.Plaid;
 
 global using Going.Plaid;
 global using Going.Plaid.Entity;

@@ -1,10 +1,5 @@
 namespace FiscalOS.Infra.DependencyInjection;
 
-using FiscalOS.Core.Queuing;
-using FiscalOS.Infra.Accounts.Plaid;
-using FiscalOS.Infra.Queuing;
-using FiscalOS.Infra.Transactions.Plaid;
-
 public static class ServiceCollectionExtensions
 {
   public static IServiceCollection AddInfrastructure(this IServiceCollection services)

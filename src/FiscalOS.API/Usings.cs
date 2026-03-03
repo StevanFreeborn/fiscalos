@@ -21,7 +21,6 @@ global using FiscalOS.Core.Authentication;
 global using FiscalOS.Core.Identity;
 global using FiscalOS.Core.Queuing;
 global using FiscalOS.Core.Security;
-global using FiscalOS.Core.Transactions;
 global using FiscalOS.Infra.Accounts.Plaid;
 global using FiscalOS.Infra.Authentication;
 global using FiscalOS.Infra.Data;
@@ -30,6 +29,8 @@ global using FiscalOS.Infra.Transactions.Plaid;
 global using FiscalOS.ServiceDefaults;
 
 global using Going.Plaid;
+global using Going.Plaid.Converters;
+global using Going.Plaid.Entity;
 global using Going.Plaid.Webhook;
 
 global using Microsoft.AspNetCore.Mvc;

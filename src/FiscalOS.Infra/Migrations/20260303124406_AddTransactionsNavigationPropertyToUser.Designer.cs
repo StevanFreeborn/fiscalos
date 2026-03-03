@@ -3,6 +3,7 @@ using System;
 using FiscalOS.Infra.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FiscalOS.Infra.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260303124406_AddTransactionsNavigationPropertyToUser")]
+    partial class AddTransactionsNavigationPropertyToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.2");
@@ -250,6 +253,9 @@ namespace FiscalOS.Infra.Migrations
                     b.Property<Guid>("AccountId")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("AccountId1")
+                        .HasColumnType("TEXT");
+
                     b.Property<decimal>("Amount")
                         .HasColumnType("TEXT");
 
@@ -273,11 +279,18 @@ namespace FiscalOS.Infra.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("UserId1")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
 
+                    b.HasIndex("AccountId1");
+
                     b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
 
                     b.ToTable("Transactions");
                 });
@@ -435,16 +448,24 @@ namespace FiscalOS.Infra.Migrations
             modelBuilder.Entity("FiscalOS.Core.Transactions.Transaction", b =>
                 {
                     b.HasOne("FiscalOS.Core.Accounts.Account", "Account")
-                        .WithMany("Transactions")
+                        .WithMany()
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FiscalOS.Core.Identity.User", "User")
+                    b.HasOne("FiscalOS.Core.Accounts.Account", null)
                         .WithMany("Transactions")
+                        .HasForeignKey("AccountId1");
+
+                    b.HasOne("FiscalOS.Core.Identity.User", "User")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("FiscalOS.Core.Identity.User", null)
+                        .WithMany("Transactions")
+                        .HasForeignKey("UserId1");
 
                     b.Navigation("Account");
 

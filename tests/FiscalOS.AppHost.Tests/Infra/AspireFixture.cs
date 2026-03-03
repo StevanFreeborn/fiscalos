@@ -1,6 +1,3 @@
-using Aspire.Hosting;
-using Aspire.Hosting.Testing;
-
 namespace FiscalOS.AppHost.Tests.Infra;
 
 public sealed class AspireFixture : IAsyncLifetime
