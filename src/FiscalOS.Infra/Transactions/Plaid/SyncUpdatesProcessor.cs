@@ -74,7 +74,7 @@ internal sealed class SyncUpdatesProcessor : IAsyncQueueProcessor<SyncUpdatesQue
     }
 
     var decryptedAccessToken = await _encryptor.DecryptAsyncFor(
-        institution.User!,
+        institution.User,
         plaidMetadata.EncryptedAccessToken,
         cancellationToken
       )
@@ -82,8 +82,15 @@ internal sealed class SyncUpdatesProcessor : IAsyncQueueProcessor<SyncUpdatesQue
 
     foreach (var account in institution.Accounts)
     {
-      await _plaidTransactionSyncer.SyncTransactionsForAccountAsync(account, decryptedAccessToken, cancellationToken)
-        .ConfigureAwait(false);
+      try
+      {
+        await _plaidTransactionSyncer.SyncTransactionsForAccountAsync(account, decryptedAccessToken, cancellationToken)
+          .ConfigureAwait(false);
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError(ex, "Failed to sync transactions for account {AccountId}", account.Id);
+      }
     }
 
     await _appDbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

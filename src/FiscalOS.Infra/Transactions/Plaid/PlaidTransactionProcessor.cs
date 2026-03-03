@@ -4,7 +4,7 @@ namespace FiscalOS.Infra.Transactions.Plaid;
 
 internal interface IPlaidTransactionProcessor
 {
-  Task ProcessAsync(
+  Task<bool> ProcessAsync(
     Account account,
     TransactionsSyncResponse syncResponse,
     CancellationToken cancellationToken
@@ -37,10 +37,31 @@ internal sealed class PlaidTransactionProcessor : IPlaidTransactionProcessor
     );
   }
 
-  public async Task ProcessAsync(Account account, TransactionsSyncResponse syncResponse, CancellationToken cancellationToken)
+  public async Task<bool> ProcessAsync(
+    Account account,
+    TransactionsSyncResponse syncResponse,
+    CancellationToken cancellationToken
+  )
   {
-    _addedHandler.Handle(account, syncResponse.Added);
-    _modifiedHandler.Handle(account, syncResponse.Modified);
-    await _removedHandler.HandleAsync(syncResponse.Removed, cancellationToken).ConfigureAwait(false);
+    var numAdded = await _addedHandler.HandleAsync(
+      account,
+      syncResponse.Added,
+      cancellationToken
+    ).ConfigureAwait(false);
+
+    var numModified = await _modifiedHandler.HandleAsync(
+      account,
+      syncResponse.Modified,
+      cancellationToken
+    ).ConfigureAwait(false);
+
+    var numRemoved = await _removedHandler.HandleAsync(
+      syncResponse.Removed,
+      cancellationToken
+    ).ConfigureAwait(false);
+
+    return numAdded == syncResponse.Added.Count &&
+      numModified == syncResponse.Modified.Count &&
+      numRemoved == syncResponse.Removed.Count;
   }
 }

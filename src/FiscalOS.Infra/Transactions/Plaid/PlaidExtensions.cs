@@ -5,6 +5,7 @@ public static class PlaidExtensions
 #pragma warning disable CA1034
   extension(Transaction transaction)
   {
+    public string Merchant => transaction.MerchantName ?? "Unknown merchant";
     public string Description => transaction.OriginalDescription ?? "";
     public DateTimeOffset PostedDate => transaction.Datetime ?? (
         transaction.Date.HasValue
