@@ -26,6 +26,14 @@ internal sealed class PlaidModifiedTransactionHandler : IPlaidModifiedTransactio
     _appDbContext = appDbContext;
   }
 
+  public static PlaidModifiedTransactionHandler From(
+    ILogger<PlaidModifiedTransactionHandler> logger,
+    AppDbContext appDbContext
+  )
+  {
+    return new(logger, appDbContext);
+  }
+
   public static PlaidModifiedTransactionHandler From(IServiceProvider serviceProvider)
   {
     return new(
@@ -71,6 +79,7 @@ internal sealed class PlaidModifiedTransactionHandler : IPlaidModifiedTransactio
         }
 
         var newTransactionData = Transaction.From(
+          existing.Id,
           existing.UserId,
           existing.AccountId,
           plaidModifiedTransaction.Merchant,

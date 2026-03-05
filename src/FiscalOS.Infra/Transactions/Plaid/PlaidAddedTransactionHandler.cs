@@ -26,6 +26,14 @@ internal sealed class PlaidAddedTransactionHandler : IPlaidAddedTransactionHandl
     _appDbContext = appDbContext;
   }
 
+  public static PlaidAddedTransactionHandler From(
+    ILogger<PlaidAddedTransactionHandler> logger,
+    AppDbContext appDbContext
+  )
+  {
+    return new(logger, appDbContext);
+  }
+
   public static PlaidAddedTransactionHandler From(IServiceProvider serviceProvider)
   {
     return new(
