@@ -28,6 +28,15 @@ internal sealed class PlaidTransactionProcessor : IPlaidTransactionProcessor
     _removedHandler = removedHandler;
   }
 
+  internal static PlaidTransactionProcessor From(
+    IPlaidAddedTransactionHandler addedHandler,
+    IPlaidModifiedTransactionHandler modifiedHandler,
+    IPlaidRemovedTransactionHandler removedHandler
+  )
+  {
+    return new(addedHandler, modifiedHandler, removedHandler);
+  }
+
   internal static PlaidTransactionProcessor From(IServiceProvider provider)
   {
     return new(

@@ -28,6 +28,15 @@ internal sealed class PlaidTransactionSyncer : IPlaidTransactionSyncer
     _transactionProcessor = plaidTransactionProcessor;
   }
 
+  public static PlaidTransactionSyncer From(
+    ILogger<PlaidTransactionSyncer> logger,
+    IPlaidTransactionService plaidTransactionService,
+    IPlaidTransactionProcessor plaidTransactionProcessor
+  )
+  {
+    return new(logger, plaidTransactionService, plaidTransactionProcessor);
+  }
+
   public static PlaidTransactionSyncer From(IServiceProvider serviceProvider)
   {
     return new(
