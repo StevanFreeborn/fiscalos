@@ -1,3 +1,5 @@
+using FiscalOS.Infra.Tests.Data;
+
 namespace FiscalOS.Infra.Tests.Integration;
 
 public abstract class IntegrationTest : IAsyncLifetime
@@ -18,25 +20,20 @@ public abstract class IntegrationTest : IAsyncLifetime
 
   protected async Task<User> CreateTestUserAsync()
   {
-    var user = User.From(
-      "username",
-      "hashedPassword",
-      EncryptedDataKey.From("keyUsed", "encryptedKey")
-    );
-
-    var institutionMetadata = PlaidInstitutionMetadata.From(
-      "plaidId",
-      "plaidName",
-      "encryptedAccessToken",
-      "itemId"
-    );
-    var institution = Institution.From("institutionName", institutionMetadata);
-    user.AddInstitution(institution);
+    var user = UserBuilder.Create()
+      .WithInstitution(static ib =>
+      {
+        ib.WithMetadata();
+        ib.WithAccount(static ab => 
+        {
+          ab.WithMetadata();
+        });
+      })
+      .Build();
 
     var accountMetadata = PlaidAccountMetadata.From("plaidId", "plaidName");
     var account = Account.From("some account", accountMetadata);
     user.AddAccount(account);
-    institution.AddAccount(account);
 
     var transactionMetadata = PlaidTransactionMetadata.From("plaidId");
     var transaction = Transaction.From(

@@ -16,11 +16,18 @@ public sealed class Institution : Entity
 
   public static Institution From(string? name, InstitutionMetadata metadata)
   {
+    return From(null, name, metadata);
+  }
+
+  public static Institution From(User? user, string? name, InstitutionMetadata metadata)
+  {
     ArgumentNullException.ThrowIfNull(name, nameof(name));
     ArgumentNullException.ThrowIfNull(metadata, nameof(metadata));
 
     return new Institution()
     {
+      UserId = user?.Id ?? Guid.Empty,
+      User = user,
       Name = name,
       Metadata = metadata
     };
