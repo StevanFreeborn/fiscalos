@@ -29,7 +29,7 @@ public class RefreshTests(TestApi testApi) : IntegrationTest(testApi)
   [Fact]
   public async Task Refresh_WhenCalledWithTokenBelongingToDifferentUser_ItShouldReturn403WithProblemDetails()
   {
-    var (users, refreshToken) = await ExecuteAsync(static async (context, ct, sp) =>
+    var (users, refreshToken) = await Api.ExecuteAsync(static async (context, ct, sp) =>
     {
       var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
       var tokenGenerator = sp.GetRequiredService<ITokenGenerator>();
@@ -61,7 +61,7 @@ public class RefreshTests(TestApi testApi) : IntegrationTest(testApi)
 
     await response.Should().BeProblemDetails(HttpStatusCode.Forbidden);
 
-    var unrevokedTokensCountForUser2 = await ExecuteAsync(
+    var unrevokedTokensCountForUser2 = await Api.ExecuteAsync(
       async (context, ct) => await context.Set<RefreshToken>()
         .Include(t => t.User)
         .Where(t => t.UserId == users[1].Id && t.Revoked == false)
@@ -75,7 +75,7 @@ public class RefreshTests(TestApi testApi) : IntegrationTest(testApi)
   [Fact]
   public async Task Refresh_WhenCalledWithRevokedRefreshToken_ItShouldReturn400WithProblemDetails()
   {
-    var (user, refreshToken) = await ExecuteAsync(static async (context, ct, sp) =>
+    var (user, refreshToken) = await Api.ExecuteAsync(static async (context, ct, sp) =>
     {
       var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
       var tokenGenerator = sp.GetRequiredService<ITokenGenerator>();
@@ -108,7 +108,7 @@ public class RefreshTests(TestApi testApi) : IntegrationTest(testApi)
   [Fact]
   public async Task Refresh_WhenCalledWithExpiredRefreshToken_ItShouldReturn400WithProblemDetails()
   {
-    var (user, refreshToken) = await ExecuteAsync(static async (context, ct, sp) =>
+    var (user, refreshToken) = await Api.ExecuteAsync(static async (context, ct, sp) =>
     {
       var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
       var tokenGenerator = sp.GetRequiredService<ITokenGenerator>();
@@ -142,7 +142,7 @@ public class RefreshTests(TestApi testApi) : IntegrationTest(testApi)
   [InlineData(-5)]
   public async Task Refresh_WhenCalledWithValidRefreshTokenAndExpiredOrNotExpiredAccessToken_ItShouldReturn200WithNewTokensAndSetRefreshCookie(int accessTokenExpiresAtOffset)
   {
-    var (user, refreshToken) = await ExecuteAsync(static async (context, ct, sp) =>
+    var (user, refreshToken) = await Api.ExecuteAsync(static async (context, ct, sp) =>
     {
       var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
       var tokenGenerator = sp.GetRequiredService<ITokenGenerator>();
@@ -174,7 +174,7 @@ public class RefreshTests(TestApi testApi) : IntegrationTest(testApi)
     response.Should().HaveSetCookieHeader("fiscalos_refresh_cookie");
     await response.Should().BeJsonContentOfType<API.Auth.Refresh.Response>(HttpStatusCode.OK);
 
-    var oldRefreshTokenInDb = await ExecuteAsync(
+    var oldRefreshTokenInDb = await Api.ExecuteAsync(
       async (context, ct) => await context.Set<RefreshToken>()
         .Include(t => t.User)
         .Where(t => t.UserId == user.Id && t.Token == refreshToken.Token && t.Revoked == true)
@@ -184,7 +184,7 @@ public class RefreshTests(TestApi testApi) : IntegrationTest(testApi)
 
     oldRefreshTokenInDb.Should().NotBeNull();
 
-    var newRefreshTokenInDb = await ExecuteAsync(
+    var newRefreshTokenInDb = await Api.ExecuteAsync(
       async (context, ct) => await context.Set<RefreshToken>()
         .Include(t => t.User)
         .Where(t => t.UserId == user.Id && t.Revoked == false && t.Token != refreshToken.Token)

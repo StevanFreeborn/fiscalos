@@ -39,7 +39,7 @@ public class GetAvailableTests(TestApi testApi) : IntegrationTest(testApi)
   [Fact]
   public async Task GetAvailable_WhenCalledWithNonExistentInstitutionId_ItShouldReturn404WithProblemDetails()
   {
-    var user = await ExecuteAsync(static async (context, ct, sp) =>
+    var user = await Api.ExecuteAsync(static async (context, ct, sp) =>
     {
       var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
       var encryptor = sp.GetRequiredService<IEncryptor>();
@@ -65,7 +65,7 @@ public class GetAvailableTests(TestApi testApi) : IntegrationTest(testApi)
   [Fact]
   public async Task GetAvailable_WhenCalledWithConnectedInstitution_ItShouldReturn200WithAvailableAccounts()
   {
-    var (user, institution, expectedAccounts) = await ExecuteAsync(static async (context, ct, sp) =>
+    var (user, institution, expectedAccounts) = await Api.ExecuteAsync(static async (context, ct, sp) =>
     {
       var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
       var encryptor = sp.GetRequiredService<IEncryptor>();
@@ -93,10 +93,10 @@ public class GetAvailableTests(TestApi testApi) : IntegrationTest(testApi)
       });
       var encryptedAccessToken = await encryptor.EncryptAsyncFor(user, exchangeTokenResponse.AccessToken, ct);
       var institutionMetadata = PlaidInstitutionMetadata.From(
-         institutionId,
-         "Some Bank",
-         encryptedAccessToken,
-         exchangeTokenResponse.ItemId
+        institutionId,
+        "Some Bank",
+        encryptedAccessToken,
+        exchangeTokenResponse.ItemId
       );
       var institution = Institution.From("Some Bank", institutionMetadata);
 

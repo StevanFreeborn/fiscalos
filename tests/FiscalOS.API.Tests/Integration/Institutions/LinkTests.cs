@@ -32,7 +32,7 @@ public class LinkTests(TestApi testApi) : IntegrationTest(testApi)
   [Fact]
   public async Task Link_WhenCalledWithUserWhoExists_ItShouldReturnLinkToken()
   {
-    var user = await ExecuteAsync(static async (context, ct, sp) =>
+    var user = await Api.ExecuteAsync(static async (context, ct, sp) =>
     {
       var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
       var encryptor = sp.GetRequiredService<IEncryptor>();

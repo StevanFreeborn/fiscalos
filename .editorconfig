@@ -81,7 +81,6 @@ dotnet_remove_unnecessary_suppression_exclusions = none
 
 # analyzer settings
 dotnet_diagnostic.IDE0058.severity = none
-dotnet_diagnostic.IDE0053.severity = when_on_single_line:suggestion
 dotnet_diagnostic.IDE0100.severity = none
 dotnet_diagnostic.CA1515.severity = none
 dotnet_diagnostic.CA1848.severity = none
@@ -95,7 +94,7 @@ csharp_style_var_when_type_is_apparent = true:suggestion
 csharp_style_expression_bodied_accessors = true:silent
 csharp_style_expression_bodied_constructors = false:silent
 csharp_style_expression_bodied_indexers = true:silent
-csharp_style_expression_bodied_lambdas = true:suggestion
+csharp_style_expression_bodied_lambdas = when_on_single_line:suggestion
 csharp_style_expression_bodied_local_functions = false:silent
 csharp_style_expression_bodied_methods = false:silent
 csharp_style_expression_bodied_operators = false:silent
