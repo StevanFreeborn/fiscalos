@@ -16,7 +16,6 @@ global using FiscalOS.API.Institutions.Link;
 global using FiscalOS.API.Transactions;
 global using FiscalOS.API.Transactions.FireWebhook;
 global using FiscalOS.API.Transactions.Webhook;
-global using FiscalOS.Core.Accounts;
 global using FiscalOS.Core.Authentication;
 global using FiscalOS.Core.Identity;
 global using FiscalOS.Core.Queuing;

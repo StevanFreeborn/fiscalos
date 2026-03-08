@@ -1,5 +1,3 @@
-using Going.Plaid.Transactions;
-
 namespace FiscalOS.Infra.Tests.Unit;
 
 public class PlaidTransactionProcessorTests
