@@ -42,7 +42,7 @@ public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
   [Fact]
   public async Task Login_WhenUserExistsButPasswordIsIncorrect_ItShouldReturn401WithProblemDetails()
   {
-    await ExecuteAsync(static async (context, ct, sp) =>
+    await Api.ExecuteAsync(static async (context, ct, sp) =>
     {
       var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
       var encryptor = sp.GetRequiredService<IEncryptor>();
@@ -70,7 +70,7 @@ public class LoginTests(TestApi testApi) : IntegrationTest(testApi)
   [Fact]
   public async Task Login_WhenUserExistsAndPasswordIsCorrect_ItShouldReturn200WithJwtTokenAndSetRefreshCookie()
   {
-    await ExecuteAsync(static async (context, ct, sp) =>
+    await Api.ExecuteAsync(static async (context, ct, sp) =>
     {
       var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
       var encryptor = sp.GetRequiredService<IEncryptor>();

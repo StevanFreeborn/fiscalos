@@ -92,7 +92,7 @@ public class ConnectTests(TestApi testApi) : IntegrationTest(testApi)
   [Fact]
   public async Task Connect_WhenCalledWithPlaidInstitutionIdThatIsAlreadyConnected_ItShouldReturn409WithProblemDetails()
   {
-    var (user, institution) = await ExecuteAsync(static async (context, ct, sp) =>
+    var (user, institution) = await Api.ExecuteAsync(static async (context, ct, sp) =>
     {
       var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
       var encryptor = sp.GetRequiredService<IEncryptor>();
@@ -136,7 +136,7 @@ public class ConnectTests(TestApi testApi) : IntegrationTest(testApi)
   {
     var plaidInstitutionId = "ins_109508";
 
-    var (user, publicToken) = await ExecuteAsync(async (context, ct, sp) =>
+    var (user, publicToken) = await Api.ExecuteAsync(async (context, ct, sp) =>
     {
       var plaidClient = sp.GetRequiredService<PlaidClient>();
       var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
@@ -171,7 +171,7 @@ public class ConnectTests(TestApi testApi) : IntegrationTest(testApi)
 
     response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-    var updatedUser = await ExecuteAsync(
+    var updatedUser = await Api.ExecuteAsync(
       async (context, ct) => await context.Set<User>()
         .Include(u => u.Institutions)
         .ThenInclude(i => i.Metadata)

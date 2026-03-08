@@ -36,7 +36,7 @@ public class GetTests(TestApi testApi) : IntegrationTest(testApi)
   [Fact]
   public async Task Get_WhenCalledByUser_ItShouldReturn200WithListOfInstitutions()
   {
-    var (user, institution) = await ExecuteAsync(static async (context, ct, sp) =>
+    var (user, institution) = await Api.ExecuteAsync(static async (context, ct, sp) =>
     {
       var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
       var encryptor = sp.GetRequiredService<IEncryptor>();

@@ -13,7 +13,10 @@ internal sealed class HttpRequestBuilder
   {
   }
 
-  public static HttpRequestBuilder New() => new();
+  public static HttpRequestBuilder New()
+  {
+    return new();
+  }
 
   public HttpRequestBuilder WithMethod(HttpMethod method)
   {

@@ -1,3 +1,6 @@
+using FiscalOS.Core.Queuing;
+using FiscalOS.Infra.Transactions.Plaid;
+
 using Account = FiscalOS.Core.Accounts.Account;
 using Institution = FiscalOS.Core.Accounts.Institution;
 
@@ -31,7 +34,6 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
       ["PlaidInstitutionId"] = ["The PlaidInstitutionId field is required."],
       ["PlaidAccountId"] = ["The PlaidAccountId field is required."],
       ["PlaidAccountName"] = ["The PlaidAccountName field is required."],
-      ["AccountCurrencyCode"] = ["The AccountCurrencyCode field is required."],
     });
   }
 
@@ -124,7 +126,7 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
   [Fact]
   public async Task Add_WhenCalledWithPlaidInstitutionIdThatHasNotBeenAdded_ItShouldReturn400WithProblemDetails()
   {
-    var user = await ExecuteAsync(static async (context, ct, sp) =>
+    var user = await Api.ExecuteAsync(static async (context, ct, sp) =>
     {
       var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
       var encryptor = sp.GetRequiredService<IEncryptor>();
@@ -161,7 +163,7 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
   [Fact]
   public async Task Add_WhenCalledWithPlaidAccountIdThatHasAlreadyBeenAdded_ItShouldReturn409WithProblemDetails()
   {
-    var (user, institution, account) = await ExecuteAsync(static async (context, ct, sp) =>
+    var (user, institution, account) = await Api.ExecuteAsync(static async (context, ct, sp) =>
     {
       var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
       var encryptor = sp.GetRequiredService<IEncryptor>();
@@ -212,7 +214,18 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
   [Fact]
   public async Task Add_WhenCalledWithNewAccount_ItShouldReturn200()
   {
-    var (user, institution) = await ExecuteAsync(async (context, ct, sp) =>
+    var mockQueue = new Mock<IAsyncQueue<SyncUpdatesQueueItem>>();
+
+    await using var testApi = Api
+      .WithAdditionalConfig(whb =>
+      {
+        whb.ConfigureTestServices(s =>
+        {
+          s.AddSingleton(mockQueue.Object);
+        });
+      });
+
+    var (user, institution) = await testApi.ExecuteAsync(async (context, ct, sp) =>
     {
       var passwordHasher = sp.GetRequiredService<IPasswordHasher>();
       var encryptor = sp.GetRequiredService<IEncryptor>();
@@ -256,11 +269,13 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
       })
       .Build();
 
-    var response = await Client.SendAsync(request, TestContext.Current.CancellationToken);
+    var client = testApi.CreateClient();
+
+    var response = await client.SendAsync(request, TestContext.Current.CancellationToken);
 
     response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-    var updatedUser = await ExecuteAsync(
+    var updatedUser = await testApi.ExecuteAsync(
       async (context, ct) => await context.Set<User>()
         .Include(u => u.Accounts)
         .ThenInclude(a => a.Metadata)
@@ -279,12 +294,9 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
         ((PlaidAccountMetadata)a.Metadata).PlaidName == newAccountName
     );
 
-    updatedUser.Accounts.First()
-      .Balances.Should().ContainSingle(
-        b => b.AccountId == updatedUser.Accounts.First().Id &&
-          b.Current == expectedBalance &&
-          b.Available == expectedBalance &&
-          b.CurrencyCode == expectedCurrencyCode
-      );
+    mockQueue.Verify(m => m.EnqueueAsync(
+      It.IsAny<SyncUpdatesQueueItem>(),
+      It.IsAny<CancellationToken>()
+    ), Times.Once());
   }
 }
