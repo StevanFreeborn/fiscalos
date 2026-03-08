@@ -29,6 +29,12 @@ internal sealed class AccountBuilder
     return this;
   }
 
+  public AccountBuilder WithMetadata(AccountMetadata metadata)
+  {
+    _metadata = metadata;
+    return this;
+  }
+
   public AccountBuilder WithTransaction(Action<TransactionBuilder>? action = null)
   {
     var tb = TransactionBuilder.Create();

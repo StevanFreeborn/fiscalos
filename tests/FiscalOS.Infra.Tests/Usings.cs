@@ -1,6 +1,7 @@
 global using System.Globalization;
 global using System.IdentityModel.Tokens.Jwt;
 global using System.IO.Abstractions;
+global using System.Net;
 global using System.Security.Cryptography;
 global using System.Text;
 global using System.Text.Json;
@@ -19,6 +20,9 @@ global using FiscalOS.Infra.Security;
 global using FiscalOS.Infra.Tests.Assertions;
 global using FiscalOS.Infra.Tests.Mocks;
 global using FiscalOS.Infra.Transactions.Plaid;
+
+global using Going.Plaid;
+global using Going.Plaid.Transactions;
 
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.AspNetCore.Authorization;
