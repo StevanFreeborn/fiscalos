@@ -24,27 +24,16 @@ public abstract class IntegrationTest : IAsyncLifetime
       .WithInstitution(static ib =>
       {
         ib.WithMetadata();
-        ib.WithAccount(static ab => 
+        ib.WithAccount(static ab =>
         {
           ab.WithMetadata();
+          ab.WithTransaction(static tb =>
+          {
+            tb.WithMetadata();
+          });
         });
       })
       .Build();
-
-    var accountMetadata = PlaidAccountMetadata.From("plaidId", "plaidName");
-    var account = Account.From("some account", accountMetadata);
-    user.AddAccount(account);
-
-    var transactionMetadata = PlaidTransactionMetadata.From("plaidId");
-    var transaction = Transaction.From(
-      "merchantName",
-      "description",
-      100,
-      DateTimeOffset.UtcNow,
-      transactionMetadata
-    );
-    user.AddTransaction(transaction);
-    account.AddTransaction(transaction);
 
     await AppDbContext.AddAsync(user, TestContext.Current.CancellationToken);
     await AppDbContext.SaveChangesAsync(TestContext.Current.CancellationToken);

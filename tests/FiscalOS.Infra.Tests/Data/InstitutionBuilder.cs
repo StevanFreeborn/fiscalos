@@ -2,7 +2,6 @@ namespace FiscalOS.Infra.Tests.Data;
 
 internal sealed class InstitutionBuilder
 {
-  private User? _user;
   private string _name = "institutionName";
   private InstitutionMetadata? _metadata;
   private readonly List<Account> _accounts = [];
@@ -14,12 +13,6 @@ internal sealed class InstitutionBuilder
   public static InstitutionBuilder Create()
   {
     return new();
-  }
-
-  public InstitutionBuilder WithUser(User user)
-  {
-    _user = user;
-    return this;
   }
 
   public InstitutionBuilder WithName(string name)
@@ -52,7 +45,6 @@ internal sealed class InstitutionBuilder
     }
 
     var institution = Institution.From(
-      _user,
       _name,
       _metadata
     );

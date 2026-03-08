@@ -4,6 +4,7 @@ internal sealed class AccountBuilder
 {
   private string _name = "accountName";
   private AccountMetadata? _metadata;
+  private readonly List<Transaction> _transactions = [];
 
   private AccountBuilder()
   {
@@ -28,6 +29,14 @@ internal sealed class AccountBuilder
     return this;
   }
 
+  public AccountBuilder WithTransaction(Action<TransactionBuilder>? action = null)
+  {
+    var tb = TransactionBuilder.Create();
+    action?.Invoke(tb);
+    _transactions.Add(tb.Build());
+    return this;
+  }
+
   public Account Build()
   {
     if (_metadata is null)
@@ -35,6 +44,13 @@ internal sealed class AccountBuilder
       throw new InvalidOperationException($"You must call {nameof(WithMetadata)} prior to building");
     }
 
-    return Account.From(_name, _metadata);
+    var account = Account.From(_name, _metadata);
+
+    foreach (var transaction in _transactions)
+    {
+      account.AddTransaction(transaction);
+    }
+
+    return account;
   }
 }
