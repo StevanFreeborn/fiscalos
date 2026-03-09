@@ -1,3 +1,4 @@
 {
-  "appHostPath": "../src/FiscalOS.AppHost/FiscalOS.AppHost.csproj"
+  "appHostPath": "../src/FiscalOS.AppHost/FiscalOS.AppHost.csproj",
+  "defaultWatchEnabled": "true"
 }
