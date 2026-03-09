@@ -19,6 +19,7 @@ export class AuthServiceFactory implements IAuthServiceFactory {
 export interface IAuthService {
   login: (username: string, password: string) => Promise<Result<LoginResponse, Error[]>>;
   refreshToken: () => Promise<Result<LoginResponse, Error[]>>;
+  logout: () => Promise<Result<boolean, Error[]>>;
 }
 
 export class AuthService implements IAuthService {
@@ -26,10 +27,28 @@ export class AuthService implements IAuthService {
   private readonly endpoints = {
     login: '/api/auth/login',
     refreshToken: '/api/auth/refresh',
+    logout: '/api/auth/logout',
   };
 
   constructor(client: IClient) {
     this.client = client;
+  }
+
+  async logout() {
+    const request = new ClientRequestWithBody(this.endpoints.logout, undefined);
+
+    try {
+      const res = await this.client.post(request);
+
+      if (res.ok === false) {
+        return Err([new Error('Failed to logout. Please try again.')]);
+      }
+
+      return Ok(true);
+    } catch (e) {
+      console.error(e);
+      return Err([new Error('Failed to logout. Please try again.')]);
+    }
   }
 
   async login(username: string, password: string) {

@@ -9,6 +9,7 @@ internal static class AuthExtensions
     var authGroup = app.MapGroup(RouteGroupPrefix);
 
     authGroup.MapLoginEndpoint();
+    authGroup.MapLogoutEndpoint();
 
     authGroup.MapRefreshEndpoint()
       .RequireAuthorization(Schemes.AllowExpiredTokens);
