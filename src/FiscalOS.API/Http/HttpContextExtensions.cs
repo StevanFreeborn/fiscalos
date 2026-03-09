@@ -25,6 +25,21 @@ internal static class HttpContextExtensions
     );
   }
 
+  public static void ExpireRefreshTokenCookie(this HttpContext context)
+  {
+    context.Response.Cookies.Append(
+      RefreshTokenCookieName,
+      string.Empty,
+      new CookieOptions
+      {
+        HttpOnly = true,
+        Expires = DateTimeOffset.MinValue,
+        SameSite = SameSiteMode.Strict,
+        Secure = true
+      }
+    );
+  }
+
   public static string GetRefreshTokenFromCookie(this HttpContext context)
   {
     return context.Request.Cookies[RefreshTokenCookieName] ?? string.Empty;
