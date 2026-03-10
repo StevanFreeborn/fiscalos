@@ -24,6 +24,24 @@ input {
   color: inherit;
 }
 
+select {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background-color: inherit;
+}
+
+option {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background-color: inherit;
+}
+
+option :hover {
+  background-color: var(--bg-element);
+}
+
 a {
   text-decoration: none;
   color: inherit;

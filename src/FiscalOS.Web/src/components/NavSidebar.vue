@@ -39,23 +39,29 @@
     >
       <LeftArrowIcon />
     </button>
-    <nav>
-      <ul>
-        <li>
-          <RouterLink to="/">Accounts</RouterLink>
-        </li>
-        <li>
-          <RouterLink to="/transactions">Transactions</RouterLink>
-        </li>
-      </ul>
-    </nav>
-    <button
-      class="logout-button"
-      type="button"
-      @click="handleLogout"
-    >
-      Logout
-    </button>
+    <div class="sidebar-content">
+      <div class="top">
+        <nav>
+          <ul>
+            <li>
+              <RouterLink to="/accounts">Accounts</RouterLink>
+            </li>
+            <li>
+              <RouterLink to="/transactions">Transactions</RouterLink>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <div class="bottom">
+        <button
+          class="logout-button"
+          type="button"
+          @click="handleLogout"
+        >
+          Logout
+        </button>
+      </div>
+    </div>
   </aside>
 </template>
 
@@ -82,6 +88,35 @@
     }
   }
 
+  aside.collapsed {
+    width: calc(0.125rem + var(--button-size) / 2);
+  }
+
+  aside.collapsed .toggle-button {
+    transform: rotate(180deg);
+  }
+
+  aside.collapsed .sidebar-content {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .sidebar-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    gap: 3rem;
+    flex: 1;
+    overflow: hidden;
+    opacity: 1;
+    visibility: visible;
+    transition-property: opacity, visibility;
+    transition-duration: var(--transition-duration);
+    transition-timing-function: var(--transition-function);
+  }
+
   .logout-button {
     background: var(--bg-element);
     padding: 0.25rem 0.5rem;
@@ -102,14 +137,6 @@
     transition-property: transform;
     transition-duration: var(--transition-duration);
     transition-timing-function: var(--transition-function);
-  }
-
-  aside.collapsed {
-    width: calc(0.125rem + var(--button-size) / 2);
-  }
-
-  aside.collapsed .toggle-button {
-    transform: rotate(180deg);
   }
 
   .toggle-button svg {

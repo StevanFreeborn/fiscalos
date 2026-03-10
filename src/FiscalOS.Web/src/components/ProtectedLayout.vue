@@ -22,5 +22,9 @@
   main {
     flex: 1;
     padding: 1rem;
+    overflow: auto;
+    scroll-behavior: smooth;
+    scrollbar-color: var(--bg-surface) var(--bg-app);
+    scrollbar-gutter: stable;
   }
 </style>

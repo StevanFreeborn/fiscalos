@@ -19,6 +19,7 @@ internal static class Endpoint
     var user = await appDbContext.Users
       .Include(u => u.Institutions)
       .ThenInclude(i => i.Accounts)
+      .ThenInclude(a => a.Metadata)
       .FirstOrDefaultAsync(u => u.Id == userId);
 
     if (user is null)

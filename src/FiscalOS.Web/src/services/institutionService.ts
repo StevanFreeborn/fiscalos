@@ -136,8 +136,9 @@ type LinkTokenResponse = {
 
 type Account = {
   id: string;
+  providerId: string;
   name: string;
-}
+};
 
 export type Institution = {
   id: string;
