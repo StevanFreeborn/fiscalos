@@ -1,21 +1,29 @@
 import './assets/css/main.css';
 
-import { createApp } from "vue";
-import { createPinia } from "pinia";
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
 
-import App from "./App.vue";
-import router from "./router";
-import { ClientFactory, ClientFactoryKey } from "./services/client";
-import {  AuthServiceFactory, AuthServiceFactoryKey } from "./services/authService";
-import { InstituionServiceFactoryKey, InstitutionServiceFactory } from './services/institutionService';
+import App from './App.vue';
+import router from './router';
+import { ClientFactory, ClientFactoryKey } from './services/client';
+import { AuthServiceFactory, AuthServiceFactoryKey } from './services/authService';
+import {
+  InstituionServiceFactoryKey,
+  InstitutionServiceFactory,
+} from './services/institutionService';
+import {
+  TransactionServiceFactory,
+  TransactionServiceFactoryKey,
+} from './services/transactionService';
 
 const app = createApp(App);
 
 app.provide(ClientFactoryKey, new ClientFactory());
 app.provide(AuthServiceFactoryKey, new AuthServiceFactory());
 app.provide(InstituionServiceFactoryKey, new InstitutionServiceFactory());
+app.provide(TransactionServiceFactoryKey, new TransactionServiceFactory());
 
 app.use(createPinia());
 app.use(router);
 
-app.mount("#app");
+app.mount('#app');

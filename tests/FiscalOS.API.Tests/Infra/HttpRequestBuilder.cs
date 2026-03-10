@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.WebUtilities;
+
 namespace FiscalOS.API.Tests.Infra;
 
 internal sealed class HttpRequestBuilder
@@ -8,6 +10,7 @@ internal sealed class HttpRequestBuilder
   private string? _bearerToken;
   private readonly Dictionary<string, string> _cookies = [];
   private readonly Dictionary<string, string> _headers = [];
+  private readonly Dictionary<string, string?> _queryParameters = [];
 
   private HttpRequestBuilder()
   {
@@ -68,6 +71,12 @@ internal sealed class HttpRequestBuilder
     return this;
   }
 
+  public HttpRequestBuilder WithQueryParameter(string name, string value)
+  {
+    _queryParameters[name] = value;
+    return this;
+  }
+
   public HttpRequestBuilder Post(Uri uri)
   {
     _method = HttpMethod.Post;
@@ -103,7 +112,11 @@ internal sealed class HttpRequestBuilder
       throw new InvalidOperationException("URI must be set before building the request.");
     }
 
-    var request = new HttpRequestMessage(_method, _uri);
+    var uri = _queryParameters.Count > 0
+      ? QueryHelpers.AddQueryString(_uri.ToString(), _queryParameters)
+      : _uri.ToString();
+
+    var request = new HttpRequestMessage(_method, uri);
 
     if (_body is not null)
     {

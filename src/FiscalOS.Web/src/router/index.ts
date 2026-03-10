@@ -62,6 +62,10 @@ const router = createRouter({
           path: '/',
           component: () => import('../views/HomeView.vue'),
         },
+        {
+          path: '/transactions',
+          component: () => import('../views/TransactionsView.vue'),
+        }
       ],
     },
   ],

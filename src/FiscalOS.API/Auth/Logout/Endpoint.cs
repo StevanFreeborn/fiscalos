@@ -1,3 +1,5 @@
+namespace FiscalOS.API.Auth.Logout;
+
 internal static class Endpoint
 {
   private const string Route = "/logout";

@@ -147,7 +147,7 @@ async function handleAccountAddClick() {
     </button>
   </div>
   <div v-if="institutionsData.status === 'loaded'" class="institutions-container">
-    <div v-for="institution in institutionsData.data" v-bind:key="institution.id">
+    <div v-for="institution in institutionsData.data" :key="institution.id">
       <div class="institution-card">
         <div>
           <div>{{ institution.name }}</div>
@@ -160,7 +160,7 @@ async function handleAccountAddClick() {
       </div>
       <div v-if="targetInstitutionOfAdd != null && targetInstitutionOfAdd.id === institution.id">
         <select v-model="targetAccountOfAdd">
-          <option v-for="account in availableAccounts" v-bind:key="account.providerId" :value="account">
+          <option v-for="account in availableAccounts" :key="account.providerId" :value="account">
             {{ account.providerName }}
           </option>
         </select>
@@ -168,7 +168,7 @@ async function handleAccountAddClick() {
           Add
         </button>
       </div>
-      <div v-for="accounts in institution.accounts" v-bind:key="accounts.id">
+      <div v-for="accounts in institution.accounts" :key="accounts.id">
         <div>{{ accounts.name }}</div>
       </div>
     </div>

@@ -1,3 +1,7 @@
+using FiscalOS.API.Auth.Login;
+using FiscalOS.API.Auth.Logout;
+using FiscalOS.API.Auth.Refresh;
+
 namespace FiscalOS.API.Auth;
 
 internal static class AuthExtensions
