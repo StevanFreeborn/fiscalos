@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="AwesomeAssertions" />
+    <PackageReference Include="Moq" />
+    <PackageReference Include="xunit.v3.extensibility.core" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\FiscalOS.Core\FiscalOS.Core.csproj" />
+    <ProjectReference Include="..\..\src\FiscalOS.Infra\FiscalOS.Infra.csproj" />
+  </ItemGroup>
+
+</Project>
