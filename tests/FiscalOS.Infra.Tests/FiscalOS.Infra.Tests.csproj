@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\FiscalOS.Infra\FiscalOS.Infra.csproj" />
+    <ProjectReference Include="..\FiscalOS.Tests.Common\FiscalOS.Tests.Common.csproj" />
   </ItemGroup>
 
 </Project>
