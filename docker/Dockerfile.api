@@ -3,14 +3,19 @@ WORKDIR /repo
 
 COPY Directory.Build.props .
 COPY global.json .
+COPY .editorconfig .
+COPY src/.editorconfig src/
 COPY src/Directory.Build.props src/
 COPY src/Directory.Packages.props src/
 
 COPY src/FiscalOS.Core/FiscalOS.Core.csproj src/FiscalOS.Core/
 COPY src/FiscalOS.Infra/FiscalOS.Infra.csproj src/FiscalOS.Infra/
+COPY src/FiscalOS.Infra/.editorconfig src/FiscalOS.Infra/
 COPY src/FiscalOS.ServiceDefaults/FiscalOS.ServiceDefaults.csproj src/FiscalOS.ServiceDefaults/
 COPY src/FiscalOS.API/FiscalOS.API.csproj src/FiscalOS.API/
+COPY src/FiscalOS.API/.editorconfig src/FiscalOS.API/
 COPY src/FiscalOS.AdminCLI/FiscalOS.AdminCLI.csproj src/FiscalOS.AdminCLI/
+COPY src/FiscalOS.AdminCLI/.editorconfig src/FiscalOS.AdminCLI/
 
 RUN dotnet restore src/FiscalOS.API/FiscalOS.API.csproj && \
   dotnet restore src/FiscalOS.AdminCLI/FiscalOS.AdminCLI.csproj
