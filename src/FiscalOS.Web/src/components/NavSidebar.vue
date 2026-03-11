@@ -4,6 +4,7 @@
   import { useUserStore } from '@/stores/userStore';
   import { computed } from 'vue';
   import { RouterLink, useRouter } from 'vue-router';
+  import RightArrowBracketIcon from './icons/RightArrowBracketIcon.vue';
 
   const userStore = useUserStore();
   const router = useRouter();
@@ -58,6 +59,7 @@
           type="button"
           @click="handleLogout"
         >
+          <RightArrowBracketIcon />
           Logout
         </button>
       </div>
@@ -88,20 +90,6 @@
     }
   }
 
-  aside.collapsed {
-    width: calc(0.125rem + var(--button-size) / 2);
-  }
-
-  aside.collapsed .toggle-button {
-    transform: rotate(180deg);
-  }
-
-  aside.collapsed .sidebar-content {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
-
   .sidebar-content {
     display: flex;
     flex-direction: column;
@@ -117,10 +105,62 @@
     transition-timing-function: var(--transition-function);
   }
 
-  .logout-button {
-    background: var(--bg-element);
-    padding: 0.25rem 0.5rem;
+  .top {
+    padding: 1rem;
+  }
+
+  nav ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  nav a {
+    display: flex;
+    width: 100%;
+    padding: 0.5rem 1rem;
     border-radius: 0.25rem;
+  }
+
+  nav a.router-link-exact-active,
+  nav a:hover {
+    background: var(--bg-element);
+  }
+
+  nav a.router-link-exact-active {
+    position: relative;
+  }
+
+  nav a.router-link-exact-active::before {
+    content: ' ';
+
+    position: absolute;
+    left: 0;
+    height: 1.25rem;
+    background: red;
+    border: 2px solid var(--brand-primary);
+  }
+
+  .bottom {
+    padding: 1rem;
+  }
+
+  .logout-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    background: var(--bg-element);
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+  }
+
+  .logout-button svg {
+    --size: 1.5rem;
+    width: var(--size);
+    height: var(--size);
+    fill: var(--text-primary);
   }
 
   .toggle-button {
@@ -143,5 +183,20 @@
     --size: 1rem;
     width: var(--size);
     height: var(--size);
+    fill: var(--text-primary);
+  }
+
+  aside.collapsed {
+    width: calc(0.125rem + var(--button-size) / 2);
+  }
+
+  aside.collapsed .toggle-button {
+    transform: rotate(180deg);
+  }
+
+  aside.collapsed .sidebar-content {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
   }
 </style>

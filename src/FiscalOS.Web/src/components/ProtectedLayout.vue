@@ -22,9 +22,16 @@
   main {
     flex: 1;
     padding: 1rem;
+    padding-right: 0rem;
     overflow: auto;
     scroll-behavior: smooth;
     scrollbar-color: var(--bg-surface) var(--bg-app);
     scrollbar-gutter: stable;
+  }
+
+  @media screen and (max-width: 48rem) {
+    main {
+      margin-right: 1rem;
+    }
   }
 </style>
