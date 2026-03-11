@@ -126,9 +126,4 @@
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
   }
-
-  .add-institution-button:disabled {
-    cursor: not-allowed;
-    opacity: 0.6;
-  }
 </style>
