@@ -31,7 +31,7 @@ internal sealed class PlaidAccountService : IPlaidAccountService
     var assemblyName = Assembly.GetExecutingAssembly().GetName().FullName;
     var environmentName = System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
-    var ltr = await _client.LinkTokenCreateAsync(new()
+    var linkTokenResponse = await _client.LinkTokenCreateAsync(new()
     {
       ClientName = $"{assemblyName}_{environmentName}",
       Products = [Products.Transactions],
@@ -44,56 +44,73 @@ internal sealed class PlaidAccountService : IPlaidAccountService
       Webhook = _options.Value.Webhook,
     }).ConfigureAwait(false);
 
-    if (ltr.IsSuccessStatusCode is false)
+    if (linkTokenResponse.IsSuccessStatusCode is false)
     {
-      throw new PlaidException("Unable to create link token");
+      throw new PlaidException(
+        "Unable to create link token",
+        linkTokenResponse.Error,
+        linkTokenResponse.RequestId,
+        (int?)linkTokenResponse.StatusCode
+      );
     }
 
-    return ltr.LinkToken;
+    return linkTokenResponse.LinkToken;
   }
 
   public async Task<(string ItemId, string AccessToken)> ExchangeTokenAsync(string publicToken)
   {
-    var ptr = await _client.ItemPublicTokenExchangeAsync(new()
+    var publicTokenResponse = await _client.ItemPublicTokenExchangeAsync(new()
     {
       PublicToken = publicToken,
     }).ConfigureAwait(false);
 
-    if (ptr.IsSuccessStatusCode is false)
+    if (publicTokenResponse.IsSuccessStatusCode is false)
     {
-      throw new PlaidException("Unable to exchange public token for access token");
+      throw new PlaidException(
+        "Unable to exchange public token for access token",
+        publicTokenResponse.Error,
+        publicTokenResponse.RequestId,
+        (int?)publicTokenResponse.StatusCode
+      );
     }
 
-    return (ptr.ItemId, ptr.AccessToken);
+    return (publicTokenResponse.ItemId, publicTokenResponse.AccessToken);
   }
 
   public async Task<List<Going.Plaid.Entity.Account>> GetAccountsAsync(string accessToken)
   {
-    var ar = await _client.AccountsGetAsync(new()
+    var accountResponse = await _client.AccountsGetAsync(new()
     {
       AccessToken = accessToken,
     }).ConfigureAwait(false);
 
-    if (ar.IsSuccessStatusCode is false)
+    if (accountResponse.IsSuccessStatusCode is false)
     {
-      throw new PlaidException("Unable to retrieve accounts");
+      throw new PlaidException(
+        "Unable to retrieve accounts",
+        accountResponse.Error,
+        accountResponse.RequestId,
+        (int?)accountResponse.StatusCode
+      );
     }
 
-    return [.. ar.Accounts];
+    return [.. accountResponse.Accounts];
   }
 
   public async Task<ItemWithConsentFields> GetItemAsync(string accessToken)
   {
-    var ar = await _client.ItemGetAsync(new()
+    var itemResponse = await _client.ItemGetAsync(new()
     {
       AccessToken = accessToken,
     }).ConfigureAwait(false);
 
-    if (ar.IsSuccessStatusCode is false)
+    if (itemResponse.IsSuccessStatusCode is false)
     {
-      throw new PlaidException("Unable to retrieve item");
+      throw new PlaidException(
+        "Unable to retrieve item"
+      );
     }
 
-    return ar.Item;
+    return itemResponse.Item;
   }
 }
