@@ -2,15 +2,13 @@ services:
   web:
     image: ${DOCKERHUB_USERNAME}/fiscalos-web:${IMAGE_TAG:-latest}
     ports:
-      - "80:80"
+      - "8081:80"
     depends_on:
       - api
     restart: unless-stopped
 
   api:
     image: ${DOCKERHUB_USERNAME}/fiscalos-api:${IMAGE_TAG:-latest}
-    ports:
-      - "8080:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - AppDbContextOptions__DatabaseFilePath=/data/fiscalos.db
