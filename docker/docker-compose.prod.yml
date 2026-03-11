@@ -21,6 +21,9 @@ services:
       - PlaidClientOptions__ClientId=${PLAID_CLIENT_ID}
       - PlaidClientOptions__Secret=${PLAID_SECRET}
       - PlaidClientOptions__Webhook=${PLAID_WEBHOOK}
+      - SeqOptions__ServerUrl=${SEQ_SERVER_URL}
+      - SeqOptions__ApiKeyHeader=${SEQ_API_KEY_HEADER}
+      - SeqOptions__ApiKey=${SEQ_API_KEY}
     volumes:
       - ./data:/data
       - ./keys:/keys

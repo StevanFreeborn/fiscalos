@@ -1,3 +1,8 @@
+using Microsoft.Extensions.Configuration;
+
+using OpenTelemetry.Exporter;
+using OpenTelemetry.Logs;
+
 namespace FiscalOS.ServiceDefaults;
 
 public static class ServiceDefaultsExtensions
@@ -76,11 +81,38 @@ public static class ServiceDefaultsExtensions
 
   private static TBuilder AddOpenTelemetryExporters<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
   {
+    var seqOptions = new SeqOptions();
+    builder.Configuration.GetSection(nameof(SeqOptions)).Bind(seqOptions);
+
     var useOtlpExporter = !string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
 
-    if (useOtlpExporter)
+    var otel = builder.Services.AddOpenTelemetry();
+
+    if (seqOptions.IsEnabled)
     {
-      builder.Services.AddOpenTelemetry().UseOtlpExporter();
+      otel
+        .WithLogging(lb =>
+        {
+          lb.AddOtlpExporter(o =>
+          {
+            o.Protocol = OtlpExportProtocol.HttpProtobuf;
+            o.Endpoint = new Uri(seqOptions.LogEndpoint);
+            o.Headers = seqOptions.AuthHeader;
+          });
+        })
+        .WithTracing(tb =>
+        {
+          tb.AddOtlpExporter(o =>
+          {
+            o.Protocol = OtlpExportProtocol.HttpProtobuf;
+            o.Endpoint = new Uri(seqOptions.TraceEndpoint);
+            o.Headers = seqOptions.AuthHeader;
+          });
+        });
+    }
+    else if (useOtlpExporter)
+    {
+      otel.UseOtlpExporter();
     }
 
     return builder;

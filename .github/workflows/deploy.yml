@@ -70,6 +70,9 @@ jobs:
           PLAID_CLIENT_ID: ${{ secrets.PLAID_CLIENT_ID }}
           PLAID_SECRET: ${{ secrets.PLAID_SECRET }}
           PLAID_WEBHOOK: ${{ secrets.PLAID_WEBHOOK }}
+          SEQ_SERVER_URL: ${{ secrets.SEQ_SERVER_URL }}
+          SEQ_API_KEY_HEADER: ${{ secrets.SEQ_API_KEY_HEADER }}
+          SEQ_API_KEY: ${{ secrets.SEQ_API_KEY }}
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
@@ -88,6 +91,9 @@ jobs:
             PLAID_CLIENT_ID=${PLAID_CLIENT_ID}
             PLAID_SECRET=${PLAID_SECRET}
             PLAID_WEBHOOK=${PLAID_WEBHOOK}
+            SEQ_SERVER_URL=${SEQ_SERVER_URL}
+            SEQ_API_KEY_HEADER=${SEQ_API_KEY_HEADER}
+            SEQ_API_KEY=${SEQ_API_KEY}
             EOF
             docker compose -f docker-compose.prod.yml pull
             docker compose -f docker-compose.prod.yml up -d --remove-orphans
