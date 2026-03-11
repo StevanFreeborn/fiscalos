@@ -1,0 +1,29 @@
+services:
+  web:
+    image: ${DOCKERHUB_USERNAME}/fiscalos-web:${IMAGE_TAG:-latest}
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  api:
+    image: ${DOCKERHUB_USERNAME}/fiscalos-api:${IMAGE_TAG:-latest}
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - AppDbContextOptions__DatabaseFilePath=/data/fiscalos.db
+      - JwtOptions__Audience=${JWT_AUDIENCE}
+      - JwtOptions__Issuer=${JWT_ISSUER}
+      - JwtOptions__Secret=${JWT_SECRET}
+      - JwtOptions__ExpiryInMinutes=${JWT_EXPIRY_IN_MINUTES}
+      - FileKeyRingOptions__KeysDirectoryPath=/keys
+      - FileKeyRingOptions__PrimaryKeyId=${FILE_KEY_RING_PRIMARY_KEY_ID}
+      - PlaidClientOptions__ClientId=${PLAID_CLIENT_ID}
+      - PlaidClientOptions__Secret=${PLAID_SECRET}
+      - PlaidClientOptions__Webhook=${PLAID_WEBHOOK}
+    volumes:
+      - ./data:/data
+      - ./keys:/keys
+    restart: unless-stopped

@@ -68,9 +68,10 @@ describe('LoginForm', () => {
     const wrapper = mount(LoginForm, {
       attachTo: document.body,
       props: {
-        onValidSubmit: () => new Promise(resolve => {
-          resolveSubmit = resolve;
-        }),
+        onValidSubmit: () =>
+          new Promise(resolve => {
+            resolveSubmit = resolve;
+          }),
       },
     });
 
@@ -96,10 +97,11 @@ describe('LoginForm', () => {
     const wrapper = mount(LoginForm, {
       attachTo: document.body,
       props: {
-        onValidSubmit: () => new Promise(resolve => {
-          wasCalled = true;
-          resolve();
-        }),
+        onValidSubmit: () =>
+          new Promise(resolve => {
+            wasCalled = true;
+            resolve();
+          }),
       },
     });
 

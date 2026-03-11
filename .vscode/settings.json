@@ -11,7 +11,7 @@
   },
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "cSpell.words": ["Dtos", "Encryptor", "Validatable"],
+  "cSpell.words": ["DOCKERHUB", "Dtos", "Encryptor", "fiscalos", "Validatable"],
   "python-envs.defaultEnvManager": "ms-python.python:system",
   "search.exclude": {
     "**/Migrations": true
