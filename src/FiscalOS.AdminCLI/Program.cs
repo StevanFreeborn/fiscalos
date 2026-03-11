@@ -1,7 +1,7 @@
 ﻿await Host.CreateDefaultBuilder(args)
   .ConfigureAppConfiguration(
     static c => c.SetBasePath(AppContext.BaseDirectory)
-      .AddJsonFile("appsettings.json")
+      .AddJsonFile("appsettings.json", optional: true)
       .AddEnvironmentVariables()
   )
   .ConfigureLogging(static c => c.ClearProviders())
