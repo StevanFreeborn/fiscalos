@@ -164,6 +164,17 @@
     gap: 0.5rem;
   }
 
+  .add-account-button {
+    background: var(--bg-element);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+  }
+
+  .add-account-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
   .accounts-list {
     display: flex;
     flex-direction: column;

@@ -73,4 +73,15 @@
     gap: 0.25rem;
     align-items: center;
   }
+
+  .add-account-button {
+    background: var(--bg-element);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+  }
+
+  .add-account-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
 </style>
