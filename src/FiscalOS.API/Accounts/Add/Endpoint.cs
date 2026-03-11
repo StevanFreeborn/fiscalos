@@ -24,9 +24,9 @@ internal static class Endpoint
     var userId = httpContext.GetUserId();
 
     var user = await appDbContext.Users
-      .Include(u => u.Institutions.Where(i => i.Metadata is PlaidInstitutionMetadata && ((PlaidInstitutionMetadata)i.Metadata).PlaidId == request.PlaidInstitutionId))
+      .Include(u => u.Institutions.Where(i => i.Metadata is PlaidInstitutionMetadata && ((PlaidInstitutionMetadata)i.Metadata).PlaidId == request.ProviderInstitutionId))
       .ThenInclude(i => i.Metadata)
-      .Include(u => u.Accounts.Where(a => a.Metadata is PlaidAccountMetadata && ((PlaidAccountMetadata)a.Metadata).PlaidId == request.PlaidAccountId))
+      .Include(u => u.Accounts.Where(a => a.Metadata is PlaidAccountMetadata && ((PlaidAccountMetadata)a.Metadata).PlaidId == request.ProviderAccountId))
       .ThenInclude(a => a.Metadata)
       .AsSplitQuery()
       .SingleOrDefaultAsync(u => u.Id == userId, ct);
@@ -40,7 +40,7 @@ internal static class Endpoint
     {
       return Results.ValidationProblem(new Dictionary<string, string[]>
       {
-        ["PlaidInstitutionId"] = ["The PlaidInstitutionId field is invalid. No institution connected with the given PlaidInstitutionId was found for the user."],
+        [nameof(Request.ProviderInstitutionId)] = [$"The {nameof(Request.ProviderInstitutionId)} field is invalid."],
       });
     }
 
@@ -50,7 +50,7 @@ internal static class Endpoint
     {
       return Results.ValidationProblem(new Dictionary<string, string[]>
       {
-        ["PlaidInstitutionId"] = ["The PlaidInstitutionId field is invalid. The connected institution has no plaid metadata"],
+        [nameof(Request.ProviderInstitutionId)] = [$"The {nameof(Request.ProviderInstitutionId)} field is invalid."],
       });
     }
 
@@ -60,8 +60,8 @@ internal static class Endpoint
     }
 
     var decryptedAccessToken = await encryptor.DecryptAsyncFor(user, plaidInstitutionMetadata.EncryptedAccessToken, ct);
-    var accountMetadata = PlaidAccountMetadata.From(request.PlaidAccountId, request.PlaidAccountName);
-    var account = Account.From(request.PlaidAccountName, accountMetadata);
+    var accountMetadata = PlaidAccountMetadata.From(request.ProviderAccountId, request.ProviderAccountName);
+    var account = Account.From(request.ProviderAccountName, accountMetadata);
     user.AddAccount(account);
     user.Institutions.First().AddAccount(account);
 

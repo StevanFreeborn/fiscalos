@@ -2,27 +2,27 @@ namespace FiscalOS.API.Accounts.Add;
 
 public record Request : IValidatableObject
 {
-  public string PlaidInstitutionId { get; init; } = string.Empty;
-  public string PlaidAccountId { get; init; } = string.Empty;
-  public string PlaidAccountName { get; init; } = string.Empty;
+  public string ProviderInstitutionId { get; init; } = string.Empty;
+  public string ProviderAccountId { get; init; } = string.Empty;
+  public string ProviderAccountName { get; init; } = string.Empty;
 
   public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
   {
-    if (string.IsNullOrWhiteSpace(PlaidInstitutionId))
+    if (string.IsNullOrWhiteSpace(ProviderInstitutionId))
     {
-      var fieldName = nameof(PlaidInstitutionId);
+      var fieldName = nameof(ProviderInstitutionId);
       yield return new($"The {fieldName} field is required.", [fieldName]);
     }
 
-    if (string.IsNullOrWhiteSpace(PlaidAccountId))
+    if (string.IsNullOrWhiteSpace(ProviderAccountId))
     {
-      var fieldName = nameof(PlaidAccountId);
+      var fieldName = nameof(ProviderAccountId);
       yield return new($"The {fieldName} field is required.", [fieldName]);
     }
 
-    if (string.IsNullOrWhiteSpace(PlaidAccountName))
+    if (string.IsNullOrWhiteSpace(ProviderAccountName))
     {
-      var fieldName = nameof(PlaidAccountName);
+      var fieldName = nameof(ProviderAccountName);
       yield return new($"The {fieldName} field is required.", [fieldName]);
     }
   }

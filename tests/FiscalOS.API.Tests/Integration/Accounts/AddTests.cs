@@ -1,3 +1,4 @@
+using FiscalOS.API.Accounts.Add;
 using FiscalOS.Core.Queuing;
 using FiscalOS.Infra.Transactions.Plaid;
 
@@ -31,9 +32,9 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
 
     await response.Should().BeValidationProblemDetails(new Dictionary<string, string[]>()
     {
-      ["PlaidInstitutionId"] = ["The PlaidInstitutionId field is required."],
-      ["PlaidAccountId"] = ["The PlaidAccountId field is required."],
-      ["PlaidAccountName"] = ["The PlaidAccountName field is required."],
+      [nameof(Request.ProviderInstitutionId)] = [$"The {nameof(Request.ProviderInstitutionId)} field is required."],
+      [nameof(Request.ProviderAccountId)] = [$"The {nameof(Request.ProviderAccountId)} field is required."],
+      [nameof(Request.ProviderAccountName)] = [$"The {nameof(Request.ProviderAccountName)} field is required."],
     });
   }
 
@@ -45,9 +46,8 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
       .WithUserId(Guid.NewGuid())
       .WithBody(new
       {
-        plaidAccountId = "accountId",
-        plaidAccountName = "Some Account",
-        accountCurrencyCode = "USD",
+        providerAccountId = "accountId",
+        providerAccountName = "Some Account",
       })
       .Build();
 
@@ -55,7 +55,7 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
 
     await response.Should().BeValidationProblemDetails(new Dictionary<string, string[]>()
     {
-      ["PlaidInstitutionId"] = ["The PlaidInstitutionId field is required."],
+      [nameof(Request.ProviderInstitutionId)] = [$"The {nameof(Request.ProviderInstitutionId)} field is required."],
     });
   }
 
@@ -67,9 +67,8 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
       .WithUserId(Guid.NewGuid())
       .WithBody(new
       {
-        plaidInstitutionId = "institutionId",
-        plaidAccountName = "Some Account",
-        accountCurrencyCode = "USD",
+        providerInstitutionId = "institutionId",
+        providerAccountName = "Some Account",
       })
       .Build();
 
@@ -77,7 +76,7 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
 
     await response.Should().BeValidationProblemDetails(new Dictionary<string, string[]>()
     {
-      ["PlaidAccountId"] = ["The PlaidAccountId field is required."],
+      [nameof(Request.ProviderAccountId)] = [$"The {nameof(Request.ProviderAccountId)} field is required."],
     });
   }
 
@@ -89,9 +88,8 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
       .WithUserId(Guid.NewGuid())
       .WithBody(new
       {
-        plaidInstitutionId = "institutionId",
-        plaidAccountId = "accountId",
-        accountCurrencyCode = "USD",
+        providerInstitutionId = "institutionId",
+        providerAccountId = "accountId",
       })
       .Build();
 
@@ -99,7 +97,7 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
 
     await response.Should().BeValidationProblemDetails(new Dictionary<string, string[]>()
     {
-      ["PlaidAccountName"] = ["The PlaidAccountName field is required."],
+      [nameof(Request.ProviderAccountName)] = [$"The {nameof(Request.ProviderAccountName)} field is required."],
     });
   }
 
@@ -111,10 +109,9 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
       .WithUserId(Guid.NewGuid())
       .WithBody(new
       {
-        plaidInstitutionId = "id",
-        plaidAccountId = "id",
-        plaidAccountName = "Some Account",
-        accountCurrencyCode = "USD",
+        providerInstitutionId = "id",
+        providerAccountId = "id",
+        providerAccountName = "Some Account",
       })
       .Build();
 
@@ -145,10 +142,9 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
       .WithUserId(user.Id)
       .WithBody(new
       {
-        plaidInstitutionId = "id",
-        plaidAccountId = "id",
-        plaidAccountName = "Some Account",
-        accountCurrencyCode = "USD",
+        providerInstitutionId = "id",
+        providerAccountId = "id",
+        providerAccountName = "Some Account",
       })
       .Build();
 
@@ -156,7 +152,7 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
 
     await response.Should().BeValidationProblemDetails(new Dictionary<string, string[]>()
     {
-      ["PlaidInstitutionId"] = ["The PlaidInstitutionId field is invalid. No institution connected with the given PlaidInstitutionId was found for the user."],
+      [nameof(Request.ProviderInstitutionId)] = [$"The {nameof(Request.ProviderInstitutionId)} field is invalid."],
     });
   }
 
@@ -199,10 +195,9 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
       .WithUserId(user.Id)
       .WithBody(new
       {
-        plaidInstitutionId = ((PlaidInstitutionMetadata)institution.Metadata!).PlaidId,
-        plaidAccountId = ((PlaidAccountMetadata)account.Metadata!).PlaidId,
-        plaidAccountName = ((PlaidAccountMetadata)account.Metadata).PlaidName,
-        accountCurrencyCode = "USD",
+        providerInstitutionId = ((PlaidInstitutionMetadata)institution.Metadata!).PlaidId,
+        providerAccountId = ((PlaidAccountMetadata)account.Metadata!).PlaidId,
+        providerAccountName = ((PlaidAccountMetadata)account.Metadata).PlaidName,
       })
       .Build();
 
@@ -252,20 +247,15 @@ public class AddTests(TestApi testApi) : IntegrationTest(testApi)
 
     var newAccountId = "newAccountId";
     var newAccountName = "New Account";
-    var expectedBalance = 100;
-    var expectedCurrencyCode = "USD";
 
     using var request = HttpRequestBuilder.New()
       .Post(AddUri)
       .WithUserId(user.Id)
       .WithBody(new
       {
-        plaidInstitutionId = ((PlaidInstitutionMetadata)institution.Metadata!).PlaidId,
-        plaidAccountId = newAccountId,
-        plaidAccountName = newAccountName,
-        accountCurrentBalance = expectedBalance,
-        accountAvailableBalance = expectedBalance,
-        accountCurrencyCode = expectedCurrencyCode,
+        providerInstitutionId = ((PlaidInstitutionMetadata)institution.Metadata!).PlaidId,
+        providerAccountId = newAccountId,
+        providerAccountName = newAccountName,
       })
       .Build();
 

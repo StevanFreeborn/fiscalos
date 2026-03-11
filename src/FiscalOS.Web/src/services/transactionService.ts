@@ -4,8 +4,9 @@ import { Err, Ok, type Result } from 'ts-results';
 
 type TransactionServiceFactoryKeyType = InjectionKey<ITransactionServiceFactory>;
 
-export const TransactionServiceFactoryKey: TransactionServiceFactoryKeyType =
-  Symbol('AuthServiceFactory');
+export const TransactionServiceFactoryKey: TransactionServiceFactoryKeyType = Symbol(
+  'TransactionServiceFactory'
+);
 
 export interface ITransactionServiceFactory {
   create: (client: IClient) => ITransactionService;
@@ -40,13 +41,13 @@ export class TransactionService implements ITransactionService {
     const request = new ClientRequest(url);
 
     try {
-      const response = await this.client.get(request);
+      const res = await this.client.get(request);
 
-      if (response.ok === false) {
+      if (res.ok === false) {
         return Err([new Error('Failed to retrieve transactions.')]);
       }
 
-      const data = await response.json();
+      const data = await res.json();
       return Ok(data as Page<Transaction>);
     } catch (error) {
       console.error(error);
