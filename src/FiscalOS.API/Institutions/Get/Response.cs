@@ -24,6 +24,7 @@ internal sealed record Response
 internal sealed record AccountDto
 {
   public string Id { get; init; } = string.Empty;
+  public string ProviderId { get; init; } = string.Empty;
   public string Name { get; init; } = string.Empty;
 
   [JsonConstructor]
@@ -36,6 +37,9 @@ internal sealed record AccountDto
     return new()
     {
       Id = account.Id.ToString(),
+      ProviderId = account.Metadata is PlaidAccountMetadata plaidMetadata
+        ? plaidMetadata.PlaidId
+        : string.Empty,
       Name = account.Name,
     };
   }

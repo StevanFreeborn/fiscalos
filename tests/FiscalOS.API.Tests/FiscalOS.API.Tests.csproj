@@ -22,6 +22,7 @@
     <ProjectReference Include="..\..\src\FiscalOS.API\FiscalOS.API.csproj" />
     <ProjectReference Include="..\..\src\FiscalOS.Core\FiscalOS.Core.csproj" />
     <ProjectReference Include="..\..\src\FiscalOS.Infra\FiscalOS.Infra.csproj" />
+    <ProjectReference Include="..\FiscalOS.Tests.Common\FiscalOS.Tests.Common.csproj" />
   </ItemGroup>
 
 </Project>

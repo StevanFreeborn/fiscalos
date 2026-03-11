@@ -1,3 +1,5 @@
+using FiscalOS.API.Accounts.Add;
+
 namespace FiscalOS.API.Accounts;
 
 internal static class AccountsExtensions

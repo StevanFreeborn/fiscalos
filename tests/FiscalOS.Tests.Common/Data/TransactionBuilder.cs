@@ -1,6 +1,6 @@
-namespace FiscalOS.Infra.Tests.Data;
+namespace FiscalOS.Tests.Common.Data;
 
-internal sealed class TransactionBuilder
+public sealed class TransactionBuilder
 {
   private string _merchantName = "merchantName";
   private string _description = "description";

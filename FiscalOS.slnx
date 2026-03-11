@@ -15,6 +15,7 @@
     <Project Path="tests/FiscalOS.AppHost.Tests/FiscalOS.AppHost.Tests.csproj" />
     <Project Path="tests/FiscalOS.Core.Tests/FiscalOS.Core.Tests.csproj" />
     <Project Path="tests/FiscalOS.Infra.Tests/FiscalOS.Infra.Tests.csproj" />
+    <Project Path="tests/FiscalOS.Tests.Common/FiscalOS.Tests.Common.csproj" />
   </Folder>
   <Project Path="src/FiscalOS.AppHost/FiscalOS.AppHost.csproj" />
   <Project Path="src/FiscalOS.ServiceDefaults/FiscalOS.ServiceDefaults.csproj" />

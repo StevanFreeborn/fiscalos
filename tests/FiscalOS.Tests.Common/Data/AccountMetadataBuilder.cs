@@ -1,6 +1,6 @@
-namespace FiscalOS.Infra.Tests.Data;
+namespace FiscalOS.Tests.Common.Data;
 
-internal sealed class AccountMetadataBuilder
+public sealed class AccountMetadataBuilder
 {
   private string _plaidId = "plaidId";
   private string _plaidName = "plaidName";

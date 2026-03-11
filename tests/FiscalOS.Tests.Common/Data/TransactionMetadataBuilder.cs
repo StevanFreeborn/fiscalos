@@ -1,6 +1,6 @@
-namespace FiscalOS.Infra.Tests.Data;
+namespace FiscalOS.Tests.Common.Data;
 
-internal sealed class TransactionMetadataBuilder
+public sealed class TransactionMetadataBuilder
 {
   private string _plaidId = "plaidId";
 

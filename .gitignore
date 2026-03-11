@@ -10,6 +10,10 @@ coverage/
 appsettings*.json
 !appsettings.Example.json
 
+# docker bind-mount data
+docker/data/
+docker/keys/
+
 # dotenv files
 .env
 

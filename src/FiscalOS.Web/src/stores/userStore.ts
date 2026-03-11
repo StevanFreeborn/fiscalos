@@ -88,7 +88,7 @@ export const useUserStore = defineStore('userStore', () => {
     const updatedUser = {
       ...user.value,
       sidebarCollapsed: !user.value?.sidebarCollapsed,
-    }
+    };
     user.value = updatedUser;
     saveUserToLocalSotrage(updatedUser);
   }

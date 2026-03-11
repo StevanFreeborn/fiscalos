@@ -4,8 +4,9 @@ import { ClientRequest, ClientRequestWithBody, type IClient } from './client';
 
 type InstitutionServiceFactoryKeyType = InjectionKey<IInstitutionServiceFactory>;
 
-export const InstituionServiceFactoryKey: InstitutionServiceFactoryKeyType =
-  Symbol('AuthServiceFactory');
+export const InstitutionServiceFactoryKey: InstitutionServiceFactoryKeyType = Symbol(
+  'InstitutionServiceFactory'
+);
 
 export interface IInstitutionServiceFactory {
   create: (client: IClient) => IInstitutionService;
@@ -136,8 +137,9 @@ type LinkTokenResponse = {
 
 type Account = {
   id: string;
+  providerId: string;
   name: string;
-}
+};
 
 export type Institution = {
   id: string;

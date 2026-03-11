@@ -1,6 +1,6 @@
-namespace FiscalOS.Infra.Tests.Data;
+namespace FiscalOS.Tests.Common.Data;
 
-internal sealed class InstitutionBuilder
+public sealed class InstitutionBuilder
 {
   private string _name = "institutionName";
   private InstitutionMetadata? _metadata;

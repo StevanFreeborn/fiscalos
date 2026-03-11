@@ -1,6 +1,6 @@
-namespace FiscalOS.Infra.Tests.Data;
+namespace FiscalOS.Tests.Common.Data;
 
-internal sealed class UserBuilder
+public sealed class UserBuilder
 {
   private string _username = "username";
   private string _password = "hashedPassword";

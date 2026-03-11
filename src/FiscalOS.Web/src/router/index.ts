@@ -23,6 +23,9 @@ const router = createRouter({
         {
           path: 'login',
           component: () => import('../views/LoginView.vue'),
+          meta: {
+            title: 'Login',
+          },
         },
       ],
     },
@@ -60,11 +63,30 @@ const router = createRouter({
       children: [
         {
           path: '/',
-          component: () => import('../views/HomeView.vue'),
+          redirect: '/accounts',
+        },
+        {
+          path: '/accounts',
+          component: () => import('../views/AccountsView.vue'),
+          meta: {
+            title: 'Accounts',
+          },
+        },
+        {
+          path: '/transactions',
+          component: () => import('../views/TransactionsView.vue'),
+          meta: {
+            title: 'Transactions',
+          },
         },
       ],
     },
   ],
+});
+
+router.beforeEach((to, _, next) => {
+  document.title = to.meta.title ? `FiscalOS - ${to.meta.title}` : 'FiscalOS';
+  next();
 });
 
 export default router;

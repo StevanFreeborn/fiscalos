@@ -19,6 +19,7 @@ global using FiscalOS.Infra.Data;
 global using FiscalOS.Infra.Security;
 global using FiscalOS.Infra.Tests.Assertions;
 global using FiscalOS.Infra.Tests.Mocks;
+global using FiscalOS.Tests.Common.Data;
 global using FiscalOS.Infra.Transactions.Plaid;
 
 global using Going.Plaid;

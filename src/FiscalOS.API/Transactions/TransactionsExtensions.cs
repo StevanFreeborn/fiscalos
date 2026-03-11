@@ -1,3 +1,7 @@
+using FiscalOS.API.Transactions.FireWebhook;
+using FiscalOS.API.Transactions.Get;
+using FiscalOS.API.Transactions.Webhook;
+
 namespace FiscalOS.API.Transactions;
 
 internal static class TransactionsExtensions
@@ -9,12 +13,13 @@ internal static class TransactionsExtensions
     var transactionsGroup = app.MapGroup(RouteGroupPrefix)
       .RequireAuthorization();
 
+    transactionsGroup.MapGetEndpoint();
+    transactionsGroup.MapWebhookEndpoint().AllowAnonymous();
+
     if (app.Environment.IsProduction() is false)
     {
       transactionsGroup.MapFireWebhookEndpoint();
     }
-
-    transactionsGroup.MapWebhookEndpoint().AllowAnonymous();
 
     return transactionsGroup;
   }

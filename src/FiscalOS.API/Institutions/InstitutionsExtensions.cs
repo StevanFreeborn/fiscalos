@@ -1,3 +1,8 @@
+using FiscalOS.API.Institutions.Connect;
+using FiscalOS.API.Institutions.Get;
+using FiscalOS.API.Institutions.GetAvailable;
+using FiscalOS.API.Institutions.Link;
+
 namespace FiscalOS.API.Institutions;
 
 internal static class InstitutionsExtensions

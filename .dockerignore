@@ -1,0 +1,11 @@
+.git/
+.vscode/
+.aspire/
+Coverage/
+tests/
+docker/data/
+docker/keys/
+**/bin/
+**/obj/
+**/node_modules/
+**/.env

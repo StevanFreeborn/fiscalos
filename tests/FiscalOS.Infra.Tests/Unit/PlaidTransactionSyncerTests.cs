@@ -1,5 +1,3 @@
-using FiscalOS.Infra.Tests.Data;
-
 namespace FiscalOS.Infra.Tests.Unit;
 
 public class PlaidTransactionSyncerTests

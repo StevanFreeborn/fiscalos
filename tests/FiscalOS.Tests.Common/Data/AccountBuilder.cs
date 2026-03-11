@@ -1,6 +1,6 @@
-namespace FiscalOS.Infra.Tests.Data;
+namespace FiscalOS.Tests.Common.Data;
 
-internal sealed class AccountBuilder
+public sealed class AccountBuilder
 {
   private string _name = "accountName";
   private AccountMetadata? _metadata;
