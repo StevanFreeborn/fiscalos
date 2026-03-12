@@ -107,7 +107,10 @@ internal sealed class PlaidAccountService : IPlaidAccountService
     if (itemResponse.IsSuccessStatusCode is false)
     {
       throw new PlaidException(
-        "Unable to retrieve item"
+        "Unable to retrieve item",
+        itemResponse.Error,
+        itemResponse.RequestId,
+        (int?)itemResponse.StatusCode
       );
     }
 

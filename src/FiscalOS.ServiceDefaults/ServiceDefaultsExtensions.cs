@@ -33,6 +33,7 @@ public static class ServiceDefaultsExtensions
     {
       logging.IncludeFormattedMessage = true;
       logging.IncludeScopes = true;
+      logging.ParseStateValues = true;
     });
 
     builder.Services.AddOpenTelemetry()

@@ -1,3 +1,5 @@
+using FiscalOS.Infra.Common;
+
 using Microsoft.AspNetCore.Diagnostics;
 
 internal sealed class GlobalExceptionHandler(
@@ -11,7 +13,23 @@ internal sealed class GlobalExceptionHandler(
     CancellationToken cancellationToken
   )
   {
-    logger.LogError(exception, "An unhandled exception occurred");
+    switch (exception)
+    {
+      case PlaidException plaidException:
+        logger.LogError(
+          plaidException,
+          "Unhandled Plaid exception. PlaidRequestId: {PlaidRequestId}, PlaidStatusCode: {PlaidStatusCode}, PlaidErrorCode: {PlaidErrorCode}, PlaidErrorType: {PlaidErrorType}, PlaidErrorMessage: {PlaidErrorMessage}",
+          plaidException.RequestId,
+          plaidException.StatusCode,
+          plaidException.ErrorCode,
+          plaidException.ErrorType,
+          plaidException.ErrorMessage
+        );
+        break;
+      default:
+        logger.LogError(exception, "An unhandled exception occurred");
+        break;
+    }
 
     httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
 

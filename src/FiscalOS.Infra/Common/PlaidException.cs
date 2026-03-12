@@ -22,12 +22,12 @@ public class PlaidException : Exception
   }
 
   public PlaidException(
-      string message,
-      PlaidError? error = null,
-      string? plaidRequestId = null,
-      int? statusCode = null,
-      Exception? innerException = null
-    ) : base(message, innerException)
+    string message,
+    PlaidError? error = null,
+    string? plaidRequestId = null,
+    int? statusCode = null,
+    Exception? innerException = null
+  ) : base(message, innerException)
   {
     Error = error;
     RequestId = plaidRequestId;
