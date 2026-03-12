@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Hosting;
+
 namespace FiscalOS.Infra.DependencyInjection;
 
 public static class ServiceCollectionExtensions
@@ -31,6 +33,12 @@ public static class ServiceCollectionExtensions
       var logger = sp.GetRequiredService<ILogger<PlaidClient>>();
       var clientOptions = sp.GetRequiredService<IOptions<PlaidClientOptions>>();
       var options = clientOptions.Value.ToPlaidOptions();
+
+      if (sp.GetRequiredService<IWebHostEnvironment>().IsProduction())
+      {
+        options.Value.Environment = Going.Plaid.Environment.Development;
+      }
+
       return new PlaidClient(options, factory, logger);
     });
     services.AddSingleton<IPlaidAccountService>(PlaidAccountService.From);
