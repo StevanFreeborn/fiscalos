@@ -43,6 +43,7 @@ internal sealed class PlaidRemovedTransactionHandler : IPlaidRemovedTransactionH
     try
     {
       removedCount = await _appDbContext.Transactions
+        .Include(t => t.Metadata)
         .Where(t => t.Metadata is PlaidTransactionMetadata && removedIdsList.Contains(((PlaidTransactionMetadata)t.Metadata).PlaidId))
         .ExecuteDeleteAsync(cancellationToken)
         .ConfigureAwait(false);

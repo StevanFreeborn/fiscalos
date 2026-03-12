@@ -46,6 +46,7 @@ internal sealed class PlaidAddedTransactionHandler : IPlaidAddedTransactionHandl
   {
     var existingTransactionIds = added.Select(t => t.TransactionId);
     var existingTransactions = await _appDbContext.Transactions
+      .Include(t => t.Metadata)
       .Where(t => t.Metadata is PlaidTransactionMetadata && existingTransactionIds.Contains(((PlaidTransactionMetadata)t.Metadata).PlaidId))
       .ToListAsync(ct)
       .ConfigureAwait(false);
