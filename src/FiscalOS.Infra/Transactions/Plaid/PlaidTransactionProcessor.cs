@@ -16,25 +16,29 @@ internal sealed class PlaidTransactionProcessor : IPlaidTransactionProcessor
   private readonly IPlaidAddedTransactionHandler _addedHandler;
   private readonly IPlaidModifiedTransactionHandler _modifiedHandler;
   private readonly IPlaidRemovedTransactionHandler _removedHandler;
+  private readonly ILogger<PlaidTransactionProcessor> _logger;
 
   private PlaidTransactionProcessor(
     IPlaidAddedTransactionHandler addedHandler,
     IPlaidModifiedTransactionHandler modifiedHandler,
-    IPlaidRemovedTransactionHandler removedHandler
+    IPlaidRemovedTransactionHandler removedHandler,
+    ILogger<PlaidTransactionProcessor> logger
   )
   {
     _addedHandler = addedHandler;
     _modifiedHandler = modifiedHandler;
     _removedHandler = removedHandler;
+    _logger = logger;
   }
 
   internal static PlaidTransactionProcessor From(
     IPlaidAddedTransactionHandler addedHandler,
     IPlaidModifiedTransactionHandler modifiedHandler,
-    IPlaidRemovedTransactionHandler removedHandler
+    IPlaidRemovedTransactionHandler removedHandler,
+    ILogger<PlaidTransactionProcessor> logger
   )
   {
-    return new(addedHandler, modifiedHandler, removedHandler);
+    return new(addedHandler, modifiedHandler, removedHandler, logger);
   }
 
   internal static PlaidTransactionProcessor From(IServiceProvider provider)
@@ -42,7 +46,8 @@ internal sealed class PlaidTransactionProcessor : IPlaidTransactionProcessor
     return new(
       provider.GetRequiredService<IPlaidAddedTransactionHandler>(),
       provider.GetRequiredService<IPlaidModifiedTransactionHandler>(),
-      provider.GetRequiredService<IPlaidRemovedTransactionHandler>()
+      provider.GetRequiredService<IPlaidRemovedTransactionHandler>(),
+      provider.GetRequiredService<ILogger<PlaidTransactionProcessor>>()
     );
   }
 
@@ -68,6 +73,17 @@ internal sealed class PlaidTransactionProcessor : IPlaidTransactionProcessor
       syncResponse.Removed,
       cancellationToken
     ).ConfigureAwait(false);
+
+    _logger.LogInformation(
+      "Processed Plaid transactions sync for account {AccountId}: {NumAdded} of {TotalAdded} added, {NumModified} of {TotalModified} modified, {NumRemoved} of {TotalRemoved} removed",
+      account.Id,
+      numAdded,
+      syncResponse.Added.Count,
+      numModified,
+      syncResponse.Modified.Count,
+      numRemoved,
+      syncResponse.Removed.Count
+    );
 
     return numAdded == syncResponse.Added.Count &&
       numModified == syncResponse.Modified.Count &&

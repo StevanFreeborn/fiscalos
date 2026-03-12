@@ -5,6 +5,7 @@ public class PlaidTransactionProcessorTests
   private readonly Mock<IPlaidAddedTransactionHandler> _mockAddedHandler = new();
   private readonly Mock<IPlaidModifiedTransactionHandler> _mockModifiedHandler = new();
   private readonly Mock<IPlaidRemovedTransactionHandler> _mockRemovedHandler = new();
+  private readonly Mock<ILogger<PlaidTransactionProcessor>> _mockLogger = new();
   private readonly PlaidTransactionProcessor _sut;
 
   public PlaidTransactionProcessorTests()
@@ -12,7 +13,8 @@ public class PlaidTransactionProcessorTests
     _sut = PlaidTransactionProcessor.From(
       _mockAddedHandler.Object,
       _mockModifiedHandler.Object,
-      _mockRemovedHandler.Object
+      _mockRemovedHandler.Object,
+      _mockLogger.Object
     );
   }
 
