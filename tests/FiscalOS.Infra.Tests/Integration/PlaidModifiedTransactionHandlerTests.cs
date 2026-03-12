@@ -31,5 +31,6 @@ public class PlaidModifiedTransactionHandlerTests : IntegrationTest
 
     result.Should().Be(1);
     existingTransaction.MerchantName.Should().Be(transaction.MerchantName);
+    existingTransaction.Amount.Should().Be(-transaction.Amount);
   }
 }

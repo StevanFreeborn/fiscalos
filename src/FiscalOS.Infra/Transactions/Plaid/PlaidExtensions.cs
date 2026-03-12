@@ -7,6 +7,7 @@ public static class PlaidExtensions
   {
     public string Merchant => transaction.MerchantName ?? "Unknown merchant";
     public string Description => transaction.OriginalDescription ?? "";
+    public decimal? CanonicalAmount => transaction.Amount is decimal amount ? -amount : null;
     public DateTimeOffset PostedDate => transaction.Datetime ?? (
         transaction.Date.HasValue
           ? new DateTimeOffset(

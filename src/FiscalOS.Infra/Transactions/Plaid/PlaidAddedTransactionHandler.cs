@@ -89,7 +89,7 @@ internal sealed class PlaidAddedTransactionHandler : IPlaidAddedTransactionHandl
           account.Id,
           addedTransaction.Merchant,
           addedTransaction.Description,
-          addedTransaction.Amount,
+          addedTransaction.CanonicalAmount,
           addedTransaction.PostedDate,
           transactionMetadata
         );

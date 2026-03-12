@@ -30,6 +30,9 @@ public class PlaidAddedTransactionHandlerTests : IntegrationTest
 
     result.Should().Be(1);
     account.Transactions.Should().HaveCount(2);
+    account.Transactions
+      .Single(t => t.Metadata is PlaidTransactionMetadata m && m.PlaidId == transaction.TransactionId)
+      .Amount.Should().Be(-transaction.Amount);
   }
 
   [Fact]
