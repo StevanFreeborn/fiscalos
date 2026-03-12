@@ -86,7 +86,6 @@ internal sealed class PlaidTransactionProcessor : IPlaidTransactionProcessor
     );
 
     return numAdded == syncResponse.Added.Count &&
-      numModified == syncResponse.Modified.Count &&
-      numRemoved == syncResponse.Removed.Count;
+      numModified == syncResponse.Modified.Count;
   }
 }

@@ -23,7 +23,7 @@ public class PlaidTransactionProcessorTests
   [InlineData(1, 1, 1, true)]
   [InlineData(0, 1, 1, false)]
   [InlineData(1, 0, 1, false)]
-  [InlineData(1, 1, 0, false)]
+  [InlineData(1, 1, 0, true)]
   public async Task ProcessAsync_WhenCalledAndTransactionsAreHandled_ItShouldReturnCorrectResult(
     int numAdded,
     int numModified,
