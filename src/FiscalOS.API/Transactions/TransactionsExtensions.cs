@@ -1,3 +1,4 @@
+using FiscalOS.API.Transactions.DeleteById;
 using FiscalOS.API.Transactions.FireWebhook;
 using FiscalOS.API.Transactions.Get;
 using FiscalOS.API.Transactions.Webhook;
@@ -14,6 +15,7 @@ internal static class TransactionsExtensions
       .RequireAuthorization();
 
     transactionsGroup.MapGetEndpoint();
+    transactionsGroup.MapDeleteEndpoint();
     transactionsGroup.MapWebhookEndpoint().AllowAnonymous();
 
     if (app.Environment.IsProduction() is false)
