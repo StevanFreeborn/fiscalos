@@ -40,9 +40,9 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseStatusCodePages();
+app.UseExceptionHandler();
 
 app.MapDefaultEndpoints();
-
 app.MapAuthEndpoints();
 app.MapAccountsEndpoints();
 app.MapInstitutionsEndpoints();
