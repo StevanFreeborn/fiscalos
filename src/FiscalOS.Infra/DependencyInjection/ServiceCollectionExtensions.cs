@@ -34,7 +34,9 @@ public static class ServiceCollectionExtensions
       var clientOptions = sp.GetRequiredService<IOptions<PlaidClientOptions>>();
       var options = clientOptions.Value.ToPlaidOptions();
 
-      if (sp.GetRequiredService<IWebHostEnvironment>().IsProduction())
+      var env = System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+      if (env is not null && env.Equals("Production", StringComparison.OrdinalIgnoreCase))
       {
         options.Value.Environment = Going.Plaid.Environment.Production;
       }
