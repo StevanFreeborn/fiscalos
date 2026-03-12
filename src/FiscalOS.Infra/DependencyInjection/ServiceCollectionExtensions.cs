@@ -36,7 +36,7 @@ public static class ServiceCollectionExtensions
 
       if (sp.GetRequiredService<IWebHostEnvironment>().IsProduction())
       {
-        options.Value.Environment = Going.Plaid.Environment.Development;
+        options.Value.Environment = Going.Plaid.Environment.Production;
       }
 
       return new PlaidClient(options, factory, logger);
