@@ -5,6 +5,10 @@
     transaction: Transaction;
   }>();
 
+  const emit = defineEmits<{
+    delete: [id: string];
+  }>();
+
   function formatDate(date: string) {
     const formatter = new Intl.DateTimeFormat('en-US', {
       year: 'numeric',
@@ -39,6 +43,14 @@
     <div class="bottom">
       <p>{{ transaction.description }}</p>
     </div>
+    <div class="actions">
+      <button
+        class="delete-btn"
+        @click="emit('delete', transaction.id)"
+      >
+        Delete
+      </button>
+    </div>
   </div>
 </template>
 
@@ -68,5 +80,27 @@
   .bottom {
     font-size: 0.875rem;
     color: #666666;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+  }
+
+  .delete-btn {
+    background: none;
+    border: 0.0625rem solid var(--state-error);
+    border-radius: 0.25rem;
+    color: var(--state-error);
+    cursor: pointer;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .delete-btn:hover {
+    background: var(--state-error);
+    color: var(--text-primary);
   }
 </style>

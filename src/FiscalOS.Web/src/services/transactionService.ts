@@ -20,6 +20,7 @@ export class TransactionServiceFactory implements ITransactionServiceFactory {
 
 export interface ITransactionService {
   get: (pageNumber?: number, pageSize?: number) => Promise<Result<Page<Transaction>, Error[]>>;
+  deleteById: (id: string) => Promise<Result<boolean, Error[]>>;
 }
 
 export class TransactionService implements ITransactionService {
@@ -30,6 +31,24 @@ export class TransactionService implements ITransactionService {
 
   constructor(client: IClient) {
     this.client = client;
+  }
+
+  async deleteById(id: string): Promise<Result<boolean, Error[]>> {
+    const url = this.endpoints.get + '/' + id;
+    const request = new ClientRequest(url);
+
+    try {
+      const res = await this.client.delete(request);
+
+      if (res.ok === false) {
+        return Err([new Error('Failed to delete transaction.')]);
+      }
+
+      return Ok(true);
+    } catch (error) {
+      console.error(error);
+      return Err([new Error('Failed to delete transaction.')]);
+    }
   }
 
   async get(pageNumber: number = 1, pageSize: number = 500) {

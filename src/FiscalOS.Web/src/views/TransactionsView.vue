@@ -10,6 +10,17 @@
 
   const transactions = ref<Transaction[]>([]);
 
+  async function handleDelete(id: string) {
+    const result = await transactionService.deleteById(id);
+
+    if (result.err) {
+      alert(result.val.map(e => e.message).join('\n'));
+      return;
+    }
+
+    transactions.value = transactions.value.filter(t => t.id !== id);
+  }
+
   onMounted(async () => {
     const result = await transactionService.get();
 
@@ -30,7 +41,10 @@
         v-for="transaction in transactions"
         :key="transaction.id"
       >
-        <TransactionCard :transaction="transaction" />
+        <TransactionCard
+          :transaction="transaction"
+          @delete="handleDelete"
+        />
       </li>
     </ul>
   </div>
